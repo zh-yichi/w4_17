@@ -1,0 +1,12 @@
+%nproc=8
+%mem=5000mb
+#p hf/6-31G(d) scf=tight int(grid=ultrafine)  scfcyc=200 symm=tight
+
+This text is a comment
+
+0 1
+C        0.000000    0.179944    0.000000 
+N        0.068513    1.339387    0.000000 
+O       -0.149603   -1.114886    0.000000 
+H        0.717232   -1.536279    0.000000 
+
