@@ -3,8 +3,9 @@ import glob
 import numpy as np
 from pyscf import gto, scf, cc
 
+basis = "ccpvdz"
 xyz_dir = "../w4_17_xyz/open_shell"
-results_file = "../result/open_shell_rhf.dat"
+results_file = f"../result/open_shell_rhf_{basis}.dat"
 out_dir = "../result/molout/open_shell"
 os.makedirs(out_dir, exist_ok=True)
 
@@ -49,9 +50,9 @@ for xyz_path in xyz_files:
 
     mol = gto.M(
         atom=atoms,
-        basis="ccpvdz",
+        basis=basis,
         verbose=4,
-        output=os.path.join(out_dir, f"{mol_name}.out"),
+        output=os.path.join(out_dir, f"{mol_name}_{basis}.out"),
         unit="angstrom",
         symmetry=symmetry,
         charge=charge,
