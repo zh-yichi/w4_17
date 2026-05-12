@@ -3,16 +3,16 @@ import glob
 import numpy as np
 from pyscf import gto, scf, cc
 
-basis = "ccpvdz"
-xyz_dir = "../w4_17_xyz/open_shell"
-results_file = f"../result/open_shell_rhf_{basis}.dat"
-out_dir = "../result/molout/open_shell"
+basis = "ccpvtz"
+xyz_dir = "../w4_17_xyz/closed_shell"
+results_file = f"../result/closed_shell_rhf_{basis}.dat"
+out_dir = "../result/molout/closed_shell"
 os.makedirs(out_dir, exist_ok=True)
 
 # Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
 # Set to None to run all molecules in xyz_dir
-# select_molecules = None
-select_molecules = ["bn3pi","b2", "cf"]
+select_molecules = None
+# select_molecules = ["bn3pi","b2", "cf"]
 symmetry = False
 
 all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
