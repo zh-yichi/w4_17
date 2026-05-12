@@ -1,4 +1,4 @@
-#INFO: **** input file is /home/sharmagroup/sharmagroup/project/w4_17/w4-17_all/pyscf_input/run_pyscf.py ****
+#INFO: **** input file is /projects/yizh8382/projects/w4_17/w4-17_all/pyscf_input/run_pyscf.py ****
 import os
 import glob
 import numpy as np
@@ -11,8 +11,8 @@ os.makedirs(out_dir, exist_ok=True)
 
 # Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
 # Set to None to run all molecules in xyz_dir
-# select_molecules = None
-select_molecules = ["ch4", "h2o", "c2", "bn"]
+select_molecules = None
+# select_molecules = ["bn3pi","b2", "cf"]
 symmetry = False
 
 all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
@@ -61,17 +61,26 @@ for xyz_path in xyz_files:
     )
 
     mf = scf.RHF(mol)
-    mf.max_cycle = 100
+    mf.max_cycle = 200
     mf = mf.newton()
     mf.kernel()
 
-    # Stability check loop
+    # Stability check loop — at most 10 attempts
+    max_stability_cycles = 10
     stable = False
-    while not stable:
+    for stability_iter in range(max_stability_cycles):
         mo_i, _, stable, _ = mf.stability(return_status=True)
-        #if not stable:
+        if stable:
+            break
         dm = mf.make_rdm1(mo_i, mf.mo_occ)
         mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
+                      f"{'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        continue
 
     energy = mf.e_tot
 
@@ -95,17 +104,16 @@ print(f"\nAll calculations complete. Results saved to {results_file}")
 #INFO: ******************** input file end ********************
 
 
-System: uname_result(system='Linux', node='sharmagroup-rn', release='6.17.0-23-generic', version='#23~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue Apr 14 16:11:48 UTC 2', machine='x86_64')  Threads 16
-Python 3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]
-numpy 2.4.4  scipy 1.17.1  h5py 3.16.0
-Date: Tue May 12 09:25:32 2026
-PySCF version 2.12.1
-PySCF path  /home/sharmagroup/sharmagroup/pyscf
-GIT ORIG_HEAD 3d1768f5e33b144b606c3d2c81c12ee54d794501
-GIT HEAD (branch master) f0861da51f017364d8bbaa20b742a94f3733305f
+System: uname_result(system='Linux', node='bnode0303.rc.int.colorado.edu', release='4.18.0-477.27.1.el8_8.x86_64', version='#1 SMP Thu Aug 31 10:29:22 EDT 2023', machine='x86_64')  Threads 28
+Python 3.10.2 | packaged by conda-forge | (main, Mar  8 2022, 15:52:01) [GCC 9.4.0]
+numpy 2.0.2  scipy 1.14.1  h5py 3.12.1
+Date: Tue May 12 10:50:17 2026
+PySCF version 2.9.0
+PySCF path  /projects/yizh8382/tools/lno_pyscf_gcc
+GIT HEAD (branch master) 142756584ed3963728cc1f6823286f4605811a6c
 
-[ENV] OLD_PYSCF_EXT_PATH 
-[ENV] PYSCF_EXT_PATH /home/sharmagroup/sharmagroup/pyscf-forge
+[ENV] PYSCF_TMPDIR /scratch/alpine/yizh8382/pyscf
+[ENV] PYSCF_EXT_PATH /home/yizh8382/tools/pyscf-forge
 [CONFIG] conf_file None
 [INPUT] verbose = 4
 [INPUT] num. atoms = 2
@@ -124,7 +132,7 @@ number of NR pGTOs = 52
 number of NR cGTOs = 28
 basis = ccpvdz
 ecp = {}
-CPU time:         2.20
+CPU time:      1793.29
 
 
 
@@ -140,18 +148,18 @@ diis_space = 8
 diis_damp = 0
 SCF conv_tol = 1e-09
 SCF conv_tol_grad = None
-SCF max_cycles = 100
+SCF max_cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmpx0e3qzi5
-max_memory 40000 MB (current use 116 MB)
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmpya3p_nqf
+max_memory 40000 MB (current use 843 MB)
 ******** <class 'pyscf.scf.hf.RHF'> Newton solver flags ********
 SCF tol = 1e-09
 conv_tol_grad = None
-max. SCF cycles = 100
+max. SCF cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmpx0e3qzi5
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmpya3p_nqf
 max_cycle_inner = 12
 max_stepsize = 0.05
 ah_start_tol = 1e+09
@@ -164,19 +172,19 @@ ah_grad_trust_region = 2.5
 kf_interval = 4
 kf_trust_region = 5
 canonicalization = True
-max_memory 40000 MB (current use 116 MB)
+max_memory 40000 MB (current use 843 MB)
 Set conv_tol_grad to 3.16228e-05
 Initial guess from minao.
   HOMO = -0.307804597405058  LUMO = -0.183319677402269
-Initial guess E= -78.7960723739149  |g|= 0.502036
+Initial guess E= -78.7960723739148  |g|= 0.502036
 macro= 0  E= -78.8836379663979  delta_E= -0.0875656  |g|= 0.502036  2 KF 5 JK
-macro= 1  E= -78.8881219396079  delta_E= -0.00448397  |g|= 0.0148861  3 KF 10 JK
+macro= 1  E= -78.8881219396078  delta_E= -0.00448397  |g|= 0.0148861  3 KF 10 JK
 macro= 2  E= -78.8881230489518  delta_E= -1.10934e-06  |g|= 6.05789e-05  2 KF 8 JK
-macro= 3  E= -78.8881230489518  delta_E= 1.42109e-14  |g|= 6.96007e-06  1 KF 2 JK
+macro= 3  E= -78.8881230489518  delta_E= 0  |g|= 6.96007e-06  1 KF 2 JK
 Canonicalize SCF orbitals
 macro X = 4  E=-78.8881230489518  |g|= 6.96007e-06  total 9 KF 30 JK
 converged SCF energy = -78.8881230489518
-rhf_internal: lowest eigs of H = [-0.03835797 -0.03835366  0.31499996]
+rhf_internal: lowest eigs of H = [-0.0383586 -0.0383577  0.3149966]
 <class 'pyscf.soscf.newton_ah.SecondOrderRHF'> wavefunction has an internal instability
 
 
@@ -193,18 +201,18 @@ diis_space = 8
 diis_damp = 0
 SCF conv_tol = 1e-09
 SCF conv_tol_grad = None
-SCF max_cycles = 100
+SCF max_cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmpx0e3qzi5
-max_memory 40000 MB (current use 138 MB)
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmpya3p_nqf
+max_memory 40000 MB (current use 843 MB)
 ******** <class 'pyscf.scf.hf.RHF'> Newton solver flags ********
 SCF tol = 1e-09
 conv_tol_grad = None
-max. SCF cycles = 100
+max. SCF cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmpx0e3qzi5
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmpya3p_nqf
 max_cycle_inner = 12
 max_stepsize = 0.05
 ah_start_tol = 1e+09
@@ -217,66 +225,19 @@ ah_grad_trust_region = 2.5
 kf_interval = 4
 kf_trust_region = 5
 canonicalization = True
-max_memory 40000 MB (current use 138 MB)
+max_memory 40000 MB (current use 843 MB)
 Set conv_tol_grad to 3.16228e-05
-  HOMO = -0.376087825229566  LUMO = -0.12366977421505
-Initial guess E= -78.8373127011026  |g|= 0.445211
-macro= 0  E= -78.8747535967442  delta_E= -0.0374409  |g|= 0.0497723  3 KF 12 JK
-macro= 1  E= -78.8906580167574  delta_E= -0.0159044  |g|= 0.00635215  4 KF 13 JK
-macro= 2  E= -78.8906828173693  delta_E= -2.48006e-05  |g|= 6.32095e-05  3 KF 14 JK
-macro= 3  E= -78.8906828173693  delta_E= 0  |g|= 2.90956e-06  1 KF 2 JK
+  HOMO = -0.376147354604527  LUMO = -0.123723871738707
+Initial guess E= -78.8371791529925  |g|= 0.445813
+macro= 0  E= -78.8747234959409  delta_E= -0.0375443  |g|= 0.0498695  3 KF 12 JK
+macro= 1  E= -78.890657801043  delta_E= -0.0159343  |g|= 0.00635465  4 KF 13 JK
+macro= 2  E= -78.8906828173692  delta_E= -2.50163e-05  |g|= 6.29688e-05  3 KF 14 JK
+macro= 3  E= -78.8906828173692  delta_E= -1.42109e-14  |g|= 2.9363e-06  1 KF 2 JK
 Canonicalize SCF orbitals
-macro X = 4  E=-78.8906828173693  |g|= 2.90956e-06  total 12 KF 46 JK
-converged SCF energy = -78.8906828173693
-rhf_internal: lowest eigs of H = [1.06494146e-06 6.08315510e-02 4.08397279e-01]
+macro X = 4  E=-78.8906828173692  |g|= 2.9363e-06  total 12 KF 46 JK
+converged SCF energy = -78.8906828173692
+rhf_internal: lowest eigs of H = [2.68969606e-07 6.08316746e-02 4.08408196e-01]
 <class 'pyscf.soscf.newton_ah.SecondOrderRHF'> wavefunction is stable in the internal stability analysis
-
-
-
-
-******** <class 'pyscf.soscf.newton_ah.SecondOrderRHF'> ********
-method = SecondOrderRHF
-initial guess = minao
-damping factor = 0
-level_shift factor = 0
-DIIS = <class 'pyscf.scf.diis.CDIIS'>
-diis_start_cycle = 1
-diis_space = 8
-diis_damp = 0
-SCF conv_tol = 1e-09
-SCF conv_tol_grad = None
-SCF max_cycles = 100
-direct_scf = True
-direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmpx0e3qzi5
-max_memory 40000 MB (current use 138 MB)
-******** <class 'pyscf.scf.hf.RHF'> Newton solver flags ********
-SCF tol = 1e-09
-conv_tol_grad = None
-max. SCF cycles = 100
-direct_scf = True
-direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmpx0e3qzi5
-max_cycle_inner = 12
-max_stepsize = 0.05
-ah_start_tol = 1e+09
-ah_level_shift = 0
-ah_conv_tol = 1e-12
-ah_lindep = 1e-14
-ah_start_cycle = 1
-ah_max_cycle = 40
-ah_grad_trust_region = 2.5
-kf_interval = 4
-kf_trust_region = 5
-canonicalization = True
-max_memory 40000 MB (current use 138 MB)
-Set conv_tol_grad to 3.16228e-05
-  HOMO = -0.406133693974166  LUMO = -0.0906247927414241
-Initial guess E= -78.8906828173705  |g|= 1.83019e-06
-macro= 0  E= -78.8906828173713  delta_E= -7.67386e-13  |g|= 1.83019e-06  1 KF 2 JK
-Canonicalize SCF orbitals
-macro X = 1  E=-78.8906828173713  |g|= 1.83019e-06  total 2 KF 4 JK
-converged SCF energy = -78.8906828173713
 
 ******** <class 'pyscf.cc.ccsd.CCSD'> ********
 CC2 = 0
@@ -289,36 +250,36 @@ conv_tol_normt = 1e-05
 diis_space = 6
 diis_start_cycle = 0
 diis_start_energy_diff = 1e+09
-max_memory 40000 MB (current use 138 MB)
-Init t2, MP2 energy = -79.1514381380809  E_corr(MP2) -0.260755320709626
-Init E_corr(CCSD) = -0.260755320709787
-cycle = 1  E_corr(CCSD) = -0.245611484036614  dE = 0.0151438367  norm(t1,t2) = 0.116961
-cycle = 2  E_corr(CCSD) = -0.270321844746765  dE = -0.0247103607  norm(t1,t2) = 0.0653219
-cycle = 3  E_corr(CCSD) = -0.269119841029431  dE = 0.00120200372  norm(t1,t2) = 0.0480288
-cycle = 4  E_corr(CCSD) = -0.280770586403371  dE = -0.0116507454  norm(t1,t2) = 0.0365056
-cycle = 5  E_corr(CCSD) = -0.283140054725411  dE = -0.00236946832  norm(t1,t2) = 0.0230191
-cycle = 6  E_corr(CCSD) = -0.283621626574947  dE = -0.00048157185  norm(t1,t2) = 0.0209617
-cycle = 7  E_corr(CCSD) = -0.286019515984369  dE = -0.00239788941  norm(t1,t2) = 0.018119
-cycle = 8  E_corr(CCSD) = -0.286870546029911  dE = -0.000851030046  norm(t1,t2) = 0.0151708
-cycle = 9  E_corr(CCSD) = -0.289872386986665  dE = -0.00300184096  norm(t1,t2) = 0.0115056
-cycle = 10  E_corr(CCSD) = -0.289335712399215  dE = 0.000536674587  norm(t1,t2) = 0.0176264
-cycle = 11  E_corr(CCSD) = -0.290158080853397  dE = -0.000822368454  norm(t1,t2) = 0.0185506
-cycle = 12  E_corr(CCSD) = -0.290072096354406  dE = 8.5984499e-05  norm(t1,t2) = 0.00358053
-cycle = 13  E_corr(CCSD) = -0.290062122762078  dE = 9.97359233e-06  norm(t1,t2) = 0.00176055
-cycle = 14  E_corr(CCSD) = -0.289968422641386  dE = 9.37001207e-05  norm(t1,t2) = 0.00149085
-cycle = 15  E_corr(CCSD) = -0.289966961812397  dE = 1.46082899e-06  norm(t1,t2) = 0.000668717
-cycle = 16  E_corr(CCSD) = -0.289974943501303  dE = -7.98168891e-06  norm(t1,t2) = 0.000291899
-cycle = 17  E_corr(CCSD) = -0.289977281244721  dE = -2.33774342e-06  norm(t1,t2) = 0.000135087
-cycle = 18  E_corr(CCSD) = -0.28997706688001  dE = 2.14364711e-07  norm(t1,t2) = 6.53902e-05
-cycle = 19  E_corr(CCSD) = -0.289977129022283  dE = -6.21422729e-08  norm(t1,t2) = 2.45387e-05
-cycle = 20  E_corr(CCSD) = -0.289975958655577  dE = 1.17036671e-06  norm(t1,t2) = 1.36367e-05
-cycle = 21  E_corr(CCSD) = -0.289976423033448  dE = -4.64377871e-07  norm(t1,t2) = 1.0097e-05
-cycle = 22  E_corr(CCSD) = -0.289976050828278  dE = 3.7220517e-07  norm(t1,t2) = 7.71337e-06
-cycle = 23  E_corr(CCSD) = -0.289975623702235  dE = 4.27126044e-07  norm(t1,t2) = 6.56933e-06
-cycle = 24  E_corr(CCSD) = -0.289974941834133  dE = 6.81868102e-07  norm(t1,t2) = 5.05097e-06
-cycle = 25  E_corr(CCSD) = -0.289974101389514  dE = 8.40444619e-07  norm(t1,t2) = 3.25944e-06
-cycle = 26  E_corr(CCSD) = -0.289974000366864  dE = 1.0102265e-07  norm(t1,t2) = 1.41957e-06
-cycle = 27  E_corr(CCSD) = -0.289973942352354  dE = 5.801451e-08  norm(t1,t2) = 7.26771e-07
+max_memory 40000 MB (current use 843 MB)
+Init t2, MP2 energy = -79.1514382302385  E_corr(MP2) -0.260755412869305
+Init E_corr(CCSD) = -0.260755412871053
+cycle = 1  E_corr(CCSD) = -0.245611486188213  dE = 0.0151439267  norm(t1,t2) = 0.116961
+cycle = 2  E_corr(CCSD) = -0.270321875685075  dE = -0.0247103895  norm(t1,t2) = 0.065322
+cycle = 3  E_corr(CCSD) = -0.269119849929776  dE = 0.00120202576  norm(t1,t2) = 0.0480288
+cycle = 4  E_corr(CCSD) = -0.280770589458278  dE = -0.0116507395  norm(t1,t2) = 0.0365056
+cycle = 5  E_corr(CCSD) = -0.283140045282862  dE = -0.00236945582  norm(t1,t2) = 0.023019
+cycle = 6  E_corr(CCSD) = -0.28362161454515  dE = -0.000481569262  norm(t1,t2) = 0.0209616
+cycle = 7  E_corr(CCSD) = -0.286019500093668  dE = -0.00239788555  norm(t1,t2) = 0.018119
+cycle = 8  E_corr(CCSD) = -0.286870521544287  dE = -0.000851021451  norm(t1,t2) = 0.0151708
+cycle = 9  E_corr(CCSD) = -0.289872351463628  dE = -0.00300182992  norm(t1,t2) = 0.0115055
+cycle = 10  E_corr(CCSD) = -0.289335669029405  dE = 0.000536682434  norm(t1,t2) = 0.0176264
+cycle = 11  E_corr(CCSD) = -0.290158047355066  dE = -0.000822378326  norm(t1,t2) = 0.0185506
+cycle = 12  E_corr(CCSD) = -0.290072055046822  dE = 8.59923082e-05  norm(t1,t2) = 0.00358055
+cycle = 13  E_corr(CCSD) = -0.290062082900587  dE = 9.97214624e-06  norm(t1,t2) = 0.00176053
+cycle = 14  E_corr(CCSD) = -0.289968382639167  dE = 9.37002614e-05  norm(t1,t2) = 0.00149084
+cycle = 15  E_corr(CCSD) = -0.289966921607734  dE = 1.46103143e-06  norm(t1,t2) = 0.000668713
+cycle = 16  E_corr(CCSD) = -0.28997490323529  dE = -7.98162756e-06  norm(t1,t2) = 0.000291898
+cycle = 17  E_corr(CCSD) = -0.289977240976063  dE = -2.33774077e-06  norm(t1,t2) = 0.000135085
+cycle = 18  E_corr(CCSD) = -0.289977026507251  dE = 2.14468812e-07  norm(t1,t2) = 6.53892e-05
+cycle = 19  E_corr(CCSD) = -0.289977088669343  dE = -6.21620918e-08  norm(t1,t2) = 2.45389e-05
+cycle = 20  E_corr(CCSD) = -0.289975918203662  dE = 1.17046568e-06  norm(t1,t2) = 1.36374e-05
+cycle = 21  E_corr(CCSD) = -0.289976382543052  dE = -4.64339389e-07  norm(t1,t2) = 1.00978e-05
+cycle = 22  E_corr(CCSD) = -0.289976010273453  dE = 3.72269598e-07  norm(t1,t2) = 7.71415e-06
+cycle = 23  E_corr(CCSD) = -0.289975583019699  dE = 4.27253754e-07  norm(t1,t2) = 6.56996e-06
+cycle = 24  E_corr(CCSD) = -0.289974901057168  dE = 6.81962531e-07  norm(t1,t2) = 5.05135e-06
+cycle = 25  E_corr(CCSD) = -0.28997406055034  dE = 8.40506828e-07  norm(t1,t2) = 3.25955e-06
+cycle = 26  E_corr(CCSD) = -0.289973959550535  dE = 1.00999804e-07  norm(t1,t2) = 1.41956e-06
+cycle = 27  E_corr(CCSD) = -0.289973901539776  dE = 5.80107587e-08  norm(t1,t2) = 7.26743e-07
 CCSD converged
-E(CCSD) = -79.18065675972366  E_corr = -0.2899739423523543
-CCSD(T) correction = -0.0346662381906816
+E(CCSD) = -79.18065671890896  E_corr = -0.2899739015397764
+CCSD(T) correction = -0.0346662128714522

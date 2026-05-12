@@ -1,4 +1,4 @@
-#INFO: **** input file is /home/sharmagroup/sharmagroup/project/w4_17/w4-17_all/pyscf_input/run_pyscf.py ****
+#INFO: **** input file is /projects/yizh8382/projects/w4_17/w4-17_all/pyscf_input/run_pyscf.py ****
 import os
 import glob
 import numpy as np
@@ -12,7 +12,7 @@ os.makedirs(out_dir, exist_ok=True)
 # Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
 # Set to None to run all molecules in xyz_dir
 select_molecules = None
-# select_molecules = ["ch4, h2o"]
+# select_molecules = ["bn3pi","b2", "cf"]
 symmetry = False
 
 all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
@@ -26,7 +26,7 @@ else:
     xyz_files = all_xyz
 
 with open(results_file, "w") as out:
-    out.write(f"{'Molecule':>16s} {'Charge':>6s} {'2S':>6s} {'frozen':>6s} "
+    out.write(f"{'Molecule':<16s} {'Charge':>6s} {'2S':>6s} {'frozen':>6s} "
               f"{'E_RHF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
     out.write("-" * 100 + "\n")
 
@@ -61,17 +61,26 @@ for xyz_path in xyz_files:
     )
 
     mf = scf.RHF(mol)
-    mf.max_cycle = 100
+    mf.max_cycle = 200
     mf = mf.newton()
     mf.kernel()
 
-    # Stability check loop
+    # Stability check loop — at most 10 attempts
+    max_stability_cycles = 10
     stable = False
-    while not stable:
+    for stability_iter in range(max_stability_cycles):
         mo_i, _, stable, _ = mf.stability(return_status=True)
-        #if not stable:
+        if stable:
+            break
         dm = mf.make_rdm1(mo_i, mf.mo_occ)
         mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
+                      f"{'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        continue
 
     energy = mf.e_tot
 
@@ -84,7 +93,7 @@ for xyz_path in xyz_files:
     frozen = mycc.frozen
 
     with open(results_file, "a") as out:
-        out.write(f"{mol_name:>16s} {charge:>6d} {spin:>6d} {frozen:>6d} "
+        out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {frozen:>6d} "
                   f"{energy:>20.10f} {e_ccsd:>20.10f} {e_ccsdt:>20.10f}\n")
 
     print(f"  => E_RHF({mol_name})     = {energy:.10f} Eh")
@@ -95,17 +104,16 @@ print(f"\nAll calculations complete. Results saved to {results_file}")
 #INFO: ******************** input file end ********************
 
 
-System: uname_result(system='Linux', node='sharmagroup-rn', release='6.17.0-23-generic', version='#23~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue Apr 14 16:11:48 UTC 2', machine='x86_64')  Threads 16
-Python 3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]
-numpy 2.4.4  scipy 1.17.1  h5py 3.16.0
-Date: Tue May 12 09:19:50 2026
-PySCF version 2.12.1
-PySCF path  /home/sharmagroup/sharmagroup/pyscf
-GIT ORIG_HEAD 3d1768f5e33b144b606c3d2c81c12ee54d794501
-GIT HEAD (branch master) f0861da51f017364d8bbaa20b742a94f3733305f
+System: uname_result(system='Linux', node='bnode0303.rc.int.colorado.edu', release='4.18.0-477.27.1.el8_8.x86_64', version='#1 SMP Thu Aug 31 10:29:22 EDT 2023', machine='x86_64')  Threads 28
+Python 3.10.2 | packaged by conda-forge | (main, Mar  8 2022, 15:52:01) [GCC 9.4.0]
+numpy 2.0.2  scipy 1.14.1  h5py 3.12.1
+Date: Tue May 12 10:49:27 2026
+PySCF version 2.9.0
+PySCF path  /projects/yizh8382/tools/lno_pyscf_gcc
+GIT HEAD (branch master) 142756584ed3963728cc1f6823286f4605811a6c
 
-[ENV] OLD_PYSCF_EXT_PATH 
-[ENV] PYSCF_EXT_PATH /home/sharmagroup/sharmagroup/pyscf-forge
+[ENV] PYSCF_TMPDIR /scratch/alpine/yizh8382/pyscf
+[ENV] PYSCF_EXT_PATH /home/yizh8382/tools/pyscf-forge
 [CONFIG] conf_file None
 [INPUT] verbose = 4
 [INPUT] num. atoms = 2
@@ -124,7 +132,7 @@ number of NR pGTOs = 67
 number of NR cGTOs = 32
 basis = ccpvdz
 ecp = {}
-CPU time:       111.87
+CPU time:       455.95
 
 
 
@@ -140,18 +148,18 @@ diis_space = 8
 diis_damp = 0
 SCF conv_tol = 1e-09
 SCF conv_tol_grad = None
-SCF max_cycles = 100
+SCF max_cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmp4fsdwh0l
-max_memory 40000 MB (current use 378 MB)
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmpk2rzggel
+max_memory 40000 MB (current use 675 MB)
 ******** <class 'pyscf.scf.hf.RHF'> Newton solver flags ********
 SCF tol = 1e-09
 conv_tol_grad = None
-max. SCF cycles = 100
+max. SCF cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmp4fsdwh0l
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmpk2rzggel
 max_cycle_inner = 12
 max_stepsize = 0.05
 ah_start_tol = 1e+09
@@ -164,10 +172,10 @@ ah_grad_trust_region = 2.5
 kf_interval = 4
 kf_trust_region = 5
 canonicalization = True
-max_memory 40000 MB (current use 378 MB)
+max_memory 40000 MB (current use 675 MB)
 Set conv_tol_grad to 3.16228e-05
 Initial guess from minao.
-  HOMO = -0.285615921612451  LUMO = 0.0256435606992668
+  HOMO = -0.285615921612447  LUMO = 0.0256435606992685
 Initial guess E= -341.360589730989  |g|= 0.53844
 macro= 0  E= -341.419669014157  delta_E= -0.0590793  |g|= 0.53844  2 KF 5 JK
 macro= 1  E= -341.422849655842  delta_E= -0.00318064  |g|= 6.69323e-05  3 KF 11 JK
@@ -175,55 +183,8 @@ macro= 2  E= -341.422849655842  delta_E= -5.68434e-13  |g|= 6.75222e-06  1 KF 2 
 Canonicalize SCF orbitals
 macro X = 3  E=-341.422849655842  |g|= 6.75222e-06  total 7 KF 22 JK
 converged SCF energy = -341.422849655842
-rhf_internal: lowest eigs of H = [0.99107239 0.99107602 1.23028574]
+rhf_internal: lowest eigs of H = [0.99107316 0.9910737  1.23029104]
 <class 'pyscf.soscf.newton_ah.SecondOrderRHF'> wavefunction is stable in the internal stability analysis
-
-
-
-
-******** <class 'pyscf.soscf.newton_ah.SecondOrderRHF'> ********
-method = SecondOrderRHF
-initial guess = minao
-damping factor = 0
-level_shift factor = 0
-DIIS = <class 'pyscf.scf.diis.CDIIS'>
-diis_start_cycle = 1
-diis_space = 8
-diis_damp = 0
-SCF conv_tol = 1e-09
-SCF conv_tol_grad = None
-SCF max_cycles = 100
-direct_scf = True
-direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmp4fsdwh0l
-max_memory 40000 MB (current use 378 MB)
-******** <class 'pyscf.scf.hf.RHF'> Newton solver flags ********
-SCF tol = 1e-09
-conv_tol_grad = None
-max. SCF cycles = 100
-direct_scf = True
-direct_scf_tol = 1e-13
-chkfile to save SCF result = /tmp/tmp4fsdwh0l
-max_cycle_inner = 12
-max_stepsize = 0.05
-ah_start_tol = 1e+09
-ah_level_shift = 0
-ah_conv_tol = 1e-12
-ah_lindep = 1e-14
-ah_start_cycle = 1
-ah_max_cycle = 40
-ah_grad_trust_region = 2.5
-kf_interval = 4
-kf_trust_region = 5
-canonicalization = True
-max_memory 40000 MB (current use 378 MB)
-Set conv_tol_grad to 3.16228e-05
-  HOMO = -0.338866082016466  LUMO = 0.0477709188548767
-Initial guess E= -341.422849655854  |g|= 1.31229e-06
-macro= 0  E= -341.422849655854  delta_E= -1.7053e-13  |g|= 1.31229e-06  1 KF 2 JK
-Canonicalize SCF orbitals
-macro X = 1  E=-341.422849655854  |g|= 1.31229e-06  total 2 KF 4 JK
-converged SCF energy = -341.422849655854
 
 ******** <class 'pyscf.cc.ccsd.CCSD'> ********
 CC2 = 0
@@ -236,20 +197,20 @@ conv_tol_normt = 1e-05
 diis_space = 6
 diis_start_cycle = 0
 diis_start_energy_diff = 1e+09
-max_memory 40000 MB (current use 306 MB)
-Init t2, MP2 energy = -341.657973422164  E_corr(MP2) -0.235123766309855
-Init E_corr(CCSD) = -0.235123766310157
-cycle = 1  E_corr(CCSD) = -0.237630908550474  dE = -0.00250714224  norm(t1,t2) = 0.0657354
-cycle = 2  E_corr(CCSD) = -0.245712864561262  dE = -0.00808195601  norm(t1,t2) = 0.0255872
-cycle = 3  E_corr(CCSD) = -0.246218269789374  dE = -0.000505405228  norm(t1,t2) = 0.0147257
-cycle = 4  E_corr(CCSD) = -0.248171709140178  dE = -0.00195343935  norm(t1,t2) = 0.00641984
-cycle = 5  E_corr(CCSD) = -0.248152742423593  dE = 1.89667166e-05  norm(t1,t2) = 0.000932711
-cycle = 6  E_corr(CCSD) = -0.248093942457096  dE = 5.87999665e-05  norm(t1,t2) = 0.000385354
-cycle = 7  E_corr(CCSD) = -0.248092737739131  dE = 1.20471796e-06  norm(t1,t2) = 9.86286e-05
-cycle = 8  E_corr(CCSD) = -0.248094299701468  dE = -1.56196234e-06  norm(t1,t2) = 3.63946e-05
-cycle = 9  E_corr(CCSD) = -0.248094319287583  dE = -1.95861148e-08  norm(t1,t2) = 1.52163e-05
-cycle = 10  E_corr(CCSD) = -0.248094861602304  dE = -5.42314721e-07  norm(t1,t2) = 4.72688e-06
-cycle = 11  E_corr(CCSD) = -0.248094860394078  dE = 1.20822555e-09  norm(t1,t2) = 2.20866e-06
+max_memory 40000 MB (current use 675 MB)
+Init t2, MP2 energy = -341.657973547232  E_corr(MP2) -0.235123891389994
+Init E_corr(CCSD) = -0.235123891397229
+cycle = 1  E_corr(CCSD) = -0.237630901692001  dE = -0.00250701029  norm(t1,t2) = 0.0657334
+cycle = 2  E_corr(CCSD) = -0.245712876269061  dE = -0.00808197458  norm(t1,t2) = 0.0255817
+cycle = 3  E_corr(CCSD) = -0.246218220038526  dE = -0.000505343769  norm(t1,t2) = 0.0147251
+cycle = 4  E_corr(CCSD) = -0.248171861930324  dE = -0.00195364189  norm(t1,t2) = 0.00641948
+cycle = 5  E_corr(CCSD) = -0.248152757671861  dE = 1.91042585e-05  norm(t1,t2) = 0.000932258
+cycle = 6  E_corr(CCSD) = -0.248093925991486  dE = 5.88316804e-05  norm(t1,t2) = 0.000385238
+cycle = 7  E_corr(CCSD) = -0.24809272292332  dE = 1.20306817e-06  norm(t1,t2) = 9.86163e-05
+cycle = 8  E_corr(CCSD) = -0.248094281928119  dE = -1.5590048e-06  norm(t1,t2) = 3.63865e-05
+cycle = 9  E_corr(CCSD) = -0.248094302497815  dE = -2.05696962e-08  norm(t1,t2) = 1.52108e-05
+cycle = 10  E_corr(CCSD) = -0.24809484523031  dE = -5.42732496e-07  norm(t1,t2) = 4.72706e-06
+cycle = 11  E_corr(CCSD) = -0.248094844190187  dE = 1.0401231e-09  norm(t1,t2) = 2.20965e-06
 CCSD converged
-E(CCSD) = -341.6709445162484  E_corr = -0.248094860394078
-CCSD(T) correction = -0.00425088828229091
+E(CCSD) = -341.6709445000325  E_corr = -0.2480948441901873
+CCSD(T) correction = -0.00425090486550524
