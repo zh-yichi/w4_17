@@ -3,15 +3,15 @@ import glob
 import numpy as np
 from pyscf import gto, scf, cc
 
-xyz_dir = "../w4_17_xyz/closed_shell"
-results_file = "../result/closed_shell_rhf.dat"
-out_dir = "../result/molout/closed_shell"
+xyz_dir = "../w4_17_xyz/open_shell"
+results_file = "../result/open_shell_rhf.dat"
+out_dir = "../result/molout/open_shell"
 os.makedirs(out_dir, exist_ok=True)
 
 # Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
 # Set to None to run all molecules in xyz_dir
 # select_molecules = None
-select_molecules = ["ch4", "h2o", "c2", "bn"]
+select_molecules = ["bn3pi","b2", "cf"]
 symmetry = False
 
 all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
@@ -60,17 +60,26 @@ for xyz_path in xyz_files:
     )
 
     mf = scf.RHF(mol)
-    mf.max_cycle = 100
+    mf.max_cycle = 200
     mf = mf.newton()
     mf.kernel()
 
-    # Stability check loop
+    # Stability check loop — at most 10 attempts
+    max_stability_cycles = 10
     stable = False
-    while not stable:
+    for stability_iter in range(max_stability_cycles):
         mo_i, _, stable, _ = mf.stability(return_status=True)
-        #if not stable:
+        if stable:
+            break
         dm = mf.make_rdm1(mo_i, mf.mo_occ)
         mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
+                      f"{'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        continue
 
     energy = mf.e_tot
 

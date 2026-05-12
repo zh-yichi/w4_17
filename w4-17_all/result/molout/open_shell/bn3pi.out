@@ -1,0 +1,697 @@
+#INFO: **** input file is /home/sharmagroup/sharmagroup/project/w4_17/w4-17_all/pyscf_input/run_pyscf.py ****
+import os
+import glob
+import numpy as np
+from pyscf import gto, scf, cc
+
+xyz_dir = "../w4_17_xyz/open_shell"
+results_file = "../result/open_shell_rhf.dat"
+out_dir = "../result/molout/open_shell"
+os.makedirs(out_dir, exist_ok=True)
+
+# Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
+# Set to None to run all molecules in xyz_dir
+# select_molecules = None
+select_molecules = ["bn3pi","b2", "cf"]
+symmetry = False
+
+all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
+if select_molecules is not None:
+    select_set = set(select_molecules)
+    xyz_files = [p for p in all_xyz if os.path.splitext(os.path.basename(p))[0] in select_set]
+    missing = select_set - {os.path.splitext(os.path.basename(p))[0] for p in xyz_files}
+    if missing:
+        print(f"Warning: no .xyz file found for: {', '.join(sorted(missing))} in {xyz_dir}")
+else:
+    xyz_files = all_xyz
+
+with open(results_file, "w") as out:
+    out.write(f"{'Molecule':<16s} {'Charge':>6s} {'2S':>6s} {'frozen':>6s} "
+              f"{'E_RHF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
+    out.write("-" * 100 + "\n")
+
+for xyz_path in xyz_files:
+    with open(xyz_path, "r") as f:
+        lines = f.readlines()
+
+    # Parse charge and multiplicity from second line: "name charge=X mult=Y"
+    second_line = lines[1]
+    charge = int(second_line.split("charge=")[1].split()[0])
+    mult   = int(second_line.split("mult=")[1].split()[0])
+    spin   = mult - 1   # PySCF spin input is 2S = mult - 1
+    mol_name = second_line.split()[0]
+
+    # Coordinates only (skip the atom count and comment lines)
+    atoms = "".join(lines[2:])
+
+    print(f"\n{'='*60}")
+    print(f"Running: {mol_name}  charge={charge}  spin={spin}")
+    print(f"{'='*60}")
+
+    mol = gto.M(
+        atom=atoms,
+        basis="ccpvdz",
+        verbose=4,
+        output=os.path.join(out_dir, f"{mol_name}.out"),
+        unit="angstrom",
+        symmetry=symmetry,
+        charge=charge,
+        spin=spin,
+        max_memory=40000,
+    )
+
+    mf = scf.RHF(mol)
+    mf.max_cycle = 200
+    mf = mf.newton()
+    mf.kernel()
+
+    # Stability check loop — at most 10 attempts
+    max_stability_cycles = 10
+    stable = False
+    for stability_iter in range(max_stability_cycles):
+        mo_i, _, stable, _ = mf.stability(return_status=True)
+        if stable:
+            break
+        dm = mf.make_rdm1(mo_i, mf.mo_occ)
+        mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
+                      f"{'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        continue
+
+    energy = mf.e_tot
+
+    mycc = cc.CCSD(mf)
+    mycc.set_frozen()
+    mycc.kernel()
+    e_ccsd = mycc.e_tot
+    et = mycc.ccsd_t()
+    e_ccsdt = e_ccsd + et
+    frozen = mycc.frozen
+
+    with open(results_file, "a") as out:
+        out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {frozen:>6d} "
+                  f"{energy:>20.10f} {e_ccsd:>20.10f} {e_ccsdt:>20.10f}\n")
+
+    print(f"  => E_RHF({mol_name})     = {energy:.10f} Eh")
+    print(f"  => E_CCSD({mol_name})    = {e_ccsd:.10f} Eh")
+    print(f"  => E_CCSD(T)({mol_name}) = {e_ccsdt:.10f} Eh")
+
+print(f"\nAll calculations complete. Results saved to {results_file}")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='sharmagroup-rn', release='6.17.0-23-generic', version='#23~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue Apr 14 16:11:48 UTC 2', machine='x86_64')  Threads 16
+Python 3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]
+numpy 2.4.4  scipy 1.17.1  h5py 3.16.0
+Date: Tue May 12 09:38:15 2026
+PySCF version 2.12.1
+PySCF path  /home/sharmagroup/sharmagroup/pyscf
+GIT ORIG_HEAD 3d1768f5e33b144b606c3d2c81c12ee54d794501
+GIT HEAD (branch master) f0861da51f017364d8bbaa20b742a94f3733305f
+
+[ENV] OLD_PYSCF_EXT_PATH 
+[ENV] PYSCF_EXT_PATH /home/sharmagroup/sharmagroup/pyscf-forge
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 2
+[INPUT] num. electrons = 12
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 2
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 B      0.000000000000   0.000000000000  -0.775950000000 AA    0.000000000000   0.000000000000  -1.466332986356 Bohr   0.0
+[INPUT]  2 N      0.000000000000   0.000000000000   0.554250000000 AA    0.000000000000   0.000000000000   1.047380704540 Bohr   0.0
+
+nuclear repulsion = 13.9236222990528
+number of shells = 10
+number of NR pGTOs = 52
+number of NR cGTOs = 28
+basis = ccpvdz
+ecp = {}
+CPU time:        33.36
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 146 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 146 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.180317916270174  LUMO = 0.116768181075781
+Initial guess E= -78.9454403890065  |g|= 0.21173
+macro= 0  E= -78.9808100830272  delta_E= -0.0353697  |g|= 0.0752363  3 KF 15 JK
+macro= 1  E= -78.9919737575677  delta_E= -0.0111637  |g|= 0.0173827  3 KF 9 JK
+macro= 2  E= -78.9920035114047  delta_E= -2.97538e-05  |g|= 2.49458e-05  3 KF 11 JK
+macro= 3  E= -78.9920035114048  delta_E= -4.26326e-14  |g|= 6.18284e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 4  E=-78.9920035114048  |g|= 6.18284e-06  total 11 KF 42 JK
+converged SCF energy = -78.9920035114048
+rohf_internal: lowest eigs of H = [-0.00116381  0.14157577  0.21053294]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222690551301383  LUMO = 0.146070315375527
+Initial guess E= -78.9917558267781  |g|= 0.012463
+macro= 0  E= -78.9920035114176  delta_E= -0.000247685  |g|= 4.24579e-05  3 KF 13 JK
+macro= 1  E= -78.9920035114177  delta_E= -9.9476e-14  |g|= 2.8546e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114177  |g|= 2.8546e-06  total 5 KF 18 JK
+converged SCF energy = -78.9920035114177
+rohf_internal: lowest eigs of H = [-0.00116426  0.14159234  0.2105451 ]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222715815130702  LUMO = 0.146084843005906
+Initial guess E= -78.9917640997141  |g|= 0.0124438
+macro= 0  E= -78.9920035114188  delta_E= -0.000239412  |g|= 4.18056e-05  3 KF 13 JK
+macro= 1  E= -78.9920035114188  delta_E= -5.68434e-14  |g|= 2.77366e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114188  |g|= 2.77366e-06  total 5 KF 18 JK
+converged SCF energy = -78.9920035114188
+rohf_internal: lowest eigs of H = [-0.00116433  0.14158831  0.21055128]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222653878971939  LUMO = 0.146077113984712
+Initial guess E= -78.9917610453116  |g|= 0.0123749
+macro= 0  E= -78.9920035114188  delta_E= -0.000242466  |g|= 4.19379e-05  3 KF 13 JK
+macro= 1  E= -78.992003511419  delta_E= -1.56319e-13  |g|= 2.77582e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.992003511419  |g|= 2.77582e-06  total 5 KF 18 JK
+converged SCF energy = -78.992003511419
+rohf_internal: lowest eigs of H = [-0.00116442  0.14160403  0.21056417]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222768081603266  LUMO = 0.146041135842632
+Initial guess E= -78.9917610315803  |g|= 0.0124776
+macro= 0  E= -78.9920035114189  delta_E= -0.00024248  |g|= 4.21205e-05  3 KF 13 JK
+macro= 1  E= -78.992003511419  delta_E= -9.9476e-14  |g|= 2.75933e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.992003511419  |g|= 2.75933e-06  total 5 KF 18 JK
+converged SCF energy = -78.992003511419
+rohf_internal: lowest eigs of H = [-0.00116433  0.14157886  0.21054708]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.22275335964385  LUMO = 0.146054906385873
+Initial guess E= -78.9917617536751  |g|= 0.0124965
+macro= 0  E= -78.992003511419  delta_E= -0.000241758  |g|= 4.21503e-05  3 KF 13 JK
+macro= 1  E= -78.9920035114191  delta_E= -5.68434e-14  |g|= 2.75963e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114191  |g|= 2.75963e-06  total 5 KF 18 JK
+converged SCF energy = -78.9920035114191
+rohf_internal: lowest eigs of H = [-0.00116434  0.14157676  0.21053254]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.22271735009667  LUMO = 0.146062636967562
+Initial guess E= -78.9917611764173  |g|= 0.0124674
+macro= 0  E= -78.9920035114187  delta_E= -0.000242335  |g|= 4.24149e-05  3 KF 13 JK
+macro= 1  E= -78.9920035114189  delta_E= -2.41585e-13  |g|= 2.78774e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114189  |g|= 2.78774e-06  total 5 KF 18 JK
+converged SCF energy = -78.9920035114189
+rohf_internal: lowest eigs of H = [-0.00116229  0.14158247  0.21054138]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222647038853237  LUMO = 0.146078773879955
+Initial guess E= -78.9917642897793  |g|= 0.0123999
+macro= 0  E= -78.9920035114143  delta_E= -0.000239222  |g|= 4.15331e-05  3 KF 13 JK
+macro= 1  E= -78.9920035114143  delta_E= -5.68434e-14  |g|= 2.95203e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114143  |g|= 2.95203e-06  total 5 KF 18 JK
+converged SCF energy = -78.9920035114143
+rohf_internal: lowest eigs of H = [-0.00116435  0.14157509  0.21053707]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222695626429312  LUMO = 0.146052641977413
+Initial guess E= -78.991760622519  |g|= 0.0123949
+macro= 0  E= -78.992003511419  delta_E= -0.000242889  |g|= 4.21243e-05  3 KF 13 JK
+macro= 1  E= -78.9920035114191  delta_E= -1.13687e-13  |g|= 2.78452e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114191  |g|= 2.78452e-06  total 5 KF 18 JK
+converged SCF energy = -78.9920035114191
+rohf_internal: lowest eigs of H = [-0.00116279  0.14160931  0.21054689]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 147 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 147 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222856083257412  LUMO = 0.146090338031337
+Initial guess E= -78.9917644798115  |g|= 0.0127079
+macro= 0  E= -78.9920035114009  delta_E= -0.000239032  |g|= 0.000186011  3 KF 12 JK
+macro= 1  E= -78.9920035114009  delta_E= 2.84217e-14  |g|= 6.18054e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114009  |g|= 6.18054e-06  total 5 KF 17 JK
+converged SCF energy = -78.9920035114009
+rohf_internal: lowest eigs of H = [-0.00116418  0.14159222  0.21052897]
+<class 'pyscf.soscf.newton_ah.SecondOrderROHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderROHF'> ********
+method = SecondOrderROHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_memory 40000 MB (current use 148 MB)
+num. doubly occ = 5  num. singly occ = 2
+******** <class 'pyscf.scf.rohf.ROHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp17oi4t7n
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 148 MB)
+Set conv_tol_grad to 3.16228e-05
+  HOMO = -0.222738779245954  LUMO = 0.146081374658407
+Initial guess E= -78.9917592394803  |g|= 0.012542
+macro= 0  E= -78.9920035114188  delta_E= -0.000244272  |g|= 4.24024e-05  3 KF 13 JK
+macro= 1  E= -78.9920035114189  delta_E= -1.13687e-13  |g|= 2.7945e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-78.9920035114189  |g|= 2.7945e-06  total 5 KF 18 JK
+converged SCF energy = -78.9920035114189
