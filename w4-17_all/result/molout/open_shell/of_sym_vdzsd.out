@@ -1,0 +1,426 @@
+#INFO: **** input file is /projects/yizh8382/projects/w4_17/w4-17_all/pyscf_input/run_pyscf_vdzsd.py ****
+import os
+import glob
+import numpy as np
+from pyscf import gto, scf, cc
+
+# basis = "ccpvdz"
+xyz_dir = "../w4_17_xyz/open_shell"
+results_file = f"../result/open_shell_uhf_sym_vdzsd.dat"
+out_dir = "../result/molout/open_shell"
+os.makedirs(out_dir, exist_ok=True)
+
+# Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
+# Set to None to run all molecules in xyz_dir
+select_molecules = None
+symmetry = True
+
+def vdzsd(elem):
+    if elem in ('H', 'He'):
+        raw_basis = gto.basis.load('ccpvdz', elem)
+        return [b for b in raw_basis if b[0] != 1]
+    else:
+        return gto.basis.load('ccpvdz', elem)
+
+def get_vdzsd_basis(atoms):
+    elems = {line.split()[0] for line in atoms.strip().splitlines() if line.strip()}
+    basis_dict = {el: vdzsd(el) for el in elems}
+    return basis_dict
+
+all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
+if select_molecules is not None:
+    select_set = set(select_molecules)
+    xyz_files = [p for p in all_xyz if os.path.splitext(os.path.basename(p))[0] in select_set]
+    missing = select_set - {os.path.splitext(os.path.basename(p))[0] for p in xyz_files}
+    if missing:
+        print(f"Warning: no .xyz file found for: {', '.join(sorted(missing))} in {xyz_dir}")
+else:
+    xyz_files = all_xyz
+
+with open(results_file, "w") as out:
+    out.write(f"{'Molecule':<16s} {'Charge':>6s} {'2S':>6s} {'frozen':>6s} "
+              f"{'E_HF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
+    out.write("-" * 100 + "\n")
+
+for xyz_path in xyz_files:
+    with open(xyz_path, "r") as f:
+        lines = f.readlines()
+
+    # Parse charge and multiplicity from second line: "name charge=X mult=Y"
+    second_line = lines[1]
+    charge = int(second_line.split("charge=")[1].split()[0])
+    mult   = int(second_line.split("mult=")[1].split()[0])
+    spin   = mult - 1   # PySCF spin input is 2S = mult - 1
+    mol_name = second_line.split()[0]
+
+    # Coordinates only (skip the atom count and comment lines)
+    atoms = "".join(lines[2:])
+    basis_dict = get_vdzsd_basis(atoms)
+
+    print(f"\n{'='*60}")
+    print(f"Running: {mol_name}  charge={charge}  spin={spin}")
+    print(f"{'='*60}")
+    
+    mol = gto.M(
+        atom=atoms,
+        basis=basis_dict,
+        verbose=4,
+        output=os.path.join(out_dir, f"{mol_name}_sym_vdzsd.out"),
+        unit="angstrom",
+        symmetry=symmetry,
+        charge=charge,
+        spin=spin,
+        max_memory=40000,
+    )
+
+    mf = scf.UHF(mol)
+    mf.max_cycle = 200
+    mf = mf.newton()
+    mf.kernel()
+
+    # Stability check loop — at most 10 attempts
+    max_stability_cycles = 10
+    stable = False
+    for stability_iter in range(max_stability_cycles):
+        mo_i, _, stable, _ = mf.stability(return_status=True)
+        if stable:
+            break
+        dm = mf.make_rdm1(mo_i, mf.mo_occ)
+        mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
+                      f"{'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        continue
+
+    energy = mf.e_tot
+
+    mycc = cc.CCSD(mf)
+    mycc.set_frozen()
+    mycc.kernel()
+    e_ccsd = mycc.e_tot
+    et = mycc.ccsd_t()
+    e_ccsdt = e_ccsd + et
+    frozen = mycc.frozen
+
+    with open(results_file, "a") as out:
+        out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {frozen:>6d} "
+                  f"{energy:>20.10f} {e_ccsd:>20.10f} {e_ccsdt:>20.10f}\n")
+
+    print(f"  => E_HF({mol_name})     = {energy:.10f} Eh")
+    print(f"  => E_CCSD({mol_name})    = {e_ccsd:.10f} Eh")
+    print(f"  => E_CCSD(T)({mol_name}) = {e_ccsdt:.10f} Eh")
+
+print(f"\nAll calculations complete. Results saved to {results_file}")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='bnode0304.rc.int.colorado.edu', release='4.18.0-477.27.1.el8_8.x86_64', version='#1 SMP Thu Aug 31 10:29:22 EDT 2023', machine='x86_64')  Threads 28
+Python 3.10.2 | packaged by conda-forge | (main, Mar  8 2022, 15:52:01) [GCC 9.4.0]
+numpy 2.0.2  scipy 1.14.1  h5py 3.12.1
+Date: Thu May 14 13:18:29 2026
+PySCF version 2.9.0
+PySCF path  /projects/yizh8382/tools/lno_pyscf_gcc
+GIT HEAD (branch master) 142756584ed3963728cc1f6823286f4605811a6c
+
+[ENV] PYSCF_TMPDIR /scratch/alpine/yizh8382/pyscf
+[ENV] PYSCF_EXT_PATH /home/yizh8382/tools/pyscf-forge
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 2
+[INPUT] num. electrons = 17
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 1
+[INPUT] symmetry True subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 O      0.000000000000   0.000000000000  -0.716295000000 AA    0.000000000000   0.000000000000  -1.353601374395 Bohr   0.0
+[INPUT]  2 F      0.000000000000   0.000000000000   0.636707000000 AA    0.000000000000   0.000000000000   1.203201851593 Bohr   0.0
+
+nuclear repulsion = 28.1601647198156
+point group symmetry = Coov
+symmetry origin: [0.00000000e+00 0.00000000e+00 3.33481081e-07]
+symmetry axis x: [1. 0. 0.]
+symmetry axis y: [0. 1. 0.]
+symmetry axis z: [0. 0. 1.]
+num. orbitals of irrep A1 = 12
+num. orbitals of irrep E1x = 6
+num. orbitals of irrep E1y = 6
+num. orbitals of irrep E2x = 2
+num. orbitals of irrep E2y = 2
+number of shells = 10
+number of NR pGTOs = 52
+number of NR cGTOs = 28
+basis = {'O': [[0, [11720.0, 0.00071, -0.00016], [1759.0, 0.00547, -0.001263], [400.8, 0.027837, -0.006267], [113.7, 0.1048, -0.025716], [37.03, 0.283062, -0.070924], [13.27, 0.448719, -0.165411], [5.025, 0.270952, -0.116955], [1.013, 0.015458, 0.557368]], [0, [0.3023, 1.0]], [1, [17.7, 0.043018], [3.854, 0.228913], [1.046, 0.508728]], [1, [0.2753, 1.0]], [2, [1.185, 1.0]]], 'F': [[0, [14710.0, 0.000721, -0.000165], [2207.0, 0.005553, -0.001308], [502.8, 0.028267, -0.006495], [142.6, 0.106444, -0.026691], [46.47, 0.286814, -0.07369], [16.7, 0.448641, -0.170776], [6.356, 0.264761, -0.112327], [1.316, 0.015333, 0.562814]], [0, [0.3897, 1.0]], [1, [22.67, 0.044878], [4.977, 0.235718], [1.347, 0.508521]], [1, [0.3471, 1.0]], [2, [1.64, 1.0]]]}
+ecp = {}
+CPU time:     11524.28
+Freeze 0 electrons in irreps []
+    17 free electrons in irreps A1 E1x E1y E2x E2y
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderSymAdaptedUHF'> ********
+method = SecondOrderSymAdaptedUHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmprs3qx24p
+max_memory 40000 MB (current use 547 MB)
+number electrons alpha = 9  beta = 8
+******** <class 'pyscf.scf.uhf_symm.SymAdaptedUHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmprs3qx24p
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 547 MB)
+Set conv_tol_grad to 3.16228e-05
+alpha HOMO (E1x) = -0.341422251545863  LUMO (A1) = -0.000997877662374059
+beta  HOMO (E1x) = -0.341422251545863  LUMO (E1x) = -0.341422251545863
+
+WARN: alpha-E1x HOMO -0.341422251545863 > system LUMO -0.341422251545863
+
+
+WARN: alpha-E1y HOMO -0.341422251545863 > system LUMO -0.341422251545863
+
+
+WARN: beta-E1x HOMO -0.341422251545863 > system LUMO -0.341422251545863
+
+
+WARN: beta-E1y LUMO -0.341422251545863 < system HOMO -0.341422251545863
+
+Initial guess E= -174.090564366172  |g|= 0.279178
+macro= 0  E= -174.125518385273  delta_E= -0.034954  |g|= 0.0921588  3 KF 13 JK
+macro= 1  E= -174.128125402587  delta_E= -0.00260702  |g|= 0.0894884  2 KF 5 JK
+macro= 2  E= -174.130530231445  delta_E= -0.00240483  |g|= 0.0774995  2 KF 5 JK
+macro= 3  E= -174.130572608774  delta_E= -4.23773e-05  |g|= 0.0597036  2 KF 5 JK
+macro= 4  E= -174.131056346597  delta_E= -0.000483738  |g|= 0.058133  2 KF 5 JK
+macro= 5  E= -174.130465123763  delta_E= 0.000591223  |g|= 0.0536126  2 KF 5 JK
+macro= 6  E= -174.131110410102  delta_E= -0.000645286  |g|= 0.0622182  2 KF 5 JK
+macro= 7  E= -174.13073302729  delta_E= 0.000377383  |g|= 0.0496324  2 KF 5 JK
+macro= 8  E= -174.130847542661  delta_E= -0.000114515  |g|= 0.0571734  2 KF 5 JK
+macro= 9  E= -174.130864440629  delta_E= -1.6898e-05  |g|= 0.0548249  2 KF 5 JK
+macro= 10  E= -174.13064287244  delta_E= 0.000221568  |g|= 0.0556932  2 KF 5 JK
+macro= 11  E= -174.131020960651  delta_E= -0.000378088  |g|= 0.0594789  2 KF 5 JK
+macro= 12  E= -174.130594941046  delta_E= 0.00042602  |g|= 0.0509588  2 KF 5 JK
+macro= 13  E= -174.131039145733  delta_E= -0.000444205  |g|= 0.0627478  2 KF 5 JK
+macro= 14  E= -174.131006266356  delta_E= 3.28794e-05  |g|= 0.0514842  2 KF 5 JK
+macro= 15  E= -174.130861714212  delta_E= 0.000144552  |g|= 0.053567  2 KF 5 JK
+macro= 16  E= -174.130698316281  delta_E= 0.000163398  |g|= 0.0551053  2 KF 5 JK
+macro= 17  E= -174.130873975527  delta_E= -0.000175659  |g|= 0.0592298  2 KF 5 JK
+macro= 18  E= -174.13064007777  delta_E= 0.000233898  |g|= 0.0549964  2 KF 5 JK
+macro= 19  E= -174.130876779006  delta_E= -0.000236701  |g|= 0.0606445  2 KF 5 JK
+macro= 20  E= -174.130622743125  delta_E= 0.000254036  |g|= 0.054724  2 KF 5 JK
+macro= 21  E= -174.130858212006  delta_E= -0.000235469  |g|= 0.0612456  2 KF 5 JK
+macro= 22  E= -174.130656596844  delta_E= 0.000201615  |g|= 0.055104  2 KF 5 JK
+macro= 23  E= -174.130857519149  delta_E= -0.000200922  |g|= 0.0603679  2 KF 5 JK
+macro= 24  E= -174.13066419525  delta_E= 0.000193324  |g|= 0.0552886  2 KF 5 JK
+macro= 25  E= -174.13086203337  delta_E= -0.000197838  |g|= 0.0600661  2 KF 5 JK
+macro= 26  E= -174.130653396123  delta_E= 0.000208637  |g|= 0.0552313  2 KF 5 JK
+macro= 27  E= -174.130861662892  delta_E= -0.000208267  |g|= 0.0603289  2 KF 5 JK
+macro= 28  E= -174.130651650614  delta_E= 0.000210012  |g|= 0.0551821  2 KF 5 JK
+macro= 29  E= -174.130858341502  delta_E= -0.000206691  |g|= 0.0604081  2 KF 5 JK
+macro= 30  E= -174.130657749741  delta_E= 0.000200592  |g|= 0.0552382  2 KF 5 JK
+macro= 31  E= -174.130857151629  delta_E= -0.000199402  |g|= 0.0602518  2 KF 5 JK
+macro= 32  E= -174.130660050137  delta_E= 0.000197101  |g|= 0.0552861  2 KF 5 JK
+macro= 33  E= -174.130857014084  delta_E= -0.000196964  |g|= 0.0601765  2 KF 5 JK
+macro= 34  E= -174.1306593587  delta_E= 0.000197655  |g|= 0.0552935  2 KF 5 JK
+macro= 35  E= -174.130856180657  delta_E= -0.000196822  |g|= 0.060193  2 KF 5 JK
+macro= 36  E= -174.13066000432  delta_E= 0.000196176  |g|= 0.0553001  2 KF 5 JK
+macro= 37  E= -174.130854963879  delta_E= -0.00019496  |g|= 0.0601821  2 KF 5 JK
+macro= 38  E= -174.130661705878  delta_E= 0.000193258  |g|= 0.0553207  2 KF 5 JK
+macro= 39  E= -174.130854022805  delta_E= -0.000192317  |g|= 0.0601391  2 KF 5 JK
+macro= 40  E= -174.130662857439  delta_E= 0.000191165  |g|= 0.0553407  2 KF 5 JK
+macro= 41  E= -174.130853231548  delta_E= -0.000190374  |g|= 0.060108  2 KF 5 JK
+macro= 42  E= -174.130663606606  delta_E= 0.000189625  |g|= 0.055355  2 KF 5 JK
+macro= 43  E= -174.130852351587  delta_E= -0.000188745  |g|= 0.0600894  2 KF 5 JK
+macro= 44  E= -174.13066454703  delta_E= 0.000187805  |g|= 0.0553691  2 KF 5 JK
+macro= 45  E= -174.130851422217  delta_E= -0.000186875  |g|= 0.0600665  2 KF 5 JK
+macro= 46  E= -174.130665628232  delta_E= 0.000185794  |g|= 0.0553852  2 KF 5 JK
+macro= 47  E= -174.130850521982  delta_E= -0.000184894  |g|= 0.060039  2 KF 5 JK
+macro= 48  E= -174.130666655184  delta_E= 0.000183867  |g|= 0.0554016  2 KF 5 JK
+macro= 49  E= -174.130849628849  delta_E= -0.000182974  |g|= 0.060012  2 KF 5 JK
+macro= 50  E= -174.130667673281  delta_E= 0.000181956  |g|= 0.055418  2 KF 5 JK
+macro= 51  E= -174.130848706191  delta_E= -0.000181033  |g|= 0.0599848  2 KF 5 JK
+macro= 52  E= -174.130668780954  delta_E= 0.000179925  |g|= 0.0554355  2 KF 5 JK
+macro= 53  E= -174.130847749186  delta_E= -0.000178968  |g|= 0.0599541  2 KF 5 JK
+macro= 54  E= -174.130670004636  delta_E= 0.000177745  |g|= 0.0554548  2 KF 5 JK
+macro= 55  E= -174.130846752304  delta_E= -0.000176748  |g|= 0.0599185  2 KF 5 JK
+macro= 56  E= -174.130671380516  delta_E= 0.000175372  |g|= 0.0554767  2 KF 5 JK
+macro= 57  E= -174.130845691529  delta_E= -0.000174311  |g|= 0.0598761  2 KF 5 JK
+macro= 58  E= -174.130673017954  delta_E= 0.000172674  |g|= 0.0555023  2 KF 5 JK
+macro= 59  E= -174.130844534426  delta_E= -0.000171516  |g|= 0.0598227  2 KF 5 JK
+macro= 60  E= -174.13067511845  delta_E= 0.000169416  |g|= 0.055534  2 KF 5 JK
+macro= 61  E= -174.130843255685  delta_E= -0.000168137  |g|= 0.0597502  2 KF 5 JK
+macro= 62  E= -174.13067807808  delta_E= 0.000165178  |g|= 0.0555753  2 KF 5 JK
+macro= 63  E= -174.13109889676  delta_E= -0.000420819  |g|= 0.0596434  2 KF 5 JK
+macro= 64  E= -174.130733047802  delta_E= 0.000365849  |g|= 0.0511772  2 KF 5 JK
+macro= 65  E= -174.130846704479  delta_E= -0.000113657  |g|= 0.0585765  2 KF 5 JK
+macro= 66  E= -174.13066558787  delta_E= 0.000181117  |g|= 0.0556495  2 KF 5 JK
+macro= 67  E= -174.130858079019  delta_E= -0.000192491  |g|= 0.0600106  2 KF 5 JK
+macro= 68  E= -174.130650786674  delta_E= 0.000207292  |g|= 0.055215  2 KF 5 JK
+macro= 69  E= -174.130853739678  delta_E= -0.000202953  |g|= 0.0604922  2 KF 5 JK
+macro= 70  E= -174.130659110682  delta_E= 0.000194629  |g|= 0.0552254  2 KF 5 JK
+macro= 71  E= -174.13085089051  delta_E= -0.00019178  |g|= 0.060317  2 KF 5 JK
+macro= 72  E= -174.130665630225  delta_E= 0.00018526  |g|= 0.0553135  2 KF 5 JK
+macro= 73  E= -174.130851513642  delta_E= -0.000185883  |g|= 0.0601264  2 KF 5 JK
+macro= 74  E= -174.130663340172  delta_E= 0.000188173  |g|= 0.0553235  2 KF 5 JK
+macro= 75  E= -174.130851698771  delta_E= -0.000188359  |g|= 0.060179  2 KF 5 JK
+macro= 76  E= -174.130661640049  delta_E= 0.000190059  |g|= 0.0552979  2 KF 5 JK
+macro= 77  E= -174.13085048992  delta_E= -0.00018885  |g|= 0.0602419  2 KF 5 JK
+macro= 78  E= -174.130663289835  delta_E= 0.0001872  |g|= 0.0553022  2 KF 5 JK
+macro= 79  E= -174.130849507859  delta_E= -0.000186218  |g|= 0.0602128  2 KF 5 JK
+macro= 80  E= -174.130664593763  delta_E= 0.000184914  |g|= 0.0553181  2 KF 5 JK
+macro= 81  E= -174.130849097214  delta_E= -0.000184503  |g|= 0.0601839  2 KF 5 JK
+macro= 82  E= -174.130664508668  delta_E= 0.000184589  |g|= 0.0553207  2 KF 5 JK
+macro= 83  E= -174.130848639447  delta_E= -0.000184131  |g|= 0.0601941  2 KF 5 JK
+macro= 84  E= -174.130664502412  delta_E= 0.000184137  |g|= 0.0553168  2 KF 5 JK
+macro= 85  E= -174.130847988189  delta_E= -0.000183486  |g|= 0.0602068  2 KF 5 JK
+macro= 86  E= -174.130664983652  delta_E= 0.000183005  |g|= 0.0553165  2 KF 5 JK
+macro= 87  E= -174.13084738734  delta_E= -0.000182404  |g|= 0.0602064  2 KF 5 JK
+macro= 88  E= -174.130665374066  delta_E= 0.000182013  |g|= 0.0553173  2 KF 5 JK
+macro= 89  E= -174.130846890823  delta_E= -0.000181517  |g|= 0.0602073  2 KF 5 JK
+macro= 90  E= -174.130665524731  delta_E= 0.000181366  |g|= 0.0553153  2 KF 5 JK
+macro= 91  E= -174.130846396746  delta_E= -0.000180872  |g|= 0.0602153  2 KF 5 JK
+macro= 92  E= -174.130665679681  delta_E= 0.000180717  |g|= 0.0553118  2 KF 5 JK
+macro= 93  E= -174.130845878258  delta_E= -0.000180199  |g|= 0.0602239  2 KF 5 JK
+macro= 94  E= -174.13066590762  delta_E= 0.000179971  |g|= 0.0553086  2 KF 5 JK
+macro= 95  E= -174.130845372077  delta_E= -0.000179464  |g|= 0.0602307  2 KF 5 JK
+macro= 96  E= -174.130666118215  delta_E= 0.000179254  |g|= 0.0553054  2 KF 5 JK
+macro= 97  E= -174.130844884447  delta_E= -0.000178766  |g|= 0.0602376  2 KF 5 JK
+macro= 98  E= -174.130666293093  delta_E= 0.000178591  |g|= 0.0553016  2 KF 5 JK
+macro= 99  E= -174.130844395822  delta_E= -0.000178103  |g|= 0.0602454  2 KF 5 JK
+macro= 100  E= -174.130666477975  delta_E= 0.000177918  |g|= 0.0552978  2 KF 5 JK
+macro= 101  E= -174.130843899973  delta_E= -0.000177422  |g|= 0.0602529  2 KF 5 JK
+macro= 102  E= -174.130666686618  delta_E= 0.000177213  |g|= 0.0552942  2 KF 5 JK
+macro= 103  E= -174.130843402353  delta_E= -0.000176716  |g|= 0.0602595  2 KF 5 JK
+macro= 104  E= -174.130666904258  delta_E= 0.000176498  |g|= 0.055291  2 KF 5 JK
+macro= 105  E= -174.130842903617  delta_E= -0.000175999  |g|= 0.0602654  2 KF 5 JK
+macro= 106  E= -174.130667128229  delta_E= 0.000175775  |g|= 0.0552879  2 KF 5 JK
+macro= 107  E= -174.130842400226  delta_E= -0.000175272  |g|= 0.0602709  2 KF 5 JK
+macro= 108  E= -174.130667366554  delta_E= 0.000175034  |g|= 0.0552853  2 KF 5 JK
+macro= 109  E= -174.130841891398  delta_E= -0.000174525  |g|= 0.0602757  2 KF 5 JK
+macro= 110  E= -174.130667620735  delta_E= 0.000174271  |g|= 0.055283  2 KF 5 JK
+macro= 111  E= -174.130841378731  delta_E= -0.000173758  |g|= 0.0602796  2 KF 5 JK
+macro= 112  E= -174.130667886726  delta_E= 0.000173492  |g|= 0.0552811  2 KF 5 JK
+macro= 113  E= -174.130840863017  delta_E= -0.000172976  |g|= 0.0602829  2 KF 5 JK
+macro= 114  E= -174.130668162752  delta_E= 0.0001727  |g|= 0.0552796  2 KF 5 JK
+macro= 115  E= -174.130840344272  delta_E= -0.000172182  |g|= 0.0602856  2 KF 5 JK
+macro= 116  E= -174.130668449076  delta_E= 0.000171895  |g|= 0.0552784  2 KF 5 JK
+macro= 117  E= -174.13083982303  delta_E= -0.000171374  |g|= 0.0602878  2 KF 5 JK
+macro= 118  E= -174.130668744729  delta_E= 0.000171078  |g|= 0.0552775  2 KF 5 JK
+macro= 119  E= -174.130839300233  delta_E= -0.000170556  |g|= 0.0602894  2 KF 5 JK
+macro= 120  E= -174.130669047793  delta_E= 0.000170252  |g|= 0.055277  2 KF 5 JK
+macro= 121  E= -174.13083877659  delta_E= -0.000169729  |g|= 0.0602905  2 KF 5 JK
+macro= 122  E= -174.130669356981  delta_E= 0.00016942  |g|= 0.0552766  2 KF 5 JK
+macro= 123  E= -174.130838252577  delta_E= -0.000168896  |g|= 0.0602912  2 KF 5 JK
+macro= 124  E= -174.13066967155  delta_E= 0.000168581  |g|= 0.0552765  2 KF 5 JK
+macro= 125  E= -174.13083772871  delta_E= -0.000168057  |g|= 0.0602915  2 KF 5 JK
+macro= 126  E= -174.13066999062  delta_E= 0.000167738  |g|= 0.0552766  2 KF 5 JK
+macro= 127  E= -174.130837205523  delta_E= -0.000167215  |g|= 0.0602916  2 KF 5 JK
+macro= 128  E= -174.130670313234  delta_E= 0.000166892  |g|= 0.0552769  2 KF 5 JK
+macro= 129  E= -174.130836683445  delta_E= -0.00016637  |g|= 0.0602913  2 KF 5 JK
+macro= 130  E= -174.130670638674  delta_E= 0.000166045  |g|= 0.0552773  2 KF 5 JK
+macro= 131  E= -174.130836162809  delta_E= -0.000165524  |g|= 0.0602908  2 KF 5 JK
+macro= 132  E= -174.130670966412  delta_E= 0.000165196  |g|= 0.0552778  2 KF 5 JK
+macro= 133  E= -174.13083564392  delta_E= -0.000164678  |g|= 0.06029  2 KF 5 JK
+macro= 134  E= -174.13067129595  delta_E= 0.000164348  |g|= 0.0552785  2 KF 5 JK
+macro= 135  E= -174.130835127053  delta_E= -0.000163831  |g|= 0.0602891  2 KF 5 JK
+macro= 136  E= -174.130671626829  delta_E= 0.0001635  |g|= 0.0552792  2 KF 5 JK
+macro= 137  E= -174.130834612437  delta_E= -0.000162986  |g|= 0.0602879  2 KF 5 JK
+macro= 138  E= -174.130671958683  delta_E= 0.000162654  |g|= 0.0552801  2 KF 5 JK
+macro= 139  E= -174.130834100259  delta_E= -0.000162142  |g|= 0.0602866  2 KF 5 JK
+macro= 140  E= -174.130672291221  delta_E= 0.000161809  |g|= 0.055281  2 KF 5 JK
+macro= 141  E= -174.13083359068  delta_E= -0.000161299  |g|= 0.0602852  2 KF 5 JK
+macro= 142  E= -174.130672624183  delta_E= 0.000160966  |g|= 0.055282  2 KF 5 JK
+macro= 143  E= -174.130833083847  delta_E= -0.00016046  |g|= 0.0602836  2 KF 5 JK
+macro= 144  E= -174.130672957338  delta_E= 0.000160127  |g|= 0.055283  2 KF 5 JK
+macro= 145  E= -174.13083257988  delta_E= -0.000159623  |g|= 0.0602819  2 KF 5 JK
+macro= 146  E= -174.130673290495  delta_E= 0.000159289  |g|= 0.0552841  2 KF 5 JK
+macro= 147  E= -174.130832078881  delta_E= -0.000158788  |g|= 0.0602801  2 KF 5 JK
+macro= 148  E= -174.130673623492  delta_E= 0.000158455  |g|= 0.0552853  2 KF 5 JK
+macro= 149  E= -174.130831580943  delta_E= -0.000157957  |g|= 0.0602781  2 KF 5 JK
+macro= 150  E= -174.130673956183  delta_E= 0.000157625  |g|= 0.0552865  2 KF 5 JK
+macro= 151  E= -174.130831086144  delta_E= -0.00015713  |g|= 0.0602761  2 KF 5 JK
+macro= 152  E= -174.130674288441  delta_E= 0.000156798  |g|= 0.0552877  2 KF 5 JK
+macro= 153  E= -174.130830594553  delta_E= -0.000156306  |g|= 0.0602739  2 KF 5 JK
+macro= 154  E= -174.130674620154  delta_E= 0.000155974  |g|= 0.055289  2 KF 5 JK
+macro= 155  E= -174.130830106228  delta_E= -0.000155486  |g|= 0.0602717  2 KF 5 JK
+macro= 156  E= -174.130674951225  delta_E= 0.000155155  |g|= 0.0552903  2 KF 5 JK
+macro= 157  E= -174.130829621223  delta_E= -0.00015467  |g|= 0.0602694  2 KF 5 JK
+macro= 158  E= -174.130675281563  delta_E= 0.00015434  |g|= 0.0552916  2 KF 5 JK
+macro= 159  E= -174.130829139583  delta_E= -0.000153858  |g|= 0.060267  2 KF 5 JK
+macro= 160  E= -174.13067561109  delta_E= 0.000153528  |g|= 0.055293  2 KF 5 JK
+macro= 161  E= -174.130828661348  delta_E= -0.00015305  |g|= 0.0602646  2 KF 5 JK
+macro= 162  E= -174.130675939735  delta_E= 0.000152722  |g|= 0.0552944  2 KF 5 JK
+macro= 163  E= -174.130828186552  delta_E= -0.000152247  |g|= 0.060262  2 KF 5 JK
+macro= 164  E= -174.130676267431  delta_E= 0.000151919  |g|= 0.0552958  2 KF 5 JK
+macro= 165  E= -174.130827715225  delta_E= -0.000151448  |g|= 0.0602594  2 KF 5 JK
+macro= 166  E= -174.13067659412  delta_E= 0.000151121  |g|= 0.0552972  2 KF 5 JK
+macro= 167  E= -174.130827247392  delta_E= -0.000150653  |g|= 0.0602568  2 KF 5 JK
+macro= 168  E= -174.130676919748  delta_E= 0.000150328  |g|= 0.0552987  2 KF 5 JK
+macro= 169  E= -174.130826783076  delta_E= -0.000149863  |g|= 0.0602541  2 KF 5 JK
+macro= 170  E= -174.130677244265  delta_E= 0.000149539  |g|= 0.0553002  2 KF 5 JK
+macro= 171  E= -174.130826322295  delta_E= -0.000149078  |g|= 0.0602513  2 KF 5 JK
+macro= 172  E= -174.130677567626  delta_E= 0.000148755  |g|= 0.0553017  2 KF 5 JK
+macro= 173  E= -174.130825865065  delta_E= -0.000148297  |g|= 0.0602485  2 KF 5 JK
+macro= 174  E= -174.130677889789  delta_E= 0.000147975  |g|= 0.0553032  2 KF 5 JK
+macro= 175  E= -174.130825411397  delta_E= -0.000147522  |g|= 0.0602456  2 KF 5 JK
+macro= 176  E= -174.130678210717  delta_E= 0.000147201  |g|= 0.0553047  2 KF 5 JK
+macro= 177  E= -174.130824961301  delta_E= -0.000146751  |g|= 0.0602427  2 KF 5 JK
+macro= 178  E= -174.130678530373  delta_E= 0.000146431  |g|= 0.0553062  2 KF 5 JK
+macro= 179  E= -174.130824514785  delta_E= -0.000145984  |g|= 0.0602398  2 KF 5 JK
+macro= 180  E= -174.130678848725  delta_E= 0.000145666  |g|= 0.0553077  2 KF 5 JK
+macro= 181  E= -174.130824071853  delta_E= -0.000145223  |g|= 0.0602368  2 KF 5 JK
+macro= 182  E= -174.130679165743  delta_E= 0.000144906  |g|= 0.0553093  2 KF 5 JK
+macro= 183  E= -174.130823632508  delta_E= -0.000144467  |g|= 0.0602338  2 KF 5 JK
+macro= 184  E= -174.130679481398  delta_E= 0.000144151  |g|= 0.0553108  2 KF 5 JK
+macro= 185  E= -174.13082319675  delta_E= -0.000143715  |g|= 0.0602307  2 KF 5 JK
+macro= 186  E= -174.130679795665  delta_E= 0.000143401  |g|= 0.0553124  2 KF 5 JK
+macro= 187  E= -174.130822764579  delta_E= -0.000142969  |g|= 0.0602276  2 KF 5 JK
+macro= 188  E= -174.13068010852  delta_E= 0.000142656  |g|= 0.055314  2 KF 5 JK
+macro= 189  E= -174.130822335991  delta_E= -0.000142227  |g|= 0.0602245  2 KF 5 JK
+macro= 190  E= -174.130680419941  delta_E= 0.000141916  |g|= 0.0553155  2 KF 5 JK
+macro= 191  E= -174.130821910982  delta_E= -0.000141491  |g|= 0.0602213  2 KF 5 JK
+macro= 192  E= -174.130680729906  delta_E= 0.000141181  |g|= 0.0553171  2 KF 5 JK
+macro= 193  E= -174.130821489545  delta_E= -0.00014076  |g|= 0.0602181  2 KF 5 JK
+macro= 194  E= -174.130681038398  delta_E= 0.000140451  |g|= 0.0553187  2 KF 5 JK
+macro= 195  E= -174.130821071674  delta_E= -0.000140033  |g|= 0.0602149  2 KF 5 JK
+macro= 196  E= -174.130681345398  delta_E= 0.000139726  |g|= 0.0553203  2 KF 5 JK
+macro= 197  E= -174.130820657359  delta_E= -0.000139312  |g|= 0.0602117  2 KF 5 JK
+macro= 198  E= -174.13068165089  delta_E= 0.000139006  |g|= 0.0553219  2 KF 5 JK
+macro= 199  E= -174.13082024659  delta_E= -0.000138596  |g|= 0.0602084  2 KF 5 JK
+Canonicalize SCF orbitals
+macro X = 200  E=-174.13082024659  |g|= 0.0602084  total 402 KF 1209 JK
+SCF not converged.
+SCF energy = -174.13082024659 after 200 cycles  <S^2> = 0.771048  2S+1 = 2.0209384
+
+WARN: Orbital degeneracy broken
+
+uhf_internal: lowest eigs of H = [0.18974051 0.70631161 1.32890854]
+<class 'pyscf.soscf.newton_ah.SecondOrderSymAdaptedUHF'> wavefunction is stable in the internal stability analysis

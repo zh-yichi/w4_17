@@ -4,15 +4,15 @@ import numpy as np
 from pyscf import gto, scf, cc
 
 # basis = "ccpvdz"
-xyz_dir = "../w4_17_xyz/closed_shell"
-results_file = f"../result/closed_shell_rhf_sym_vdzsd.dat"
-out_dir = "../result/molout/closed_shell"
+xyz_dir = "../w4_17_xyz/open_shell"
+results_file = f"../result/open_shell_uhf_vdzsd.dat"
+out_dir = "../result/molout/open_shell"
 os.makedirs(out_dir, exist_ok=True)
 
 # Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
 # Set to None to run all molecules in xyz_dir
 select_molecules = None
-symmetry = True
+symmetry = False
 
 def vdzsd(elem):
     if elem in ('H', 'He'):
@@ -38,7 +38,7 @@ else:
 
 with open(results_file, "w") as out:
     out.write(f"{'Molecule':<16s} {'Charge':>6s} {'2S':>6s} {'frozen':>6s} "
-              f"{'E_RHF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
+              f"{'E_HF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
     out.write("-" * 100 + "\n")
 
 for xyz_path in xyz_files:
@@ -64,7 +64,7 @@ for xyz_path in xyz_files:
         atom=atoms,
         basis=basis_dict,
         verbose=4,
-        output=os.path.join(out_dir, f"{mol_name}_sym_vdzsd.out"),
+        output=os.path.join(out_dir, f"{mol_name}_vdzsd.out"),
         unit="angstrom",
         symmetry=symmetry,
         charge=charge,
@@ -72,7 +72,7 @@ for xyz_path in xyz_files:
         max_memory=40000,
     )
 
-    mf = scf.RHF(mol)
+    mf = scf.UHF(mol)
     mf.max_cycle = 200
     mf = mf.newton()
     mf.kernel()
@@ -108,7 +108,7 @@ for xyz_path in xyz_files:
         out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {frozen:>6d} "
                   f"{energy:>20.10f} {e_ccsd:>20.10f} {e_ccsdt:>20.10f}\n")
 
-    print(f"  => E_RHF({mol_name})     = {energy:.10f} Eh")
+    print(f"  => E_HF({mol_name})     = {energy:.10f} Eh")
     print(f"  => E_CCSD({mol_name})    = {e_ccsd:.10f} Eh")
     print(f"  => E_CCSD(T)({mol_name}) = {e_ccsdt:.10f} Eh")
 
