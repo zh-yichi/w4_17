@@ -16,4 +16,4 @@ export OMP_NUM_THREADS=28
 export OPENBLAS_NUM_THREADS=28
 export OMP_NUM_THREADS=28
 
-python run_pyscf.py >> closed_shell.out
+python run_pyscf_vdzsd.py >> closed_shell_sym_vdzsd.out

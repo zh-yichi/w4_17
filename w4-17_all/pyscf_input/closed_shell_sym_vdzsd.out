@@ -1,0 +1,1282 @@
+
+============================================================
+Running: acetaldehyde  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/acetaldehyde_sym_vdzsd.out
+  => E_RHF(acetaldehyde)     = -152.9147181809 Eh
+  => E_CCSD(acetaldehyde)    = -153.3731731986 Eh
+  => E_CCSD(T)(acetaldehyde) = -153.3865564988 Eh
+
+============================================================
+Running: acetic  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/acetic_sym_vdzsd.out
+  => E_RHF(acetic)     = -227.8110265942 Eh
+  => E_CCSD(acetic)    = -228.4494929519 Eh
+  => E_CCSD(T)(acetic) = -228.4674871589 Eh
+
+============================================================
+Running: alcl  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/alcl_sym_vdzsd.out
+  => E_RHF(alcl)     = -701.4851989924 Eh
+  => E_CCSD(alcl)    = -701.6873723259 Eh
+  => E_CCSD(T)(alcl) = -701.6919383456 Eh
+
+============================================================
+Running: alcl3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/alcl3_sym_vdzsd.out
+  => E_RHF(alcl3)     = -1620.6514851205 Eh
+  => E_CCSD(alcl3)    = -1621.1397037907 Eh
+  => E_CCSD(T)(alcl3) = -1621.1498461946 Eh
+
+============================================================
+Running: alf  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/alf_sym_vdzsd.out
+  => E_RHF(alf)     = -341.4228496558 Eh
+  => E_CCSD(alf)    = -341.6709445023 Eh
+  => E_CCSD(T)(alf) = -341.6751954022 Eh
+
+============================================================
+Running: alf3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/alf3_sym_vdzsd.out
+  => E_RHF(alf3)     = -540.4549264353 Eh
+  => E_CCSD(alf3)    = -541.0794558320 Eh
+  => E_CCSD(T)(alf3) = -541.0882935367 Eh
+
+============================================================
+Running: alh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/alh_sym_vdzsd.out
+  => E_RHF(alh)     = -242.4525015777 Eh
+  => E_CCSD(alh)    = -242.5162417799 Eh
+  => E_CCSD(T)(alh) = -242.5172062763 Eh
+
+============================================================
+Running: alh3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/alh3_sym_vdzsd.out
+  => E_RHF(alh3)     = -243.6261077558 Eh
+  => E_CCSD(alh3)    = -243.6989698563 Eh
+  => E_CCSD(T)(alh3) = -243.7000270249 Eh
+
+============================================================
+Running: allene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/allene_sym_vdzsd.out
+  => E_RHF(allene)     = -115.8578208253 Eh
+  => E_CCSD(allene)    = -116.2593022716 Eh
+  => E_CCSD(T)(allene) = -116.2742300181 Eh
+
+============================================================
+Running: b2h6  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/b2h6_sym_vdzsd.out
+  => E_RHF(b2h6)     = -52.8011810622 Eh
+  => E_CCSD(b2h6)    = -53.0127913631 Eh
+  => E_CCSD(T)(b2h6) = -53.0179444008 Eh
+
+============================================================
+Running: benzene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/benzene_sym_vdzsd.out
+  => E_RHF(benzene)     = -230.7021216529 Eh
+  => E_CCSD(benzene)    = -231.4870207893 Eh
+  => E_CCSD(T)(benzene) = -231.5208770465 Eh
+
+============================================================
+Running: beta-lactim  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/beta-lactim_sym_vdzsd.out
+  => E_RHF(beta-lactim)     = -245.7762841772 Eh
+  => E_CCSD(beta-lactim)    = -246.5282079899 Eh
+  => E_CCSD(T)(beta-lactim) = -246.5531283509 Eh
+
+============================================================
+Running: bf  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/bf_sym_vdzsd.out
+  => E_RHF(bf)     = -124.1075318340 Eh
+  => E_CCSD(bf)    = -124.3734613613 Eh
+  => E_CCSD(T)(bf) = -124.3794189213 Eh
+
+============================================================
+Running: bf3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/bf3_sym_vdzsd.out
+  => E_RHF(bf3)     = -323.2010937787 Eh
+  => E_CCSD(bf3)    = -323.8440943256 Eh
+  => E_CCSD(T)(bf3) = -323.8549245445 Eh
+
+============================================================
+Running: bh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/bh_sym_vdzsd.out
+  => E_RHF(bh)     = -25.1234403171 Eh
+  => E_CCSD(bh)    = -25.2025390760 Eh
+  => E_CCSD(T)(bh) = -25.2038006563 Eh
+
+============================================================
+Running: bh3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/bh3_sym_vdzsd.out
+  => E_RHF(bh3)     = -26.3844593317 Eh
+  => E_CCSD(bh3)    = -26.4762393238 Eh
+  => E_CCSD(T)(bh3) = -26.4774778548 Eh
+
+============================================================
+Running: bhf2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/bhf2_sym_vdzsd.out
+  => E_RHF(bhf2)     = -224.2632438519 Eh
+  => E_CCSD(bhf2)    = -224.7239395635 Eh
+  => E_CCSD(T)(bhf2) = -224.7320028320 Eh
+
+============================================================
+Running: bn  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/bn_sym_vdzsd.out
+  => E_RHF(bn)     = -78.8881230490 Eh
+  => E_CCSD(bn)    = -79.1771179268 Eh
+  => E_CCSD(T)(bn) = -79.2059747985 Eh
+
+============================================================
+Running: borole  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/borole_sym_vdzsd.out
+  => E_RHF(borole)     = -179.0064725420 Eh
+  => E_CCSD(borole)    = -179.6119229890 Eh
+  => E_CCSD(T)(borole) = -179.6368562983 Eh
+
+============================================================
+Running: c-hcoh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c-hcoh_sym_vdzsd.out
+  => E_RHF(c-hcoh)     = -113.7777186307 Eh
+  => E_CCSD(c-hcoh)    = -114.0908503141 Eh
+  => E_CCSD(T)(c-hcoh) = -114.0989716599 Eh
+
+============================================================
+Running: c-hono  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c-hono_sym_vdzsd.out
+  => E_RHF(c-hono)     = -204.6483891044 Eh
+  => E_CCSD(c-hono)    = -205.1928599415 Eh
+  => E_CCSD(T)(c-hono) = -205.2119647162 Eh
+
+============================================================
+Running: c-n2h2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c-n2h2_sym_vdzsd.out
+  => E_RHF(c-n2h2)     = -109.9853473187 Eh
+  => E_CCSD(c-n2h2)    = -110.3226712640 Eh
+  => E_CCSD(T)(c-n2h2) = -110.3335817351 Eh
+
+============================================================
+Running: c2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2_sym_vdzsd.out
+  => E_RHF(c2)     = -75.3868171139 Eh
+  => E_CCSD(c2)    = -75.6989402454 Eh
+  => E_CCSD(T)(c2) = -75.7264779395 Eh
+
+============================================================
+Running: c2cl2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2cl2_sym_vdzsd.out
+  => E_RHF(c2cl2)     = -994.6423831989 Eh
+  => E_CCSD(c2cl2)    = -995.1880790452 Eh
+  => E_CCSD(T)(c2cl2) = -995.2079088633 Eh
+
+============================================================
+Running: c2cl4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2cl4_sym_vdzsd.out
+  => E_RHF(c2cl4)     = -1913.6935772596 Eh
+  => E_CCSD(c2cl4)    = -1914.5453124750 Eh
+  => E_CCSD(T)(c2cl4) = -1914.5734367297 Eh
+
+============================================================
+Running: c2cl6  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2cl6_sym_vdzsd.out
+  => E_RHF(c2cl6)     = -2832.6923768973 Eh
+  => E_CCSD(c2cl6)    = -2833.8537561150 Eh
+  => E_CCSD(T)(c2cl6) = -2833.8901149543 Eh
+
+============================================================
+Running: c2clh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2clh_sym_vdzsd.out
+  => E_RHF(c2clh)     = -535.7309973950 Eh
+  => E_CCSD(c2clh)    = -536.1352732251 Eh
+  => E_CCSD(T)(c2clh) = -536.1504126686 Eh
+
+============================================================
+Running: c2clh3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2clh3_sym_vdzsd.out
+  => E_RHF(c2clh3)     = -536.9514774808 Eh
+  => E_CCSD(c2clh3)    = -537.3712761813 Eh
+  => E_CCSD(T)(c2clh3) = -537.3841587435 Eh
+
+============================================================
+Running: c2clh5  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2clh5_sym_vdzsd.out
+  => E_RHF(c2clh5)     = -538.1429615957 Eh
+  => E_CCSD(c2clh5)    = -538.5788280802 Eh
+  => E_CCSD(T)(c2clh5) = -538.5890926841 Eh
+
+============================================================
+Running: c2f4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2f4_sym_vdzsd.out
+  => E_RHF(c2f4)     = -473.4417244557 Eh
+  => E_CCSD(c2f4)    = -474.4477871949 Eh
+  => E_CCSD(T)(c2f4) = -474.4714327692 Eh
+
+============================================================
+Running: c2f6  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2f6_sym_vdzsd.out
+  => E_RHF(c2f6)     = -672.4133303940 Eh
+  => E_CCSD(c2f6)    = -673.7950865505 Eh
+  => E_CCSD(T)(c2f6) = -673.8235073195 Eh
+
+============================================================
+Running: c2h2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2h2_sym_vdzsd.out
+  => E_RHF(c2h2)     = -76.8179298673 Eh
+  => E_CCSD(c2h2)    = -77.0809273154 Eh
+  => E_CCSD(T)(c2h2) = -77.0914701250 Eh
+
+============================================================
+Running: c2h3f  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2h3f_sym_vdzsd.out
+  => E_RHF(c2h3f)     = -176.8842104871 Eh
+  => E_CCSD(c2h3f)    = -177.3440247149 Eh
+  => E_CCSD(T)(c2h3f) = -177.3561756122 Eh
+
+============================================================
+Running: c2h4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2h4_sym_vdzsd.out
+  => E_RHF(c2h4)     = -78.0260433742 Eh
+  => E_CCSD(c2h4)    = -78.3046340881 Eh
+  => E_CCSD(T)(c2h4) = -78.3131169217 Eh
+
+============================================================
+Running: c2h5f  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2h5f_sym_vdzsd.out
+  => E_RHF(c2h5f)     = -178.0733635952 Eh
+  => E_CCSD(c2h5f)    = -178.5486680274 Eh
+  => E_CCSD(T)(c2h5f) = -178.5581855983 Eh
+
+============================================================
+Running: c2h6  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/c2h6_sym_vdzsd.out
+  => E_RHF(c2h6)     = -79.2158051594 Eh
+  => E_CCSD(c2h6)    = -79.5126774887 Eh
+  => E_CCSD(T)(c2h6) = -79.5189407662 Eh
+
+============================================================
+Running: ccl2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ccl2_sym_vdzsd.out
+  => E_RHF(ccl2)     = -956.7635594569 Eh
+  => E_CCSD(ccl2)    = -957.1833233295 Eh
+  => E_CCSD(T)(ccl2) = -957.1980743289 Eh
+
+============================================================
+Running: ccl2h2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ccl2h2_sym_vdzsd.out
+  => E_RHF(ccl2h2)     = -958.0251588996 Eh
+  => E_CCSD(ccl2h2)    = -958.4610621531 Eh
+  => E_CCSD(T)(ccl2h2) = -958.4715165761 Eh
+
+============================================================
+Running: ccl2o  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ccl2o_sym_vdzsd.out
+  => E_RHF(ccl2o)     = -1031.7331873718 Eh
+  => E_CCSD(ccl2o)    = -1032.3389269701 Eh
+  => E_CCSD(T)(ccl2o) = -1032.3589020562 Eh
+
+============================================================
+Running: ccl3h  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ccl3h_sym_vdzsd.out
+  => E_RHF(ccl3h)     = -1416.9353035741 Eh
+  => E_CCSD(ccl3h)    = -1417.5159055076 Eh
+  => E_CCSD(T)(ccl3h) = -1417.5314336055 Eh
+
+============================================================
+Running: ccl4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ccl4_sym_vdzsd.out
+  => E_RHF(ccl4)     = -1875.8367938044 Eh
+  => E_CCSD(ccl4)    = -1876.5644563732 Eh
+  => E_CCSD(T)(ccl4) = -1876.5856654501 Eh
+
+============================================================
+Running: cclh3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cclh3_sym_vdzsd.out
+  => E_RHF(cclh3)     = -499.1079278016 Eh
+  => E_CCSD(cclh3)    = -499.4023487669 Eh
+  => E_CCSD(T)(cclh3) = -499.4084216357 Eh
+
+============================================================
+Running: cf2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cf2_sym_vdzsd.out
+  => E_RHF(cf2)     = -236.6731459071 Eh
+  => E_CCSD(cf2)    = -237.1709382320 Eh
+  => E_CCSD(T)(cf2) = -237.1830123316 Eh
+
+============================================================
+Running: cf2cl2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cf2cl2_sym_vdzsd.out
+  => E_RHF(cf2cl2)     = -1155.7400599366 Eh
+  => E_CCSD(cf2cl2)    = -1156.5434179835 Eh
+  => E_CCSD(T)(cf2cl2) = -1156.5625054459 Eh
+
+============================================================
+Running: cf4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cf4_sym_vdzsd.out
+  => E_RHF(cf4)     = -435.6652416233 Eh
+  => E_CCSD(cf4)    = -436.5434889801 Eh
+  => E_CCSD(T)(cf4) = -436.5600881482 Eh
+
+============================================================
+Running: ch2-sing  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch2-sing_sym_vdzsd.out
+  => E_RHF(ch2-sing)     = -38.8748955673 Eh
+  => E_CCSD(ch2-sing)    = -38.9983440064 Eh
+  => E_CCSD(T)(ch2-sing) = -39.0006948350 Eh
+
+============================================================
+Running: ch2c  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch2c_sym_vdzsd.out
+  => E_RHF(ch2c)     = -76.7655628298 Eh
+  => E_CCSD(ch2c)    = -77.0150614862 Eh
+  => E_CCSD(T)(ch2c) = -77.0238394438 Eh
+
+============================================================
+Running: ch2clf  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch2clf_sym_vdzsd.out
+  => E_RHF(ch2clf)     = -597.9610046497 Eh
+  => E_CCSD(ch2clf)    = -598.4360742606 Eh
+  => E_CCSD(T)(ch2clf) = -598.4458486721 Eh
+
+============================================================
+Running: ch2f2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch2f2_sym_vdzsd.out
+  => E_RHF(ch2f2)     = -237.9046058646 Eh
+  => E_CCSD(ch2f2)    = -238.4189401321 Eh
+  => E_CCSD(T)(ch2f2) = -238.4279821281 Eh
+
+============================================================
+Running: ch2nh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch2nh_sym_vdzsd.out
+  => E_RHF(ch2nh)     = -94.0259651164 Eh
+  => E_CCSD(ch2nh)    = -94.3311042032 Eh
+  => E_CCSD(T)(ch2nh) = -94.3404700448 Eh
+
+============================================================
+Running: ch3f  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch3f_sym_vdzsd.out
+  => E_RHF(ch3f)     = -139.0345805992 Eh
+  => E_CCSD(ch3f)    = -139.3689142934 Eh
+  => E_CCSD(T)(ch3f) = -139.3744304125 Eh
+
+============================================================
+Running: ch3nh2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch3nh2_sym_vdzsd.out
+  => E_RHF(ch3nh2)     = -95.1996556771 Eh
+  => E_CCSD(ch3nh2)    = -95.5209346228 Eh
+  => E_CCSD(T)(ch3nh2) = -95.5272995697 Eh
+
+============================================================
+Running: ch3ph2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch3ph2_sym_vdzsd.out
+  => E_RHF(ch3ph2)     = -381.4937798938 Eh
+  => E_CCSD(ch3ph2)    = -381.7717562449 Eh
+  => E_CCSD(T)(ch3ph2) = -381.7785071257 Eh
+
+============================================================
+Running: ch4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ch4_sym_vdzsd.out
+  => E_RHF(ch4)     = -40.1852147545 Eh
+  => E_CCSD(ch4)    = -40.3422906548 Eh
+  => E_CCSD(T)(ch4) = -40.3447557028 Eh
+
+============================================================
+Running: chf3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/chf3_sym_vdzsd.out
+  => E_RHF(chf3)     = -336.7860823888 Eh
+  => E_CCSD(chf3)    = -337.4822048818 Eh
+  => E_CCSD(T)(chf3) = -337.4950252510 Eh
+
+============================================================
+Running: cis-c2f2cl2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cis-c2f2cl2_sym_vdzsd.out
+  => E_RHF(cis-c2f2cl2)     = -1193.5626632035 Eh
+  => E_CCSD(cis-c2f2cl2)    = -1194.4916277552 Eh
+  => E_CCSD(T)(cis-c2f2cl2) = -1194.5175644821 Eh
+
+============================================================
+Running: cl2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cl2_sym_vdzsd.out
+  => E_RHF(cl2)     = -918.9609353931 Eh
+  => E_CCSD(cl2)    = -919.2569519379 Eh
+  => E_CCSD(T)(cl2) = -919.2632424262 Eh
+
+============================================================
+Running: cl2o  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cl2o_sym_vdzsd.out
+  => E_RHF(cl2o)     = -993.7134274389 Eh
+  => E_CCSD(cl2o)    = -994.2026311764 Eh
+  => E_CCSD(T)(cl2o) = -994.2163017814 Eh
+
+============================================================
+Running: clcn  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/clcn_sym_vdzsd.out
+  => E_RHF(clcn)     = -551.7885668531 Eh
+  => E_CCSD(clcn)    = -552.2199559554 Eh
+  => E_CCSD(T)(clcn) = -552.2367016930 Eh
+
+============================================================
+Running: clcof  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/clcof_sym_vdzsd.out
+  => E_RHF(clcof)     = -671.6816527566 Eh
+  => E_CCSD(clcof)    = -672.3250064872 Eh
+  => E_CCSD(T)(clcof) = -672.3435659486 Eh
+
+============================================================
+Running: clf  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/clf_sym_vdzsd.out
+  => E_RHF(clf)     = -558.8442447792 Eh
+  => E_CCSD(clf)    = -559.1867639612 Eh
+  => E_CCSD(T)(clf) = -559.1933722468 Eh
+
+============================================================
+Running: clf3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/clf3_sym_vdzsd.out
+  => E_RHF(clf3)     = -757.5091353977 Eh
+  => E_CCSD(clf3)    = -758.2612457004 Eh
+  => E_CCSD(T)(clf3) = -758.2800536498 Eh
+
+============================================================
+Running: clf5  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/clf5_sym_vdzsd.out
+  => E_RHF(clf5)     = -956.1548503352 Eh
+  => E_CCSD(clf5)    = -957.3235390207 Eh
+  => E_CCSD(T)(clf5) = -957.3551963542 Eh
+
+============================================================
+Running: clno  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/clno_sym_vdzsd.out
+  => E_RHF(clno)     = -588.7147516889 Eh
+  => E_CCSD(clno)    = -589.2229047004 Eh
+  => E_CCSD(T)(clno) = -589.2445102026 Eh
+
+============================================================
+Running: cloocl  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cloocl_sym_vdzsd.out
+  => E_RHF(cloocl)     = -1068.4782780137 Eh
+  => E_CCSD(cloocl)    = -1069.1643460434 Eh
+  => E_CCSD(T)(cloocl) = -1069.1863125092 Eh
+
+============================================================
+Running: co  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/co_sym_vdzsd.out
+  => E_RHF(co)     = -112.7489702114 Eh
+  => E_CCSD(co)    = -113.0438574206 Eh
+  => E_CCSD(T)(co) = -113.0545921059 Eh
+
+============================================================
+Running: co2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/co2_sym_vdzsd.out
+  => E_RHF(co2)     = -187.6506108496 Eh
+  => E_CCSD(co2)    = -188.1296264842 Eh
+  => E_CCSD(T)(co2) = -188.1476922965 Eh
+
+============================================================
+Running: cs  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cs_sym_vdzsd.out
+  => E_RHF(cs)     = -435.3294950590 Eh
+  => E_CCSD(cs)    = -435.5903110240 Eh
+  => E_CCSD(T)(cs) = -435.6046735498 Eh
+
+============================================================
+Running: cs2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cs2_sym_vdzsd.out
+  => E_RHF(cs2)     = -832.9259277383 Eh
+  => E_CCSD(cs2)    = -833.3306292670 Eh
+  => E_CCSD(T)(cs2) = -833.3532883958 Eh
+
+============================================================
+Running: cyclobutadiene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cyclobutadiene_sym_vdzsd.out
+  => E_RHF(cyclobutadiene)     = -153.6413465784 Eh
+  => E_CCSD(cyclobutadiene)    = -154.1779980427 Eh
+  => E_CCSD(T)(cyclobutadiene) = -154.2013128245 Eh
+
+============================================================
+Running: cyclobutane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cyclobutane_sym_vdzsd.out
+  => E_RHF(cyclobutane)     = -156.0821084262 Eh
+  => E_CCSD(cyclobutane)    = -156.6470707158 Eh
+  => E_CCSD(T)(cyclobutane) = -156.6633984858 Eh
+
+============================================================
+Running: cyclobutene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cyclobutene_sym_vdzsd.out
+  => E_RHF(cyclobutene)     = -154.8924836051 Eh
+  => E_CCSD(cyclobutene)    = -155.4385597596 Eh
+  => E_CCSD(T)(cyclobutene) = -155.4575696090 Eh
+
+============================================================
+Running: cyclopentadiene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cyclopentadiene_sym_vdzsd.out
+  => E_RHF(cyclopentadiene)     = -192.7882689077 Eh
+  => E_CCSD(cyclopentadiene)    = -193.4576399455 Eh
+  => E_CCSD(T)(cyclopentadiene) = -193.4839246717 Eh
+
+============================================================
+Running: cyclopropane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cyclopropane_sym_vdzsd.out
+  => E_RHF(cyclopropane)     = -117.0467519827 Eh
+  => E_CCSD(cyclopropane)    = -117.4682201925 Eh
+  => E_CCSD(T)(cyclopropane) = -117.4800268846 Eh
+
+============================================================
+Running: cyclopropene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/cyclopropene_sym_vdzsd.out
+  => E_RHF(cyclopropene)     = -115.8187786627 Eh
+  => E_CCSD(cyclopropene)    = -116.2239052720 Eh
+  => E_CCSD(T)(cyclopropene) = -116.2386898554 Eh
+
+============================================================
+Running: dioxetan2one  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/dioxetan2one_sym_vdzsd.out
+  => E_RHF(dioxetan2one)     = -301.4890591275 Eh
+  => E_CCSD(dioxetan2one)    = -302.2915587641 Eh
+  => E_CCSD(T)(dioxetan2one) = -302.3177588389 Eh
+
+============================================================
+Running: dioxetane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/dioxetane_sym_vdzsd.out
+  => E_RHF(dioxetane)     = -227.7323068535 Eh
+  => E_CCSD(dioxetane)    = -228.3680602916 Eh
+  => E_CCSD(T)(dioxetane) = -228.3851849836 Eh
+
+============================================================
+Running: dioxirane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/dioxirane_sym_vdzsd.out
+  => E_RHF(dioxirane)     = -188.6090782614 Eh
+  => E_CCSD(dioxirane)    = -189.1233758573 Eh
+  => E_CCSD(T)(dioxirane) = -189.1401695974 Eh
+
+============================================================
+Running: dithiotane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/dithiotane_sym_vdzsd.out
+  => E_RHF(dithiotane)     = -873.0829429076 Eh
+  => E_CCSD(dithiotane)    = -873.6406309545 Eh
+  => E_CCSD(T)(dithiotane) = -873.6591607788 Eh
+
+============================================================
+Running: ethanol  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ethanol_sym_vdzsd.out
+  => E_RHF(ethanol)     = -154.0652253738 Eh
+  => E_CCSD(ethanol)    = -154.5412694687 Eh
+  => E_CCSD(T)(ethanol) = -154.5513573050 Eh
+
+============================================================
+Running: f2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/f2_sym_vdzsd.out
+  => E_RHF(f2)     = -198.6855771321 Eh
+  => E_CCSD(f2)    = -199.0884791852 Eh
+  => E_CCSD(T)(f2) = -199.0975238319 Eh
+
+============================================================
+Running: f2co  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/f2co_sym_vdzsd.out
+  => E_RHF(f2co)     = -311.6339238439 Eh
+  => E_CCSD(f2co)    = -312.3140308372 Eh
+  => E_CCSD(T)(f2co) = -312.3310493524 Eh
+
+============================================================
+Running: f2o  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/f2o_sym_vdzsd.out
+  => E_RHF(f2o)     = -273.4635161753 Eh
+  => E_CCSD(f2o)    = -274.0556775212 Eh
+  => E_CCSD(T)(f2o) = -274.0716235847 Eh
+
+============================================================
+Running: fccf  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/fccf_sym_vdzsd.out
+  => E_RHF(fccf)     = -274.4764742831 Eh
+  => E_CCSD(fccf)    = -275.1028883911 Eh
+  => E_CCSD(T)(fccf) = -275.1209754227 Eh
+
+============================================================
+Running: fno  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/fno_sym_vdzsd.out
+  => E_RHF(fno)     = -228.6329935201 Eh
+  => E_CCSD(fno)    = -229.1834442814 Eh
+  => E_CCSD(T)(fno) = -229.2036964078 Eh
+
+============================================================
+Running: foof  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/foof_sym_vdzsd.out
+  => E_RHF(foof)     = -348.2166274892 Eh
+  => E_CCSD(foof)    = -349.0254081679 Eh
+  => E_CCSD(T)(foof) = -349.0561756818 Eh
+
+============================================================
+Running: formamide  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/formamide_sym_vdzsd.out
+  => E_RHF(formamide)     = -168.9310156336 Eh
+  => E_CCSD(formamide)    = -169.4135058613 Eh
+  => E_CCSD(T)(formamide) = -169.4275045109 Eh
+
+============================================================
+Running: formic-anhydride  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/formic-anhydride_sym_vdzsd.out
+  => E_RHF(formic-anhydride)     = -301.4980793677 Eh
+  => E_CCSD(formic-anhydride)    = -302.2998055557 Eh
+  => E_CCSD(T)(formic-anhydride) = -302.3266102169 Eh
+
+============================================================
+Running: formic  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/formic_sym_vdzsd.out
+  => E_RHF(formic)     = -188.7668336600 Eh
+  => E_CCSD(formic)    = -189.2656574303 Eh
+  => E_CCSD(T)(formic) = -189.2797401378 Eh
+
+============================================================
+Running: furan  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/furan_sym_vdzsd.out
+  => E_RHF(furan)     = -228.6287317956 Eh
+  => E_CCSD(furan)    = -229.3392947380 Eh
+  => E_CCSD(T)(furan) = -229.3670528131 Eh
+
+============================================================
+Running: glyoxal  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/glyoxal_sym_vdzsd.out
+  => E_RHF(glyoxal)     = -226.6025819685 Eh
+  => E_CCSD(glyoxal)    = -227.2241333472 Eh
+  => E_CCSD(T)(glyoxal) = -227.2451326283 Eh
+
+============================================================
+Running: h2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/h2_sym_vdzsd.out
+  => E_RHF(h2)     = -1.1245833245 Eh
+  => E_CCSD(h2)    = -1.1480521051 Eh
+  => E_CCSD(T)(h2) = -1.1480521051 Eh
+
+============================================================
+Running: h2co  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/h2co_sym_vdzsd.out
+  => E_RHF(h2co)     = -113.8692106084 Eh
+  => E_CCSD(h2co)    = -114.1876064881 Eh
+  => E_CCSD(T)(h2co) = -114.1968859526 Eh
+
+============================================================
+Running: h2o  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/h2o_sym_vdzsd.out
+  => E_RHF(h2o)     = -76.0031565137 Eh
+  => E_CCSD(h2o)    = -76.2013574157 Eh
+  => E_CCSD(T)(h2o) = -76.2031168346 Eh
+
+============================================================
+Running: h2s  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/h2s_sym_vdzsd.out
+  => E_RHF(h2s)     = -398.6847738882 Eh
+  => E_CCSD(h2s)    = -398.8347813012 Eh
+  => E_CCSD(T)(h2s) = -398.8372802403 Eh
+
+============================================================
+Running: hccf  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hccf_sym_vdzsd.out
+  => E_RHF(hccf)     = -175.6517807233 Eh
+  => E_CCSD(hccf)    = -176.0966703830 Eh
+  => E_CCSD(T)(hccf) = -176.1110552060 Eh
+
+============================================================
+Running: hcl  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hcl_sym_vdzsd.out
+  => E_RHF(hcl)     = -460.0815513948 Eh
+  => E_CCSD(hcl)    = -460.2362491489 Eh
+  => E_CCSD(T)(hcl) = -460.2380738400 Eh
+
+============================================================
+Running: hclo4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hclo4_sym_vdzsd.out
+  => E_RHF(hclo4)     = -759.0681943308 Eh
+  => E_CCSD(hclo4)    = -759.9763755533 Eh
+  => E_CCSD(T)(hclo4) = -760.0061523327 Eh
+
+============================================================
+Running: hcn  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hcn_sym_vdzsd.out
+  => E_RHF(hcn)     = -92.8786012482 Eh
+  => E_CCSD(hcn)    = -93.1675133737 Eh
+  => E_CCSD(T)(hcn) = -93.1791620912 Eh
+
+============================================================
+Running: hcno  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hcno_sym_vdzsd.out
+  => E_RHF(hcno)     = -167.6373730172 Eh
+  => E_CCSD(hcno)    = -168.1244836630 Eh
+  => E_CCSD(T)(hcno) = -168.1466971227 Eh
+
+============================================================
+Running: hcof  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hcof_sym_vdzsd.out
+  => E_RHF(hcof)     = -212.7586381612 Eh
+  => E_CCSD(hcof)    = -213.2589316878 Eh
+  => E_CCSD(T)(hcof) = -213.2724782391 Eh
+
+============================================================
+Running: hf  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hf_sym_vdzsd.out
+  => E_RHF(hf)     = -100.0020000128 Eh
+  => E_CCSD(hf)    = -100.2022809635 Eh
+  => E_CCSD(T)(hf) = -100.2035300753 Eh
+
+============================================================
+Running: hnc  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hnc_sym_vdzsd.out
+  => E_RHF(hnc)     = -92.8586628585 Eh
+  => E_CCSD(hnc)    = -93.1403625528 Eh
+  => E_CCSD(T)(hnc) = -93.1513768351 Eh
+
+============================================================
+Running: hnco  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hnco_sym_vdzsd.out
+  => E_RHF(hnco)     = -167.7709029634 Eh
+  => E_CCSD(hnco)    = -168.2359316791 Eh
+  => E_CCSD(T)(hnco) = -168.2542366041 Eh
+
+============================================================
+Running: hnnn  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hnnn_sym_vdzsd.out
+  => E_RHF(hnnn)     = -163.8483281446 Eh
+  => E_CCSD(hnnn)    = -164.3441353575 Eh
+  => E_CCSD(T)(hnnn) = -164.3671549953 Eh
+
+============================================================
+Running: hno  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hno_sym_vdzsd.out
+  => E_RHF(hno)     = -129.7926717247 Eh
+  => E_CCSD(hno)    = -130.1474812294 Eh
+  => E_CCSD(T)(hno) = -130.1588946146 Eh
+
+============================================================
+Running: hocl  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hocl_sym_vdzsd.out
+  => E_RHF(hocl)     = -534.8615521222 Eh
+  => E_CCSD(hocl)    = -535.2027472075 Eh
+  => E_CCSD(T)(hocl) = -535.2098237794 Eh
+
+============================================================
+Running: hoclo  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hoclo_sym_vdzsd.out
+  => E_RHF(hoclo)     = -609.5655019537 Eh
+  => E_CCSD(hoclo)    = -610.1038143349 Eh
+  => E_CCSD(T)(hoclo) = -610.1207089714 Eh
+
+============================================================
+Running: hoclo2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hoclo2_sym_vdzsd.out
+  => E_RHF(hoclo2)     = -684.3120804129 Eh
+  => E_CCSD(hoclo2)    = -685.0416180560 Eh
+  => E_CCSD(T)(hoclo2) = -685.0666246410 Eh
+
+============================================================
+Running: hocn  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hocn_sym_vdzsd.out
+  => E_RHF(hocn)     = -167.7270380622 Eh
+  => E_CCSD(hocn)    = -168.1950621469 Eh
+  => E_CCSD(T)(hocn) = -168.2112787128 Eh
+
+============================================================
+Running: hof  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hof_sym_vdzsd.out
+  => E_RHF(hof)     = -174.7331343563 Eh
+  => E_CCSD(hof)    = -175.1254376654 Eh
+  => E_CCSD(T)(hof) = -175.1336637768 Eh
+
+============================================================
+Running: honc  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/honc_sym_vdzsd.out
+  => E_RHF(honc)     = -167.6330859683 Eh
+  => E_CCSD(honc)    = -168.1028235390 Eh
+  => E_CCSD(T)(honc) = -168.1195340204 Eh
+
+============================================================
+Running: hooh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/hooh_sym_vdzsd.out
+  => E_RHF(hooh)     = -150.7621812677 Eh
+  => E_CCSD(hooh)    = -151.1498841195 Eh
+  => E_CCSD(T)(hooh) = -151.1576796851 Eh
+
+============================================================
+Running: ketene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ketene_sym_vdzsd.out
+  => E_RHF(ketene)     = -151.7319381155 Eh
+  => E_CCSD(ketene)    = -152.1719960660 Eh
+  => E_CCSD(T)(ketene) = -152.1883037338 Eh
+
+============================================================
+Running: methanol  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/methanol_sym_vdzsd.out
+  => E_RHF(methanol)     = -115.0281958477 Eh
+  => E_CCSD(methanol)    = -115.3630905599 Eh
+  => E_CCSD(T)(methanol) = -115.3691523299 Eh
+
+============================================================
+Running: n-butane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/n-butane_sym_vdzsd.out
+  => E_RHF(n-butane)     = -157.2791080737 Eh
+  => E_CCSD(n-butane)    = -157.8592636106 Eh
+  => E_CCSD(T)(n-butane) = -157.8738302997 Eh
+
+============================================================
+Running: n-pentane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/n-pentane_sym_vdzsd.out
+  => E_RHF(n-pentane)     = -196.3107963531 Eh
+  => E_CCSD(n-pentane)    = -197.0326922907 Eh
+  => E_CCSD(T)(n-pentane) = -197.0514538463 Eh
+
+============================================================
+Running: n2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/n2_sym_vdzsd.out
+  => E_RHF(n2)     = -108.9537505521 Eh
+  => E_CCSD(n2)    = -109.2635991533 Eh
+  => E_CCSD(T)(n2) = -109.2755415220 Eh
+
+============================================================
+Running: n2h4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/n2h4_sym_vdzsd.out
+  => E_RHF(n2h4)     = -111.1622935508 Eh
+  => E_CCSD(n2h4)    = -111.5111144521 Eh
+  => E_CCSD(T)(n2h4) = -111.5177869822 Eh
+
+============================================================
+Running: n2o  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/n2o_sym_vdzsd.out
+  => E_RHF(n2o)     = -183.6953963633 Eh
+  => E_CCSD(n2o)    = -184.2089310638 Eh
+  => E_CCSD(T)(n2o) = -184.2330969303 Eh
+
+============================================================
+Running: n2o4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/n2o4_sym_vdzsd.out
+  => E_RHF(n2o4)     = -408.0663143940 Eh
+  => E_CCSD(n2o4)    = -409.1734076708 Eh
+  => E_CCSD(T)(n2o4) = -409.2274930652 Eh
+
+============================================================
+Running: nccn  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/nccn_sym_vdzsd.out
+  => E_RHF(nccn)     = -184.6027857389 Eh
+  => E_CCSD(nccn)    = -185.1641520795 Eh
+  => E_CCSD(T)(nccn) = -185.1911735123 Eh
+
+============================================================
+Running: nh2cl  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/nh2cl_sym_vdzsd.out
+  => E_RHF(nh2cl)     = -515.0599140407 Eh
+  => E_CCSD(nh2cl)    = -515.3838442749 Eh
+  => E_CCSD(T)(nh2cl) = -515.3908213089 Eh
+
+============================================================
+Running: nh2f  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/nh2f_sym_vdzsd.out
+  => E_RHF(nh2f)     = -154.9586622265 Eh
+  => E_CCSD(nh2f)    = -155.3266792508 Eh
+  => E_CCSD(T)(nh2f) = -155.3335470164 Eh
+
+============================================================
+Running: nh2oh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/nh2oh_sym_vdzsd.out
+  => E_RHF(nh2oh)     = -130.9742129106 Eh
+  => E_CCSD(nh2oh)    = -131.3409371052 Eh
+  => E_CCSD(T)(nh2oh) = -131.3478893361 Eh
+
+============================================================
+Running: nh3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/nh3_sym_vdzsd.out
+  => E_RHF(nh3)     = -56.1760976909 Eh
+  => E_CCSD(nh3)    = -56.3591348926 Eh
+  => E_CCSD(T)(nh3) = -56.3614488414 Eh
+
+============================================================
+Running: o3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/o3_sym_vdzsd.out
+  => E_RHF(o3)     = -224.2667370586 Eh
+  => E_CCSD(o3)    = -224.8764851867 Eh
+  => E_CCSD(T)(o3) = -224.9092863758 Eh
+
+============================================================
+Running: ocs  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ocs_sym_vdzsd.out
+  => E_RHF(ocs)     = -510.2906138039 Eh
+  => E_CCSD(ocs)    = -510.7317793570 Eh
+  => E_CCSD(T)(ocs) = -510.7518238131 Eh
+
+============================================================
+Running: oxadiazole  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/oxadiazole_sym_vdzsd.out
+  => E_RHF(oxadiazole)     = -260.5571535956 Eh
+  => E_CCSD(oxadiazole)    = -261.3362365221 Eh
+  => E_CCSD(T)(oxadiazole) = -261.3705837307 Eh
+
+============================================================
+Running: oxetane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/oxetane_sym_vdzsd.out
+  => E_RHF(oxetane)     = -191.9020811695 Eh
+  => E_CCSD(oxetane)    = -192.5027738608 Eh
+  => E_CCSD(T)(oxetane) = -192.5195030476 Eh
+
+============================================================
+Running: oxirane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/oxirane_sym_vdzsd.out
+  => E_RHF(oxirane)     = -152.8631970281 Eh
+  => E_CCSD(oxirane)    = -153.3250452073 Eh
+  => E_CCSD(T)(oxirane) = -153.3380953715 Eh
+
+============================================================
+Running: oxirene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/oxirene_sym_vdzsd.out
+  => E_RHF(oxirene)     = -151.5849162700 Eh
+  => E_CCSD(oxirene)    = -152.0375223193 Eh
+  => E_CCSD(T)(oxirene) = -152.0546349974 Eh
+
+============================================================
+Running: p2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/p2_sym_vdzsd.out
+  => E_RHF(p2)     = -681.4653583271 Eh
+  => E_CCSD(p2)    = -681.7102018014 Eh
+  => E_CCSD(T)(p2) = -681.7244350673 Eh
+
+============================================================
+Running: p4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/p4_sym_vdzsd.out
+  => E_RHF(p4)     = -1362.9884655041 Eh
+  => E_CCSD(p4)    = -1363.4706954988 Eh
+  => E_CCSD(T)(p4) = -1363.4991078286 Eh
+
+============================================================
+Running: pf3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/pf3_sym_vdzsd.out
+  => E_RHF(pf3)     = -639.1379505003 Eh
+  => E_CCSD(pf3)    = -639.8178775432 Eh
+  => E_CCSD(T)(pf3) = -639.8304470023 Eh
+
+============================================================
+Running: pf5  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/pf5_sym_vdzsd.out
+  => E_RHF(pf5)     = -838.0479315540 Eh
+  => E_CCSD(pf5)    = -839.1080438543 Eh
+  => E_CCSD(T)(pf5) = -839.1257251207 Eh
+
+============================================================
+Running: ph3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/ph3_sym_vdzsd.out
+  => E_RHF(ph3)     = -342.4626189299 Eh
+  => E_CCSD(ph3)    = -342.5990015752 Eh
+  => E_CCSD(T)(ph3) = -342.6018634590 Eh
+
+============================================================
+Running: propane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/propane_sym_vdzsd.out
+  => E_RHF(propane)     = -118.2474165617 Eh
+  => E_CCSD(propane)    = -118.6858575587 Eh
+  => E_CCSD(T)(propane) = -118.6962484418 Eh
+
+============================================================
+Running: propene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/propene_sym_vdzsd.out
+  => E_RHF(propene)     = -117.0622262998 Eh
+  => E_CCSD(propene)    = -117.4816590020 Eh
+  => E_CCSD(T)(propene) = -117.4942904715 Eh
+
+============================================================
+Running: propyne  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/propyne_sym_vdzsd.out
+  => E_RHF(propyne)     = -115.8605212169 Eh
+  => E_CCSD(propyne)    = -116.2617414314 Eh
+  => E_CCSD(T)(propyne) = -116.2762765595 Eh
+
+============================================================
+Running: pyrrole  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/pyrrole_sym_vdzsd.out
+  => E_RHF(pyrrole)     = -208.8073400508 Eh
+  => E_CCSD(pyrrole)    = -209.5031303417 Eh
+  => E_CCSD(T)(pyrrole) = -209.5305751219 Eh
+
+============================================================
+Running: s2o  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/s2o_sym_vdzsd.out
+  => E_RHF(s2o)     = -869.8469018641 Eh
+  => E_CCSD(s2o)    = -870.3219996389 Eh
+  => E_CCSD(T)(s2o) = -870.3445684129 Eh
+
+============================================================
+Running: s3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/s3_sym_vdzsd.out
+  => E_RHF(s3)     = -1192.5393585519 Eh
+  => E_CCSD(s3)    = -1192.9699665979 Eh
+  => E_CCSD(T)(s3) = -1192.9932211354 Eh
+
+============================================================
+Running: s4-c2v  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/s4-c2v_sym_vdzsd.out
+  => E_RHF(s4-c2v)     = -1590.0407759389 Eh
+  => E_CCSD(s4-c2v)    = -1590.6325716115 Eh
+  => E_CCSD(T)(s4-c2v) = -1590.6708156563 Eh
+
+============================================================
+Running: sf6  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/sf6_sym_vdzsd.out
+  => E_RHF(sf6)     = -994.0059786891 Eh
+  => E_CCSD(sf6)    = -995.2988719894 Eh
+  => E_CCSD(T)(sf6) = -995.3231836627 Eh
+
+============================================================
+Running: si2h6  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/si2h6_sym_vdzsd.out
+  => E_RHF(si2h6)     = -581.3263605399 Eh
+  => E_CCSD(si2h6)    = -581.5368172599 Eh
+  => E_CCSD(T)(si2h6) = -581.5421869595 Eh
+
+============================================================
+Running: sif4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/sif4_sym_vdzsd.out
+  => E_RHF(sif4)     = -686.9340376999 Eh
+  => E_CCSD(sif4)    = -687.7727384495 Eh
+  => E_CCSD(T)(sif4) = -687.7852046527 Eh
+
+============================================================
+Running: sih3f  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/sih3f_sym_vdzsd.out
+  => E_RHF(sih3f)     = -390.1544836754 Eh
+  => E_CCSD(sih3f)    = -390.4426527428 Eh
+  => E_CCSD(T)(sih3f) = -390.4471799673 Eh
+
+============================================================
+Running: sih4  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/sih4_sym_vdzsd.out
+  => E_RHF(sih4)     = -291.2345156891 Eh
+  => E_CCSD(sih4)    = -291.3441728370 Eh
+  => E_CCSD(T)(sih4) = -291.3463113439 Eh
+
+============================================================
+Running: silole  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/silole_sym_vdzsd.out
+  => E_RHF(silole)     = -443.8473108248 Eh
+  => E_CCSD(silole)    = -444.4736644842 Eh
+  => E_CCSD(T)(silole) = -444.4993438085 Eh
+
+============================================================
+Running: sio  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/sio_sym_vdzsd.out
+  => E_RHF(sio)     = -363.7897744129 Eh
+  => E_CCSD(sio)    = -364.0690898292 Eh
+  => E_CCSD(T)(sio) = -364.0808352532 Eh
+
+============================================================
+Running: so2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/so2_sym_vdzsd.out
+  => E_RHF(so2)     = -547.1790500700 Eh
+  => E_CCSD(so2)    = -547.6947558315 Eh
+  => E_CCSD(T)(so2) = -547.7151685979 Eh
+
+============================================================
+Running: so3  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/so3_sym_vdzsd.out
+  => E_RHF(so3)     = -621.9922219365 Eh
+  => E_CCSD(so3)    = -622.6849409866 Eh
+  => E_CCSD(T)(so3) = -622.7099720794 Eh
+
+============================================================
+Running: t-butadiene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/t-butadiene_sym_vdzsd.out
+  => E_RHF(t-butadiene)     = -154.9137155154 Eh
+  => E_CCSD(t-butadiene)    = -155.4555646147 Eh
+  => E_CCSD(T)(t-butadiene) = -155.4752838926 Eh
+
+============================================================
+Running: t-hcoh  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/t-hcoh_sym_vdzsd.out
+  => E_RHF(t-hcoh)     = -113.7863323359 Eh
+  => E_CCSD(t-hcoh)    = -114.0991444508 Eh
+  => E_CCSD(T)(t-hcoh) = -114.1071620038 Eh
+
+============================================================
+Running: t-hono  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/t-hono_sym_vdzsd.out
+  => E_RHF(t-hono)     = -204.6455330421 Eh
+  => E_CCSD(t-hono)    = -205.1908094214 Eh
+  => E_CCSD(T)(t-hono) = -205.2098656568 Eh
+
+============================================================
+Running: t-n2h2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/t-n2h2_sym_vdzsd.out
+  => E_RHF(t-n2h2)     = -109.9956615298 Eh
+  => E_CCSD(t-n2h2)    = -110.3317949538 Eh
+  => E_CCSD(T)(t-n2h2) = -110.3424893927 Eh
+
+============================================================
+Running: tetrahedrane  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/tetrahedrane_sym_vdzsd.out
+  => E_RHF(tetrahedrane)     = -153.5954952370 Eh
+  => E_CCSD(tetrahedrane)    = -154.1295613074 Eh
+  => E_CCSD(T)(tetrahedrane) = -154.1498166407 Eh
+
+============================================================
+Running: thiophene  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/thiophene_sym_vdzsd.out
+  => E_RHF(thiophene)     = -551.3066253299 Eh
+  => E_CCSD(thiophene)    = -551.9764452012 Eh
+  => E_CCSD(T)(thiophene) = -552.0054386935 Eh
+
+============================================================
+Running: trans-c2f2cl2  charge=0  spin=0
+============================================================
+output file: ../result/molout/closed_shell/trans-c2f2cl2_sym_vdzsd.out
+  => E_RHF(trans-c2f2cl2)     = -1193.5655948067 Eh
+  => E_CCSD(trans-c2f2cl2)    = -1194.4943332393 Eh
+  => E_CCSD(T)(trans-c2f2cl2) = -1194.5202501579 Eh
+
+All calculations complete. Results saved to ../result/closed_shell_rhf_sym_vdzsd.dat
