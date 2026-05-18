@@ -1,0 +1,34 @@
+------------------------------------------- AFQMC Sampling Started -------------------------------------------
+Decomposing Unrestricted T2 amplitudes
+Throw 0 vectors in T2 deomposition
+SVD cutoff = 1.00e-08 | error = 1.16e-15
+number of T2 decomposition vectors 176
+norb: 26
+nelec: (4, 4)
+n_eql: 50
+n_blocks: 100
+n_walkers: 300
+dt: 0.005
+max_error: 0.0
+seed: 17
+walker_type: uhf
+trial: uccsd_pt2
+free_projection: False
+use_gpu: False
+n_exp_terms: 6
+n_prop_steps: 50
+save_walkers: False
+n_batch: 1
+nchol_chunk: 100
+mix_precision: True
+initial AFQMC/pt2CCSD Energy is -79.180991
+Propagating with 300 walkers
+----------------------------------------------- Equilibration ------------------------------------------------
+inv_T        weight  killW        energy   runTime
+ 0.00    300.000000      0    -78.971858     21.21
+ 1.25    302.036398      0    -79.119295     46.05
+ 2.50    302.824397      0    -79.153899     70.88
+ 3.75    302.627339      0    -79.180579     95.62
+ 5.00    302.711786      0    -79.158845    120.28
+ 6.25    302.888295      0    -79.181686    144.84
+ 7.50    302.609137      0    -79.160152    169.38
