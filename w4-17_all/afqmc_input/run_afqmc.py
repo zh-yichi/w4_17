@@ -32,14 +32,14 @@ def extract_afqmc_energy(filename):
     return 0, 0
 
 # basis = "ccpvdz"
-xyz_dir = "../w4_17_xyz/open_shell"
-results_file = f"./open_shell_uhf_vdzsd.dat"
-out_dir = "../result/molout/open_shell"
+xyz_dir = "../w4_17_xyz/atom"
+results_file = f"./atom_uhf_vdzsd.dat"
+out_dir = "../result/atom/"
 os.makedirs(out_dir, exist_ok=True)
 
 # Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
 # Set to None to run all molecules in xyz_dir
-select_molecules = None
+select_molecules = None # ["al","b","c","cl","f","n","o","p","s","si"]
 symmetry = False
 
 def vdzsd(elem):
@@ -105,6 +105,13 @@ for xyz_path in xyz_files:
     mf.max_cycle = 200
     mf = mf.newton()
     mf.kernel()
+
+    if mol_name == "h":
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
+                      f"{mf.e_tot:>20.10f} {mf.e_tot:>20.10f} {mf.e_tot:>20.10f} "
+                      f"{mf.e_tot:>15.5f} {0.00000:>15.5f} \n")
+        continue
 
     # Stability check loop — at most 10 attempts
     max_stability_cycles = 10
