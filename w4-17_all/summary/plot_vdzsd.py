@@ -40,9 +40,16 @@ for mol in mol_order:
 def rmsd(diffs):
     return math.sqrt(sum(d**2 for d in diffs) / len(diffs))
 
-rmsd_afqmc   = rmsd(diff_afqmc)
-rmsd_ccsdt_t = rmsd(diff_ccsdt_t)
-rmsd_uccsdt  = rmsd(diff_uccsdt)
+def rmsd_uncertainty(diffs, errs):
+    # error propagation: sigma_RMSD = (1 / N*RMSD) * sqrt(sum(d_i^2 * sigma_i^2))
+    r = rmsd(diffs)
+    n = len(diffs)
+    return math.sqrt(sum(d**2 * s**2 for d, s in zip(diffs, errs))) / (n * r)
+
+rmsd_afqmc      = rmsd(diff_afqmc)
+rmsd_afqmc_unc  = rmsd_uncertainty(diff_afqmc, err_afqmc)
+rmsd_ccsdt_t    = rmsd(diff_ccsdt_t)
+rmsd_uccsdt     = rmsd(diff_uccsdt)
 
 # ---------- plot ----------
 
@@ -52,7 +59,7 @@ fig, ax = plt.subplots(figsize=(28, 7))
 
 ax.errorbar(xs, diff_afqmc, yerr=err_afqmc, fmt='o-', markersize=3, linewidth=0.7,
             color='tab:blue', ecolor='tab:blue', elinewidth=0.8, capsize=2,
-            label=f'AFQMC  (RMSD = {rmsd_afqmc:.2f} mEh)')
+            label=f'AFQMC  (RMSD = {rmsd_afqmc:.2f} ± {rmsd_afqmc_unc:.2f} mEh)')
 ax.plot(xs, diff_ccsdt_t, 's-', markersize=3, linewidth=0.7, color='tab:orange',
         label=f'UHF-UCCSD(T)  (RMSD = {rmsd_ccsdt_t:.2f} mEh)')
 ax.plot(xs, diff_uccsdt,  '^-', markersize=3, linewidth=0.7, color='tab:green',
@@ -70,4 +77,21 @@ plt.tight_layout()
 plt.savefig('vdzsd_vs_ccsdt_q.png', dpi=200)
 print("Saved vdzsd_vs_ccsdt_q.png")
 
-print(f"RMSD  AFQMC={rmsd_afqmc:.4f}  UHF-UCCSD(T)={rmsd_ccsdt_t:.4f}  UHF-UCCSDT={rmsd_uccsdt:.4f}  [mEh]")
+# ---------- update RMSD summary in reference_vdzsd.dat ----------
+
+with open('reference_vdzsd.dat', 'r') as f:
+    content = f.read()
+# strip any previous RMSD block
+if '\n# RMSD from CCSDT(Q)' in content:
+    content = content[:content.index('\n# RMSD from CCSDT(Q)')]
+with open('reference_vdzsd.dat', 'w') as f:
+    f.write(content)
+    f.write('\n')
+    f.write('# RMSD from CCSDT(Q) [mEh]\n')
+    f.write(f'# {"Method":<22} {"RMSD (mEh)":>12}   {"Uncertainty":>12}\n')
+    f.write(f'# {"-"*52}\n')
+    f.write(f'# {"AFQMC":<22} {rmsd_afqmc:>12.4f}   {rmsd_afqmc_unc:>12.4f}\n')
+    f.write(f'# {"UHF-UCCSD(T)":<22} {rmsd_ccsdt_t:>12.4f}\n')
+    f.write(f'# {"UHF-UCCSDT":<22} {rmsd_uccsdt:>12.4f}\n')
+
+print(f"RMSD  AFQMC={rmsd_afqmc:.4f}±{rmsd_afqmc_unc:.4f}  UHF-UCCSD(T)={rmsd_ccsdt_t:.4f}  UHF-UCCSDT={rmsd_uccsdt:.4f}  [mEh]")
