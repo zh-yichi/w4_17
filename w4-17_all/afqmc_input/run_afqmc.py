@@ -15,15 +15,15 @@ import truncate_basis
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-shell            = "closed"  # "closed" or "open"
-symmetry         = True
-select_molecules = ["bn"]  # e.g. ["acetaldehyde", "benzene"], or None for all
+shell            = "open"  # "closed" or "open"
+symmetry         = False
+select_molecules = None  # e.g. ["acetaldehyde", "benzene"], or None for all
 index            = None          # e.g. "1-10", "5", "1,3,5-8", or None for all
 basis            = "vtzfp"
 
 xyz_dir      = f"../w4_17_xyz/{shell}_shell"
-results_file = f"../test/{shell}_afqmc_{basis}.dat"
-out_dir      = f"../test/molout/{shell}_shell"
+results_file = f"../result/{shell}_afqmc_{basis}.dat"
+out_dir      = f"../result/molout/{shell}_shell"
 os.makedirs(out_dir, exist_ok=True)
 
 xyz_files = get_xyz_files(xyz_dir, select_molecules=select_molecules, index=index)
@@ -81,7 +81,7 @@ for xyz_path in xyz_files:
         max_memory=40000,
     )
 
-    mf = scf.RHF(mol)
+    mf = scf.UHF(mol)
     mf.max_cycle = 200
     mf = mf.newton()
     mf.kernel()
@@ -112,15 +112,15 @@ for xyz_path in xyz_files:
 
     integral.prep_integral(mycc, chol_cut=1e-5)
     options = {
-        'eql_time':      8,
-        'n_blocks':      30,
+        'eql_time':      50,
+        'n_blocks':      1000,
         'n_walkers':     300,
         'max_error':     0.0,
         'seed':          17,
-        'walker_type':   'rhf',
-        'trial':         'pt2ccsd',
+        'walker_type':   'uhf',
+        'trial':         'upt2ccsd',
         'mix_precision': True,
-        'max_memory':    4000, #MB
+        'max_memory':    20000, #MB
     }
     launch_afqmc.ph_afqmc(options)
 

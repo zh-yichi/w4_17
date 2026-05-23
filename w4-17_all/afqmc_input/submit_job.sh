@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=w4atom
+#SBATCH --job-name=w4open_tz
 #SBATCH --exclude=gpua048
 ##SBATCH --output=myjob.out
 #SBATCH --partition=gpuA100x4
