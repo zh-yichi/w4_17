@@ -1,0 +1,143 @@
+
+    ________                     _____                    
+    ___  __ \___  __________________(_)_____________ _    
+    __  /_/ /  / / /_  __ \_  __ \_  /__  __ \_  __ `/    
+    _  _, _// /_/ /_  / / /  / / /  / _  / / /  /_/ /     
+    /_/ |_| \__,_/ /_/ /_//_/ /_//_/  /_/ /_/_\__, /      
+                                             /____/       
+    _____________________________  ___________            
+    ___    |__  ____/_  __ \__   |/  /_  ____/            
+    __  /| |_  /_   _  / / /_  /|_/ /_  /                 
+    _  ___ |  __/   / /_/ /_  /  / / / /___               
+    /_/  |_/_/      \___\_\/_/  /_/  \____/               
+
+Hostname:     sharmagroup-rn
+System:       Linux
+Node:         sharmagroup-rn
+Release:      6.17.0-29-generic
+Machine:      x86_64
+Processor:    x86_64
+JAX backend:  GPU
+JAX devices:  [CudaDevice(id=0)]
+Device kind:  NVIDIA GeForce RTX 5060 Ti
+Platform:     gpu
+
+Load system from Integral File
+Maximum memory per walker:            13.33
+Maximum number of Cholesky per chunk: 259
+Number of Cholesky chunks:            2
+Number of Cholesky per chunk:         175
+Number of padding Cholesky:           1
+
+QMC System
+Number of electrons: (4, 4)
+Spin Multiplicity:   0
+Number of orbitals:  58
+Number of Chol:      349
+
+QMC Parameters
+eql_time            :                    8
+n_blocks            :                   30
+n_walkers           :                  300
+max_error           :                  0.0
+seed                :                   17
+walker_type         :                  rhf
+trial               :              pt2ccsd
+mix_precision       :                 True
+max_memory          :                 4000
+dt                  :                0.005
+n_exp_terms         :                    6
+n_prop_steps        :                   50
+save_walkers        :                False
+free_projection     :                False
+n_batch             :                    1
+nchol_chunk         :                  175
+
+Initalize QMC walkers by stochastic CCSD
+
+Equilibration
+inv_T        weight  killW        energy   runTime
+ 0.00    300.000000      0    -79.235677     14.96
+ 0.75    299.665183      0    -79.235373     18.80
+ 1.50    299.964749      0    -79.309177     20.32
+ 2.25    299.121114      0    -79.320367     21.84
+ 3.00    299.093054      0    -79.235280     23.36
+ 3.75    299.000340      0    -79.265011     24.88
+ 4.50    299.246679      0    -79.273587     26.40
+ 5.25    299.554680      0    -79.266448     27.92
+ 6.00    298.364188      0    -79.234909     29.44
+ 6.75    298.793596      0    -79.242280     30.96
+ 7.50    298.693542      0    -79.296542     32.48
+ 8.25    298.693613      0    -79.248721     34.00
+
+Sampling
+blocks        weight  killW       E_Guide     error       E_Trial     error     olp_T/G     error  Walltime
+     3    298.663350      0    -79.252544  0.005174    -79.251238  0.007872    1.057668  0.004556   42.58
+     6    298.742297      1    -79.267930  0.014694    -79.245743  0.018392    1.053909  0.004218   48.65
+     9    298.980511      2    -79.282231  0.016816    -79.258182  0.029721    1.048948  0.005408   54.73
+    12    298.876157      2    -79.285055  0.016342    -79.271836  0.026888    1.044389  0.007876   60.84
+    15    298.774544      2    -79.280461  0.016342    -79.265339  0.022363    1.046323  0.007876   66.94
+    18    298.802106      2    -79.281590  0.016170    -79.259042  0.019149    1.051942  0.009342   73.05
+    21    298.680060      2    -79.280235  0.011498    -79.256314  0.016367    1.055403  0.011720   79.16
+    24    298.592540      2    -79.276266  0.011498    -79.254902  0.014322    1.057569  0.011720   85.28
+    27    298.526580      2    -79.273645  0.011082    -79.256384  0.012755    1.058331  0.011720   91.39
+    30    298.481133      2    -79.270276  0.012176    -79.249673  0.012392    1.058060  0.009579   97.50
+
+Post Propagation Process
+Total number of samples 30
+Raw AFQMC/HF (Guide) energy:           -79.270276 ± 0.012176
+Raw Trial/Guide overlap ratio:          1.058060 ± 0.009579
+Raw AFQMC/pt2CCSD energy (covariance): -79.249673 ± 0.012392
+Raw AFQMC/pt2CCSD energy (dir sample): -79.249673 ± 0.008261
+
+Remove Outliers
+removing energies outside zeta > 30
+Outlier energy bound [-79.841430, -78.661246]
+Removed 0 outliers with energies []
+Clean AFQMC/pt2CCSD overlap ratio:        1.058060 ± 0.009579
+Clean AFQMC/pt2CCSD energy (covariance): -79.249673 ± 0.012392
+Clean AFQMC/ptCCSD energy (dir sample):  -79.249673 ± 0.008261
+
+Blocking Analysis
+Warning: small dataset, relaxed min_nblocks to 3
+nsample = 30, max_block_size = 10, min_nblocks = 3
+   B    NB    NS  Observable     Error    dError
+   1    30    30    1.058069  0.003175  0.000417
+   2    15    30    1.058070  0.004276  0.000808
+   3    10    30    1.058071  0.005016  0.001182
+   4     7    28    1.058511  0.006398  0.001847
+   5     6    30    1.058068  0.006418  0.002029
+   6     5    30    1.058074  0.006744  0.002385
+   7     4    28    1.058519  0.008848  0.003612
+   8     3    24    1.057577  0.009579  0.004789
+   9     3    27    1.058344  0.006630  0.003315
+  10     3    30    1.058068  0.005254  0.002627
+Fit (variance): plateau_var = 4.575e-05 ± 2.881e-05
+Fit (error):    plateau = 0.006764 ± 0.002129
+     autocorrelation length ~ 3.1 blocks
+     plateau reached at block size ~ 15
+     !!!Failed to reach plateau in blocking
+     Return max block error
+Warning: small dataset, relaxed min_nblocks to 3
+nclean = 30, max_block_size = 10, min_nblocks = 3
+Blk_SZ   NBlk   NSmp      Energy     Error    dError
+     1     30     30  -79.251621  0.008402  0.001103
+     2     15     30  -79.250668  0.009667  0.001827
+     3     10     30  -79.251141  0.010690  0.002520
+     4      7     28  -79.256596  0.009109  0.002630
+     5      6     30  -79.250337  0.008704  0.002752
+     6      5     30  -79.250497  0.012328  0.004359
+     7      4     28  -79.255967  0.008871  0.003622
+     8      3     24  -79.256058  0.011124  0.005562
+     9      3     27  -79.257233  0.003360  0.001680
+    10      3     30  -79.250388  0.010354  0.005177
+Fit (variance): plateau_var = 8.310969e-05 ± 2.310827e-05
+Fit (error):    plateau = 0.009116 ± 0.001267
+     autocorrelation length ~ -2.2 blocks
+     plateau reached at block size ~ 0
+Final AFQMC/pt2CCSD overlap ratio: 1.058060 ± 0.009579
+Final AFQMC/pt2CCSD energy: -79.249673 ± 0.009116
+Total run time: 99.13
+
+AFQMC Sampling Finished
+

@@ -1,68 +1,51 @@
 import os
-import glob
-import numpy as np
-from pyscf import gto, scf, cc
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'script'))
 
-# basis = "ccpvdz"
-xyz_dir = "../w4_17_xyz/open_shell"
-results_file = f"../result/open_shell_uhf_vdzsd.dat"
-out_dir = "../result/molout/open_shell"
+from pyscf import gto, scf, cc
+from mol_select import get_xyz_files
+from basis import get_vdzsd_basis
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+shell            = "open"    # "closed" or "open"
+symmetry         = False
+select_molecules = None      # e.g. ["acetaldehyde", "benzene"], or None for all
+index            = "1,2,3,8"      # e.g. "1-10", "5", "1,3,5-8", or None for all
+
+xyz_dir      = f"../w4_17_xyz/{shell}_shell"
+results_file = f"../test/{shell}_shell_uhf_vdzsd.dat"
+out_dir      = f"../test/molout/{shell}_shell"
 os.makedirs(out_dir, exist_ok=True)
 
-# Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
-# Set to None to run all molecules in xyz_dir
-select_molecules = None
-symmetry = False
+xyz_files = get_xyz_files(xyz_dir, select_molecules=select_molecules, index=index)
 
-def vdzsd(elem):
-    if elem in ('H', 'He'):
-        raw_basis = gto.basis.load('ccpvdz', elem)
-        return [b for b in raw_basis if b[0] != 1]
-    else:
-        return gto.basis.load('ccpvdz', elem)
-
-def get_vdzsd_basis(atoms):
-    elems = {line.split()[0] for line in atoms.strip().splitlines() if line.strip()}
-    basis_dict = {el: vdzsd(el) for el in elems}
-    return basis_dict
-
-all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
-if select_molecules is not None:
-    select_set = set(select_molecules)
-    xyz_files = [p for p in all_xyz if os.path.splitext(os.path.basename(p))[0] in select_set]
-    missing = select_set - {os.path.splitext(os.path.basename(p))[0] for p in xyz_files}
-    if missing:
-        print(f"Warning: no .xyz file found for: {', '.join(sorted(missing))} in {xyz_dir}")
-else:
-    xyz_files = all_xyz
-
+# ---------------------------------------------------------------------------
+# Write results header
+# ---------------------------------------------------------------------------
 with open(results_file, "w") as out:
-    out.write(f"{'Molecule':<16s} {'Charge':>6s} {'2S':>6s} {'frozen':>6s} "
-              f"{'E_HF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
-    out.write("-" * 100 + "\n")
+    out.write(f"{'Molecule':<16s} {'E_HF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
+    out.write("-" * 80 + "\n")
 
+# ---------------------------------------------------------------------------
+# Main loop
+# ---------------------------------------------------------------------------
 for xyz_path in xyz_files:
-    with open(xyz_path, "r") as f:
+    with open(xyz_path) as f:
         lines = f.readlines()
 
-    # Parse charge and multiplicity from second line: "name charge=X mult=Y"
     second_line = lines[1]
-    charge = int(second_line.split("charge=")[1].split()[0])
-    mult   = int(second_line.split("mult=")[1].split()[0])
-    spin   = mult - 1   # PySCF spin input is 2S = mult - 1
+    charge   = int(second_line.split("charge=")[1].split()[0])
+    spin     = int(second_line.split("mult=")[1].split()[0]) - 1
     mol_name = second_line.split()[0]
+    atoms    = "".join(lines[2:])
 
-    # Coordinates only (skip the atom count and comment lines)
-    atoms = "".join(lines[2:])
-    basis_dict = get_vdzsd_basis(atoms)
+    print(f"\n{'='*60}\nRunning: {mol_name}  charge={charge}  spin={spin}\n{'='*60}")
 
-    print(f"\n{'='*60}")
-    print(f"Running: {mol_name}  charge={charge}  spin={spin}")
-    print(f"{'='*60}")
-    
     mol = gto.M(
         atom=atoms,
-        basis=basis_dict,
+        basis=get_vdzsd_basis(atoms),
         verbose=4,
         output=os.path.join(out_dir, f"{mol_name}_vdzsd.out"),
         unit="angstrom",
@@ -77,10 +60,8 @@ for xyz_path in xyz_files:
     mf = mf.newton()
     mf.kernel()
 
-    # Stability check loop — at most 10 attempts
-    max_stability_cycles = 10
     stable = False
-    for stability_iter in range(max_stability_cycles):
+    for _ in range(10):
         mo_i, _, stable, _ = mf.stability(return_status=True)
         if stable:
             break
@@ -90,26 +71,19 @@ for xyz_path in xyz_files:
     if not stable or not mf.converged:
         print(f"  !! SCF did not converge for {mol_name} — skipping.")
         with open(results_file, "a") as out:
-            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
-                      f"{'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+            out.write(f"{mol_name:<16s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
         continue
-
-    energy = mf.e_tot
 
     mycc = cc.CCSD(mf)
     mycc.set_frozen()
     mycc.kernel()
-    e_ccsd = mycc.e_tot
-    et = mycc.ccsd_t()
-    e_ccsdt = e_ccsd + et
-    frozen = mycc.frozen
+    e_ccsdt = mycc.e_tot + mycc.ccsd_t()
 
     with open(results_file, "a") as out:
-        out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {frozen:>6d} "
-                  f"{energy:>20.10f} {e_ccsd:>20.10f} {e_ccsdt:>20.10f}\n")
+        out.write(f"{mol_name:<16s} {mf.e_tot:>20.10f} {mycc.e_tot:>20.10f} {e_ccsdt:>20.10f}\n")
 
-    print(f"  => E_HF({mol_name})     = {energy:.10f} Eh")
-    print(f"  => E_CCSD({mol_name})    = {e_ccsd:.10f} Eh")
+    print(f"  => E_HF({mol_name})      = {mf.e_tot:.10f} Eh")
+    print(f"  => E_CCSD({mol_name})    = {mycc.e_tot:.10f} Eh")
     print(f"  => E_CCSD(T)({mol_name}) = {e_ccsdt:.10f} Eh")
 
 print(f"\nAll calculations complete. Results saved to {results_file}")

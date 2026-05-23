@@ -1,0 +1,3 @@
+Molecule         Charge     2S frozen            E_HF (Eh)          E_CCSD (Eh)       E_CCSD(T) (Eh)    E_AFQMC (Eh) E_AFQMC ERR (Eh)
+acetaldehyde          0      0      3      -152.9147181809      -153.3731730905      -153.3865563606      -153.38795         0.00051
+alh3                  0      0      5      -243.6261077558      -243.6989698183      -243.7000269882      -243.70050         0.00004
