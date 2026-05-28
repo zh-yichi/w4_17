@@ -1,7 +1,8 @@
 import os
 import sys
 import re
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'script'))
+#sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'script'))
+sys.path.insert(0, '/u/yzhang65/mywork/yzhang65/w4_17/w4-17_all/script')
 
 os.environ.setdefault("XLA_PYTHON_CLIENT_ALLOCATOR", "platform")
 import jax
@@ -18,12 +19,15 @@ import truncate_basis
 shell            = "closed"  # "closed" or "open"
 symmetry         = False
 select_molecules = None  # e.g. ["acetaldehyde", "benzene"], or None for all
-index            = "1-20"          # e.g. "1-10", "5", "1,3,5-8", or None for all
+index            = "141-160"          # e.g. "1-10", "5", "1,3,5-8", or None for all
 basis            = "vtzfp"
 
-xyz_dir      = f"../w4_17_xyz/{shell}_shell"
-results_file = f"../result/{shell}_afqmc_{basis}.dat"
-out_dir      = f"../result/molout/{shell}_shell"
+qmc_walker       = "uhf" # Default. Fall to rhf if the mf is RHF
+qmc_trial        = "upt2ccsd"
+
+xyz_dir      = f"../../w4_17_xyz/{shell}_shell"
+results_file = f"./{shell}_afqmc_{basis}.dat"
+out_dir      = f"../../result/molout/{shell}_shell"
 os.makedirs(out_dir, exist_ok=True)
 
 xyz_files = get_xyz_files(xyz_dir, select_molecules=select_molecules, index=index)
@@ -100,6 +104,24 @@ for xyz_path in xyz_files:
         dm = mf.make_rdm1(mo_i, mf.mo_occ)
         mf.kernel(dm0=dm)
 
+    ss, s = mf.spin_square()
+    tol = 1e-6
+    if abs(ss) < tol and abs(s - 1.0) < tol:
+        print("Not a UHF solution. Convert to RHF")
+        
+        qmc_walker = "rhf"
+        qmc_trial = "pt2ccsd"
+
+        mf = mf.to_rhf()
+        mf.kernel()
+        stable = False
+        for _ in range(10):
+            mo_i, _, stable, _ = mf.stability(return_status=True)
+            if stable:
+                break
+            dm = mf.make_rdm1(mo_i, mf.mo_occ)
+            mf.kernel(dm0=dm)
+
     if not stable or not mf.converged:
         print(f"  !! SCF did not converge for {mol_name} — skipping.")
         with open(results_file, "a") as out:
@@ -117,8 +139,8 @@ for xyz_path in xyz_files:
         'n_walkers':     300,
         'max_error':     0.0,
         'seed':          17,
-        'walker_type':   'uhf',
-        'trial':         'upt2ccsd',
+        'walker_type':   qmc_walker,
+        'trial':         qmc_trial,
         'mix_precision': True,
         'max_memory':    20000, #MB
     }

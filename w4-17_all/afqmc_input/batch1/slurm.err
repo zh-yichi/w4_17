@@ -1,0 +1,6 @@
+W0523 22:55:07.336834  295516 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.64GiB (31826552917 bytes) by rematerialization; only reduced to 29.77GiB (31962392312 bytes), down from 29.77GiB (31962392312 bytes) originally
+W0523 22:57:15.068934  295516 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.62GiB (31801632231 bytes) by rematerialization; only reduced to 29.78GiB (31978494144 bytes), down from 29.78GiB (31978494144 bytes) originally
+W0524 02:53:21.194422  398160 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.84GiB (32036998848 bytes) by rematerialization; only reduced to 29.84GiB (32043854280 bytes), down from 29.84GiB (32043854280 bytes) originally
+W0524 02:54:37.130128  398160 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.83GiB (32026543753 bytes) by rematerialization; only reduced to 29.85GiB (32052684080 bytes), down from 29.85GiB (32052684080 bytes) originally
+/var/spool/slurmd/job18444223/slurm_script: line 38: 271591 Killed                  python run_afqmc.py
+[2026-05-24T04:25:19.368] error: Detected 1 oom_kill event in StepId=18444223.batch. Some of the step tasks have been OOM Killed.

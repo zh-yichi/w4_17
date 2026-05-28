@@ -1,0 +1,67 @@
+E0524 04:15:30.625429 3491670 pjrt_stream_executor_client.cc:2091] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Failed to allocate request for 38.51GiB (41353718152B) on device ordinal 0
+Traceback (most recent call last):
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/scripts/run_afqmc_pt2ccsd.py", line 45, in <module>
+    prop_data = prep.init_ccsd_prop_data(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/prep.py", line 328, in init_ccsd_prop_data
+    t1s, t2s, e0s, e1s = trial.calc_energy_pt(prop_data["walkers"], ham_data, wave_data)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/wavefunctions/wavefunctions_unrestricted.py", line 1233, in calc_energy_pt
+    t1, t2, e0, e1 = vmap(
+                     ^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Failed to allocate request for 38.51GiB (41353718152B) on device ordinal 0
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+W0524 04:55:50.237524 3508778 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.40GiB (31572150715 bytes) by rematerialization; only reduced to 29.48GiB (31657493128 bytes), down from 29.48GiB (31657493128 bytes) originally
+W0524 04:58:52.664972 3508778 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.37GiB (31534882875 bytes) by rematerialization; only reduced to 29.50GiB (31678430960 bytes), down from 29.50GiB (31678430960 bytes) originally
+E0524 07:41:28.414978 3575300 pjrt_stream_executor_client.cc:2091] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Failed to allocate request for 38.86GiB (41730609544B) on device ordinal 0
+Traceback (most recent call last):
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/scripts/run_afqmc_pt2ccsd.py", line 45, in <module>
+    prop_data = prep.init_ccsd_prop_data(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/prep.py", line 328, in init_ccsd_prop_data
+    t1s, t2s, e0s, e1s = trial.calc_energy_pt(prop_data["walkers"], ham_data, wave_data)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/wavefunctions/wavefunctions_unrestricted.py", line 1233, in calc_energy_pt
+    t1, t2, e0, e1 = vmap(
+                     ^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Failed to allocate request for 38.86GiB (41730609544B) on device ordinal 0
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
+Traceback (most recent call last):
+  File "/work/hdd/bdka/yzhang65/w4_17/w4-17_all/afqmc_input/batch5/run_afqmc.py", line 114, in <module>
+    integral.prep_integral(mycc, chol_cut=1e-5)
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/integral.py", line 299, in prep_integral
+    h1e, enuc = h1e_uas(mf, basis_coeff, ncas, ncore, useDF)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/integral.py", line 138, in h1e_uas
+    mo_core = [jnp.array(mo_coeff[0][:,:ncore[0]]),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/numpy/array_constructors.py", line 286, in array
+    out_array: Array = lax._convert_element_type(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/lax/lax.py", line 1689, in _convert_element_type
+    return convert_element_type_p.bind(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 633, in bind
+    return self._true_bind(*args, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 649, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/lax/lax.py", line 4989, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 661, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 1210, in process_primitive
+    return primitive.impl(*args, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/dispatch.py", line 91, in apply_primitive
+    outs = fun(*args)
+           ^^^^^^^^^^
+jax.errors.JaxRuntimeError: INTERNAL: ptxas exited with non-zero error code 65280, output: ptxas fatal   : Could not open output file '/u/yzhang65/myscratch/tmp/tmpxft_0036909a_0000000a'
+
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.

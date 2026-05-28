@@ -1,0 +1,21 @@
+W0524 00:17:08.021278 1144999 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.37GiB (31533594022 bytes) by rematerialization; only reduced to 29.70GiB (31887804776 bytes), down from 39.04GiB (41915215992 bytes) originally
+W0524 00:20:26.788929 1144999 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.32GiB (31485026765 bytes) by rematerialization; only reduced to 29.72GiB (31913546676 bytes), down from 39.06GiB (41940957892 bytes) originally
+W0524 05:58:03.133753 1294632 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.55GiB (31727017693 bytes) by rematerialization; only reduced to 30.67GiB (32937365528 bytes), down from 30.67GiB (32937365528 bytes) originally
+W0524 06:00:42.087948 1294632 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.52GiB (31695979551 bytes) by rematerialization; only reduced to 30.69GiB (32956056960 bytes), down from 30.69GiB (32956056960 bytes) originally
+W0524 08:10:03.457370 1349971 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.49GiB (31660729706 bytes) by rematerialization; only reduced to 29.50GiB (31679549312 bytes), down from 29.50GiB (31679549312 bytes) originally
+W0524 13:56:22.127640 1499201 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.29GiB (31447801202 bytes) by rematerialization; only reduced to 29.72GiB (31917291080 bytes), down from 39.06GiB (41944702296 bytes) originally
+W0524 14:01:23.383030 1499201 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.23GiB (31387626969 bytes) by rematerialization; only reduced to 29.75GiB (31946997480 bytes), down from 39.09GiB (41974408696 bytes) originally
+E0524 20:05:48.102046 1663764 pjrt_stream_executor_client.cc:2091] Execution of replica 0 failed: RESOURCE_EXHAUSTED: Failed to allocate request for 39.24GiB (42129227400B) on device ordinal 0
+Traceback (most recent call last):
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/scripts/run_afqmc_pt2ccsd.py", line 45, in <module>
+    prop_data = prep.init_ccsd_prop_data(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/prep.py", line 328, in init_ccsd_prop_data
+    t1s, t2s, e0s, e1s = trial.calc_energy_pt(prop_data["walkers"], ham_data, wave_data)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/wavefunctions/wavefunctions_unrestricted.py", line 1233, in calc_energy_pt
+    t1, t2, e0, e1 = vmap(
+                     ^^^^^
+jax.errors.JaxRuntimeError: RESOURCE_EXHAUSTED: Failed to allocate request for 39.24GiB (42129227400B) on device ordinal 0
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.

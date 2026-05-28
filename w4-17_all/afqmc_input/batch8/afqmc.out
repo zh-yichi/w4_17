@@ -1,0 +1,75 @@
+
+    ________                     _____                    
+    ___  __ \___  __________________(_)_____________ _    
+    __  /_/ /  / / /_  __ \_  __ \_  /__  __ \_  __ `/    
+    _  _, _// /_/ /_  / / /  / / /  / _  / / /  /_/ /     
+    /_/ |_| \__,_/ /_/ /_//_/ /_//_/  /_/ /_/_\__, /      
+                                             /____/       
+    _____________________________  ___________            
+    ___    |__  ____/_  __ \__   |/  /_  ____/            
+    __  /| |_  /_   _  / / /_  /|_/ /_  /                 
+    _  ___ |  __/   / /_/ /_  /  / / / /___               
+    /_/  |_/_/      \___\_\/_/  /_/  \____/               
+
+Hostname:     gpua079.delta.ncsa.illinois.edu
+System:       Linux
+Node:         gpua079.delta.ncsa.illinois.edu
+Release:      5.14.0-427.91.1.el9_4.x86_64
+Machine:      x86_64
+Processor:    x86_64
+JAX backend:  GPU
+JAX devices:  [CudaDevice(id=0)]
+Device kind:  NVIDIA A100-SXM4-40GB
+Platform:     gpu
+
+Load system from Integral File
+Maximum memory per walker:            66.67 MB
+Maximum number of Cholesky per chunk: 288
+Number of Cholesky chunks:            2
+Number of Cholesky per chunk:         286
+Number of padding Cholesky:           1
+
+QMC System
+Number of electrons: (9, 9)
+Spin Multiplicity:   0
+Number of orbitals:  87
+Number of Chol:      571
+
+QMC Parameters
+eql_time            :                   50
+n_blocks            :                 1000
+n_walkers           :                  300
+max_error           :                  0.0
+seed                :                   17
+walker_type         :                  uhf
+trial               :             upt2ccsd
+mix_precision       :                 True
+max_memory          :                20000
+dt                  :                0.005
+n_exp_terms         :                    6
+n_prop_steps        :                   50
+save_walkers        :                False
+free_projection     :                False
+n_batch             :                    1
+nchol_chunk         :                  286
+
+Initalize QMC walkers by stochastic CCSD
+
+Equilibration
+inv_T        weight  killW        energy   runTime
+ 0.00    300.000000      0   -870.532975     12.50
+ 5.00    298.901107      0   -870.533117     22.75
+10.00    299.478599      0   -870.586130     26.23
+15.00    298.778915      0   -870.559620     29.71
+20.00    300.217507      0   -870.565145     33.20
+25.00    299.015076      0   -870.545636     36.68
+30.00    298.907298      0   -870.568670     40.17
+35.00    299.026440      0   -870.570422     43.66
+40.00    299.134716      0   -870.602075     47.15
+45.00    299.751507      0   -870.607217     50.63
+50.00    299.237827      0   -870.594237     54.11
+
+Sampling
+blocks        weight  killW       E_Guide     error       E_Trial     error     olp_T/G     error  Walltime
+    20    298.930261      1   -870.564240  0.004442   -870.573472  0.002444    1.165130  0.001726   94.18
+    40    299.012529      1   -870.570472  0.005043   -870.573070  0.001438    1.165559  0.001528  128.37

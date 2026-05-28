@@ -1,0 +1,2 @@
+/var/spool/slurmd/job18444928/slurm_script: line 38: 180318 Killed                  python run_afqmc.py
+[2026-05-24T07:11:09.624] error: Detected 1 oom_kill event in StepId=18444928.batch. Some of the step tasks have been OOM Killed.

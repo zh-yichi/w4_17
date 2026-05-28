@@ -1,0 +1,4 @@
+W0524 03:14:33.530462 1220934 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.63GiB (31815632082 bytes) by rematerialization; only reduced to 30.20GiB (32426367112 bytes), down from 30.20GiB (32426367112 bytes) originally
+W0524 03:16:57.393395 1220934 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.60GiB (31783785396 bytes) by rematerialization; only reduced to 30.22GiB (32446179312 bytes), down from 30.22GiB (32446179312 bytes) originally
+W0524 10:08:48.813335 1401021 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.35GiB (31512345813 bytes) by rematerialization; only reduced to 29.70GiB (31886472776 bytes), down from 39.04GiB (41913883992 bytes) originally
+W0524 10:12:21.142211 1401021 hlo_rematerialization.cc:3204] Can't reduce memory use below 29.30GiB (31460712043 bytes) by rematerialization; only reduced to 29.72GiB (31913557784 bytes), down from 39.06GiB (41940969000 bytes) originally
