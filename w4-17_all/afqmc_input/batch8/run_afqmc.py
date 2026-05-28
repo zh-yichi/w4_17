@@ -18,16 +18,25 @@ import truncate_basis
 # ---------------------------------------------------------------------------
 shell            = "closed"  # "closed" or "open"
 symmetry         = False
-select_molecules = None  # e.g. ["acetaldehyde", "benzene"], or None for all
-index            = "141-160"          # e.g. "1-10", "5", "1,3,5-8", or None for all
+select_molecules = [
+    "benzene", "beta-lactim", "bf", "bf3", "bh", "bh3", "bhf2", "bn", "borole",
+    "c2cl6", "c2clh", "c2clh3", "c2clh5", "c2f4", "c2f6", "c2h2", "c2h3f",
+    "c2h4", "c2h5f", "c2h6", "ccl2", "ccl2h2", "ccl2o", "ccl3h", "c-hcoh",
+    "clf5", "clno", "cloocl", "co", "co2", "cs", "cs2", "cyclobutadiene",
+    "cyclobutane", "cyclobutene", "cyclopentadiene", "cyclopropane", "cyclopropene",
+    "dioxetan2one", "dioxetane", "dioxirane", "dithiotane", "ethanol", "h2",
+    "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno", "n2", "n2h4",
+    "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v", "sf6", "si2h6",
+    "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3", "t-butadiene",
+    "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2", "trans-c2f2cl2",
+    "formic-anhydride", "glyoxal", "propyne", "pyrrole",
+]
+index            = None          # e.g. "1-10", "5", "1,3,5-8", or None for all
 basis            = "vtzfp"
-
-qmc_walker       = "uhf" # Default. Fall to rhf if the mf is RHF
-qmc_trial        = "upt2ccsd"
 
 xyz_dir      = f"../../w4_17_xyz/{shell}_shell"
 results_file = f"./{shell}_afqmc_{basis}.dat"
-out_dir      = f"../../result/molout/{shell}_shell"
+out_dir      = f"../../result/molout/{shell}_shell/tz"
 os.makedirs(out_dir, exist_ok=True)
 
 xyz_files = get_xyz_files(xyz_dir, select_molecules=select_molecules, index=index)
@@ -62,6 +71,10 @@ def extract_afqmc_energy(filename):
 # Main loop
 # ---------------------------------------------------------------------------
 for xyz_path in xyz_files:
+    
+    qmc_walker       = "uhf" # Default. Fall to rhf if the mf is RHF
+    qmc_trial        = "upt2ccsd"
+
     with open(xyz_path) as f:
         lines = f.readlines()
 
