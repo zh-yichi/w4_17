@@ -95,7 +95,7 @@ for xyz_path in xyz_files:
         symmetry=symmetry,
         charge=charge,
         spin=spin,
-        max_memory=40000,
+        max_memory=140000,
     )
 
     mf = scf.UHF(mol)
@@ -155,7 +155,7 @@ for xyz_path in xyz_files:
         'walker_type':   qmc_walker,
         'trial':         qmc_trial,
         'mix_precision': True,
-        'max_memory':    20000, #MB
+        'max_memory':    25000, #MB
     }
     launch_afqmc.ph_afqmc(options)
 

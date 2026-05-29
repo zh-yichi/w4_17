@@ -179,7 +179,7 @@ print(f"\nAll calculations complete. Results saved to {results_file}")
 System: uname_result(system='Linux', node='gpue02.delta.ncsa.illinois.edu', release='5.14.0-427.91.1.el9_4.x86_64', version='#1 SMP PREEMPT_DYNAMIC Wed Sep 17 10:08:59 EDT 2025', machine='x86_64')  Threads 12
 Python 3.11.14 (main, Oct 21 2025, 18:31:21) [GCC 11.2.0]
 numpy 2.3.5  scipy 1.16.3  h5py 3.15.1
-Date: Fri May 29 03:34:08 2026
+Date: Thu May 28 22:27:30 2026
 PySCF version 2.11.0
 PySCF path  /u/yzhang65/myprojects/software/pyscf
 GIT HEAD (branch master) f520f5381c0b41f716d847009817cbc64e52c0d5
@@ -188,23 +188,28 @@ GIT HEAD (branch master) f520f5381c0b41f716d847009817cbc64e52c0d5
 [ENV] PYSCF_EXT_PATH /u/yzhang65/myprojects/software/pyscf-forge
 [CONFIG] conf_file None
 [INPUT] verbose = 4
-[INPUT] num. atoms = 2
-[INPUT] num. electrons = 2
+[INPUT] num. atoms = 7
+[INPUT] num. electrons = 22
 [INPUT] charge = 0
 [INPUT] spin (= nelec alpha-beta = 2S) = 0
 [INPUT] symmetry False subgroup None
 [INPUT] Mole.unit = angstrom
 [INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
-[INPUT]  1 H      0.000000000000   0.000000000000   0.370946000000 AA    0.000000000000   0.000000000000   0.700986347003 Bohr   0.0
-[INPUT]  2 H      0.000000000000   0.000000000000  -0.370946000000 AA    0.000000000000   0.000000000000  -0.700986347003 Bohr   0.0
+[INPUT]  1 C      0.000000000000   0.000000000000   0.863137955700 AA    0.000000000000   0.000000000000   1.631094343990 Bohr   0.0
+[INPUT]  2 C      0.000000000000   0.648592427200  -0.500972759300 AA    0.000000000000   1.225662053875  -0.946701310945 Bohr   0.0
+[INPUT]  3 C      0.000000000000  -0.648592427200  -0.500972759300 AA    0.000000000000  -1.225662053875  -0.946701310945 Bohr   0.0
+[INPUT]  4 H      0.000000000000   1.578358157300  -1.039387056400 AA    0.000000000000   2.982664643770  -1.964156874014 Bohr   0.0
+[INPUT]  5 H      0.000000000000  -1.578358157300  -1.039387056400 AA    0.000000000000  -2.982664643770  -1.964156874014 Bohr   0.0
+[INPUT]  6 H     -0.912929722600   0.000000000000   1.452717837900 AA   -1.725187146689   0.000000000000   2.745238849901 Bohr   0.0
+[INPUT]  7 H      0.912929722600   0.000000000000   1.452717837900 AA    1.725187146689   0.000000000000   2.745238849901 Bohr   0.0
 
-nuclear repulsion = 0.713280653949632
-number of shells = 10
-number of NR pGTOs = 22
-number of NR cGTOs = 18
-basis = {'H': [[0, [33.87, 0.006068], [5.095, 0.045308], [1.159, 0.202822]], [0, [0.3258, 1.0]], [0, [0.1027, 1.0]], [1, [1.407, 1.0]], [1, [0.388, 1.0]]]}
+nuclear repulsion = 63.7873780569062
+number of shells = 47
+number of NR pGTOs = 170
+number of NR cGTOs = 126
+basis = {'H': [[0, [33.87, 0.006068], [5.095, 0.045308], [1.159, 0.202822]], [0, [0.3258, 1.0]], [0, [0.1027, 1.0]], [1, [1.407, 1.0]], [1, [0.388, 1.0]]], 'C': [[0, [8236.0, 0.000531, -0.000113], [1235.0, 0.004108, -0.000878], [280.8, 0.021087, -0.00454], [79.27, 0.081853, -0.018133], [25.59, 0.234817, -0.05576], [8.997, 0.434401, -0.126895], [3.319, 0.346129, -0.170352], [0.3643, -0.008983, 0.598684]], [0, [0.9059, 1.0]], [0, [0.1285, 1.0]], [1, [18.71, 0.014031], [4.133, 0.086866], [1.2, 0.290216]], [1, [0.3827, 1.0]], [1, [0.1209, 1.0]], [2, [1.097, 1.0]], [2, [0.318, 1.0]], [3, [0.761, 1.0]]]}
 ecp = {}
-CPU time:     21769.88
+CPU time:     18777.44
 
 
 
@@ -223,16 +228,16 @@ SCF conv_tol_grad = None
 SCF max_cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpcdear6ih
-max_memory 140000 MB (current use 7165 MB)
-number electrons alpha = 1  beta = 1
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpt2qurp04
+max_memory 140000 MB (current use 6415 MB)
+number electrons alpha = 11  beta = 11
 ******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
 SCF tol = 1e-09
 conv_tol_grad = None
 max. SCF cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpcdear6ih
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpt2qurp04
 max_cycle_inner = 12
 max_stepsize = 0.05
 ah_start_tol = 1e+09
@@ -245,18 +250,17 @@ ah_grad_trust_region = 2.5
 kf_interval = 4
 kf_trust_region = 5
 canonicalization = True
-max_memory 140000 MB (current use 7165 MB)
+max_memory 140000 MB (current use 6415 MB)
 Set conv_tol_grad to 3.16228e-05
-  alpha nocc = 1  HOMO = -0.555798570825156  LUMO = 0.134430722266265
-  beta  nocc = 1  HOMO = -0.554330909500237  LUMO = 0.13490686006112
-Initial guess E= -1.13204061586408  |g|= 0.0309827
-macro= 0  E= -1.13294431474599  delta_E= -0.000903699  |g|= 0.0309827  2 KF 5 JK
-macro= 1  E= -1.13294504022422  delta_E= -7.25478e-07  |g|= 0.00116584  1 KF 4 JK
-macro= 2  E= -1.13294504022423  delta_E= -3.9968e-15  |g|= 5.82639e-06  1 KF 2 JK
+  alpha nocc = 11  HOMO = -0.239181094712815  LUMO = 0.0523860375390473
+  beta  nocc = 11  HOMO = -0.24036266298431  LUMO = 0.0532672287035201
+Initial guess E= -115.833884446538  |g|= 0.199329
+macro= 0  E= -115.864432451318  delta_E= -0.030548  |g|= 4.27338e-05  4 KF 15 JK
+macro= 1  E= -115.864432451319  delta_E= -1.7053e-13  |g|= 6.33021e-06  1 KF 2 JK
 Canonicalize SCF orbitals
-macro X = 3  E=-1.13294504022423  |g|= 5.82639e-06  total 5 KF 15 JK
-converged SCF energy = -1.13294504022423  <S^2> = 9.1657792e-12  2S+1 = 1
-uhf_internal: lowest eigs of H = [0.53388894 0.90815148 1.0795481 ]
+macro X = 2  E=-115.864432451319  |g|= 6.33021e-06  total 6 KF 20 JK
+converged SCF energy = -115.864432451319  <S^2> = 4.5277559e-11  2S+1 = 1
+uhf_internal: lowest eigs of H = [0.0067764  0.42100222 0.43207038]
 <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the internal stability analysis
 
 
@@ -274,22 +278,22 @@ SCF conv_tol_grad = None
 SCF max_cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpcdear6ih
-max_memory 140000 MB (current use 6927 MB)
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpt2qurp04
+max_memory 140000 MB (current use 6678 MB)
 Set gradient conv threshold to 3.16228e-05
-init E= -1.13294504021741
-  HOMO = -0.594120610663754  LUMO = 0.167703757359599
-cycle= 1 E= -1.13294504023805  delta_E= -2.06e-11  |g|= 1.13e-06  |ddm|= 3.99e-06
-  HOMO = -0.594119941456592  LUMO = 0.167703978596069
-Extra cycle  E= -1.13294504023834  delta_E= -2.86e-13  |g|= 1.42e-07  |ddm|= 5.3e-07
-converged SCF energy = -1.13294504023834
-rhf_internal: lowest eigs of H = [2.15907853 2.8012953  4.06351911]
+init E= -115.864432451299
+  HOMO = -0.356829743241914  LUMO = 0.152641474337859
+cycle= 1 E= -115.864432451343  delta_E= -4.33e-11  |g|= 4.18e-06  |ddm|= 1.78e-05
+  HOMO = -0.356828447713389  LUMO = 0.152642657446154
+Extra cycle  E= -115.864432451347  delta_E= -4.29e-12  |g|= 1.67e-06  |ddm|= 5.05e-06
+converged SCF energy = -115.864432451347
+rhf_internal: lowest eigs of H = [0.95909692 1.09108862 1.15176408]
 <class 'pyscf.scf.hf.RHF'> wavefunction is stable in the internal stability analysis
 
 ******** <class 'pyscf.cc.ccsd.CCSD'> ********
 CC2 = 0
-CCSD nocc = 1, nmo = 18
-frozen orbitals 0
+CCSD nocc = 8, nmo = 123
+frozen orbitals 3
 max_cycle = 50
 direct = 0
 conv_tol = 1e-07
@@ -297,14 +301,18 @@ conv_tol_normt = 1e-05
 diis_space = 6
 diis_start_cycle = 0
 diis_start_energy_diff = 1e+09
-max_memory 140000 MB (current use 6492 MB)
-Init t2, MP2 energy = -1.16275784165774  E_corr(MP2) -0.0298128014193956
-Init E_corr(CCSD) = -0.0298128014194005
-cycle = 1  E_corr(CCSD) = -0.03549761095084  dE = -0.00568480953  norm(t1,t2) = 0.0225885
-cycle = 2  E_corr(CCSD) = -0.0371009499943526  dE = -0.00160333904  norm(t1,t2) = 0.00756664
-cycle = 3  E_corr(CCSD) = -0.0379148073180977  dE = -0.000813857324  norm(t1,t2) = 0.0028778
-cycle = 4  E_corr(CCSD) = -0.0379087253978201  dE = 6.08192028e-06  norm(t1,t2) = 0.000315728
-cycle = 5  E_corr(CCSD) = -0.0379088474529541  dE = -1.22055134e-07  norm(t1,t2) = 2.19633e-05
-cycle = 6  E_corr(CCSD) = -0.037908845017915  dE = 2.43503902e-09  norm(t1,t2) = 2.68437e-06
+max_memory 140000 MB (current use 6242 MB)
+Init t2, MP2 energy = -116.345638267708  E_corr(MP2) -0.481205816360737
+Init E_corr(CCSD) = -0.481205816361677
+cycle = 1  E_corr(CCSD) = -0.488357115671732  dE = -0.00715129931  norm(t1,t2) = 0.0492605
+cycle = 2  E_corr(CCSD) = -0.501102658388466  dE = -0.0127455427  norm(t1,t2) = 0.0179298
+cycle = 3  E_corr(CCSD) = -0.502553284028267  dE = -0.00145062564  norm(t1,t2) = 0.00726735
+cycle = 4  E_corr(CCSD) = -0.504026990204752  dE = -0.00147370618  norm(t1,t2) = 0.00307559
+cycle = 5  E_corr(CCSD) = -0.503936755230456  dE = 9.02349743e-05  norm(t1,t2) = 0.000723138
+cycle = 6  E_corr(CCSD) = -0.503890714586893  dE = 4.60406436e-05  norm(t1,t2) = 0.000157577
+cycle = 7  E_corr(CCSD) = -0.503896690850051  dE = -5.97626316e-06  norm(t1,t2) = 4.39535e-05
+cycle = 8  E_corr(CCSD) = -0.503898448434807  dE = -1.75758476e-06  norm(t1,t2) = 1.00622e-05
+cycle = 9  E_corr(CCSD) = -0.503897751573308  dE = 6.96861499e-07  norm(t1,t2) = 3.19179e-06
+cycle = 10  E_corr(CCSD) = -0.503897705708754  dE = 4.5864554e-08  norm(t1,t2) = 1.1009e-06
 CCSD converged
-E(CCSD) = -1.170853885256256  E_corr = -0.03790884501791505
+E(CCSD) = -116.3683301570557  E_corr = -0.5038977057087539

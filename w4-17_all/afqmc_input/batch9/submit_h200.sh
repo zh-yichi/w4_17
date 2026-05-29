@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=w4close8_tz
+#SBATCH --job-name=w4miss_tz
 ##SBATCH --output=myjob.out
 #SBATCH --partition=gpuH200x8
 #SBATCH --mem=200G
@@ -34,4 +34,4 @@ unset LD_LIBRARY_PATH
 export JAX_ENABLE_X64=True
 export XLA_PYTHON_CLIENT_PREALLOCATE=false
 
-python run_afqmc.py
+python run_afqmc.py >> w4.out

@@ -1,0 +1,82 @@
+E0528 03:03:44.276067  277058 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (122177995232) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 03:03:46.036291  276050 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.91GiB (113725229819 bytes) by rematerialization; only reduced to 114.59GiB (123036407016 bytes), down from 114.59GiB (123036407016 bytes) originally
+W0528 03:04:52.631242  276050 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.89GiB (113702846529 bytes) by rematerialization; only reduced to 114.59GiB (123040156224 bytes), down from 114.59GiB (123040198816 bytes) originally
+E0528 04:07:06.515318  320050 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (120153333632) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 04:07:08.345886  319521 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.17GiB (113997793483 bytes) by rematerialization; only reduced to 112.16GiB (120433249128 bytes), down from 112.16GiB (120433249128 bytes) originally
+W0528 04:07:31.643611  319521 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.16GiB (113990135603 bytes) by rematerialization; only reduced to 112.16GiB (120435339936 bytes), down from 112.16GiB (120435362240 bytes) originally
+E0528 06:26:29.060086  411551 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (127903989632) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 06:26:30.748723  410961 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.48GiB (113254693991 bytes) by rematerialization; only reduced to 120.46GiB (129344517336 bytes), down from 120.46GiB (129344517336 bytes) originally
+W0528 06:27:56.187086  410961 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.42GiB (113190232190 bytes) by rematerialization; only reduced to 120.47GiB (129354658944 bytes), down from 120.47GiB (129354751776 bytes) originally
+E0528 08:15:00.676283  478607 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (130517676032) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 08:15:01.080738  477916 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.21GiB (114043437259 bytes) by rematerialization; only reduced to 121.58GiB (130543021920 bytes), down from 121.60GiB (130566888320 bytes) originally
+W0528 08:15:19.207764  477916 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.21GiB (114040085544 bytes) by rematerialization; only reduced to 121.58GiB (130546096504 bytes), down from 121.60GiB (130569886104 bytes) originally
+W0528 09:17:47.947413  519408 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.95GiB (113763687947 bytes) by rematerialization; only reduced to 107.61GiB (115541328264 bytes), down from 107.61GiB (115541328264 bytes) originally
+W0528 09:18:33.469411  519408 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.93GiB (113737906555 bytes) by rematerialization; only reduced to 107.61GiB (115546848672 bytes), down from 107.61GiB (115546898816 bytes) originally
+E0528 10:12:34.493604  554584 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (126607411232) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 10:12:35.233218  553908 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.48GiB (113261238989 bytes) by rematerialization; only reduced to 119.25GiB (128041480056 bytes), down from 119.25GiB (128041480056 bytes) originally
+W0528 10:14:00.736740  553908 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.42GiB (113197482712 bytes) by rematerialization; only reduced to 119.26GiB (128051621664 bytes), down from 119.26GiB (128051714496 bytes) originally
+W0528 12:27:25.359456  638476 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.22GiB (114050547120 bytes) by rematerialization; only reduced to 108.28GiB (116262617904 bytes), down from 108.29GiB (116271596608 bytes) originally
+W0528 12:27:42.220239  638476 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.21GiB (114048246287 bytes) by rematerialization; only reduced to 108.28GiB (116264972488 bytes), down from 108.29GiB (116273893592 bytes) originally
+W0528 14:21:51.625449  712405 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.17GiB (113997998014 bytes) by rematerialization; only reduced to 111.86GiB (120104034632 bytes), down from 111.86GiB (120104034632 bytes) originally
+W0528 14:22:16.363240  712405 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.16GiB (113990361323 bytes) by rematerialization; only reduced to 111.86GiB (120106125440 bytes), down from 111.86GiB (120106147744 bytes) originally
+E0528 15:22:07.099931  752022 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (120636914432) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 15:22:08.565177  751384 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.92GiB (113730575849 bytes) by rematerialization; only reduced to 113.04GiB (121370722220 bytes), down from 113.04GiB (121370722220 bytes) originally
+W0528 15:22:56.468353  751384 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.89GiB (113699067311 bytes) by rematerialization; only reduced to 113.04GiB (121377875520 bytes), down from 113.04GiB (121377934016 bytes) originally
+E0528 16:28:40.812694  805608 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (123699662432) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 16:28:41.912743  805507 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.16GiB (113993224629 bytes) by rematerialization; only reduced to 115.47GiB (123982384184 bytes), down from 115.47GiB (123982384184 bytes) originally
+W0528 16:29:05.391010  805507 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.16GiB (113984686206 bytes) by rematerialization; only reduced to 115.47GiB (123984836192 bytes), down from 115.47GiB (123984860352 bytes) originally
+E0528 18:36:16.076113  898881 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (129800426432) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 18:36:17.731600  897660 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.95GiB (113760554437 bytes) by rematerialization; only reduced to 121.65GiB (130623311208 bytes), down from 121.65GiB (130623311208 bytes) originally
+W0528 18:37:02.494066  897660 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.93GiB (113742474906 bytes) by rematerialization; only reduced to 121.65GiB (130626299616 bytes), down from 121.65GiB (130626335744 bytes) originally
+E0528 21:52:05.666942 1020733 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (127890496832) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 21:52:08.484712 1018855 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.13GiB (113954022028 bytes) by rematerialization; only reduced to 119.50GiB (128311097208 bytes), down from 119.50GiB (128311097208 bytes) originally
+W0528 21:52:48.359941 1018855 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.12GiB (113946401713 bytes) by rematerialization; only reduced to 119.50GiB (128312949216 bytes), down from 119.50GiB (128312969552 bytes) originally
+E0528 22:29:40.499908 1044635 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (127823961632) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 22:29:41.979701 1043431 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.17GiB (114000188144 bytes) by rematerialization; only reduced to 119.33GiB (128131498360 bytes), down from 119.33GiB (128131498360 bytes) originally
+W0528 22:30:06.256543 1043431 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.17GiB (113995026368 bytes) by rematerialization; only reduced to 119.33GiB (128132432368 bytes), down from 119.33GiB (128132448144 bytes) originally
+E0528 23:04:36.005315 1066751 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (127542936032) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 23:04:36.929408 1065485 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.03GiB (113846354363 bytes) by rematerialization; only reduced to 119.15GiB (127936391016 bytes), down from 119.15GiB (127936391016 bytes) originally
+W0528 23:05:16.696128 1065485 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.01GiB (113829316899 bytes) by rematerialization; only reduced to 119.15GiB (127940010624 bytes), down from 119.15GiB (127940047168 bytes) originally
+E0528 23:53:12.362095 1096843 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (128104171232) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0528 23:53:13.872549 1096122 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.08GiB (113899973822 bytes) by rematerialization; only reduced to 119.78GiB (128616510984 bytes), down from 119.78GiB (128616510984 bytes) originally
+W0528 23:53:47.073573 1096122 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.07GiB (113887405628 bytes) by rematerialization; only reduced to 119.79GiB (128619326592 bytes), down from 119.79GiB (128619355808 bytes) originally
+E0529 00:48:02.500724 1132571 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (129768069632) exceeds the base limit (120097026867). This indicates an error in the calculation!
+W0529 00:48:04.276790 1132455 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.08GiB (113898042328 bytes) by rematerialization; only reduced to 121.33GiB (130282627368 bytes), down from 121.33GiB (130282627368 bytes) originally
+W0529 00:48:36.094555 1132455 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.06GiB (113885321480 bytes) by rematerialization; only reduced to 121.34GiB (130285442976 bytes), down from 121.34GiB (130285472192 bytes) originally
+Traceback (most recent call last):
+  File "/work/hdd/bdka/yzhang65/w4_17/w4-17_all/afqmc_input/batch9/run_afqmc.py", line 148, in <module>
+    integral.prep_integral(mycc, chol_cut=1e-5)
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/integral.py", line 279, in prep_integral
+    h1e, enuc = h1e_ras(mf, basis_coeff, nbasis, norb_frozen, useDF)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/afqmc/afqmc/integral.py", line 58, in h1e_ras
+    mo_core = jnp.array(mo_coeff[:,:ncore])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/numpy/array_constructors.py", line 286, in array
+    out_array: Array = lax._convert_element_type(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/lax/lax.py", line 1689, in _convert_element_type
+    return convert_element_type_p.bind(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 633, in bind
+    return self._true_bind(*args, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 649, in _true_bind
+    return self.bind_with_trace(prev_trace, args, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/lax/lax.py", line 4989, in _convert_element_type_bind_with_trace
+    operand = core.Primitive.bind_with_trace(convert_element_type_p, trace, args, params)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 661, in bind_with_trace
+    return trace.process_primitive(self, args, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/core.py", line 1210, in process_primitive
+    return primitive.impl(*args, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/u/yzhang65/myprojects/software/miniconda3/envs/pyscf/lib/python3.11/site-packages/jax/_src/dispatch.py", line 91, in apply_primitive
+    outs = fun(*args)
+           ^^^^^^^^^^
+jax.errors.JaxRuntimeError: INTERNAL: ptxas exited with non-zero error code 65280, output: ptxas fatal   : Could not open output file '/u/yzhang65/myscratch/tmp/tmpxft_0012e8eb_0000000a'
+
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.
