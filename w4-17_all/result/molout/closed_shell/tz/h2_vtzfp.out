@@ -1,4 +1,4 @@
-#INFO: **** input file is /work/hdd/bdka/yzhang65/w4_17/w4-17_all/afqmc_input/batch9/run_afqmc.py ****
+#INFO: **** input file is /home/sharmagroup/sharmagroup/w4_17/w4-17_all/afqmc_input/batch9/run_afqmc.py ****
 import os
 import sys
 import re
@@ -20,13 +20,13 @@ import truncate_basis
 # ---------------------------------------------------------------------------
 shell            = "closed"  # "closed" or "open"
 symmetry         = False
-select_molecules = [
-     "h2", "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno",
-     "n2", "n2h4", "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v",
-     "sf6", "si2h6", "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3",
-     "t-butadiene", "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2",
-     "trans-c2f2cl2", "propyne", "pyrrole",
-     ]
+select_molecules = ["h2"]
+#     "h2", "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno",
+#     "n2", "n2h4", "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v",
+#     "sf6", "si2h6", "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3",
+#     "t-butadiene", "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2",
+#     "trans-c2f2cl2", "propyne", "pyrrole",
+#     ]
 index            = None          # e.g. "1-10", "5", "1,3,5-8", or None for all
 basis            = "vtzfp"
 
@@ -201,16 +201,17 @@ print(f"\nAll calculations complete. Results saved to {results_file}")
 #INFO: ******************** input file end ********************
 
 
-System: uname_result(system='Linux', node='gpue04.delta.ncsa.illinois.edu', release='5.14.0-427.91.1.el9_4.x86_64', version='#1 SMP PREEMPT_DYNAMIC Wed Sep 17 10:08:59 EDT 2025', machine='x86_64')  Threads 12
-Python 3.11.14 (main, Oct 21 2025, 18:31:21) [GCC 11.2.0]
-numpy 2.3.5  scipy 1.16.3  h5py 3.15.1
-Date: Fri May 29 16:09:06 2026
-PySCF version 2.11.0
-PySCF path  /u/yzhang65/myprojects/software/pyscf
-GIT HEAD (branch master) f520f5381c0b41f716d847009817cbc64e52c0d5
+System: uname_result(system='Linux', node='sharmagroup-rn', release='6.17.0-29-generic', version='#29~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon May 11 10:30:58 UTC 2', machine='x86_64')  Threads 16
+Python 3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]
+numpy 2.4.4  scipy 1.17.1  h5py 3.16.0
+Date: Sat May 30 13:43:02 2026
+PySCF version 2.12.1
+PySCF path  /home/sharmagroup/sharmagroup/pyscf
+GIT ORIG_HEAD 3d1768f5e33b144b606c3d2c81c12ee54d794501
+GIT HEAD (branch master) f0861da51f017364d8bbaa20b742a94f3733305f
 
-[ENV] PYSCF_TMPDIR /projects/bdka/yzhang65/scratch/pyscf
-[ENV] PYSCF_EXT_PATH /u/yzhang65/myprojects/software/pyscf-forge
+[ENV] OLD_PYSCF_EXT_PATH 
+[ENV] PYSCF_EXT_PATH /home/sharmagroup/sharmagroup/pyscf-forge
 [CONFIG] conf_file None
 [INPUT] verbose = 4
 [INPUT] num. atoms = 2
@@ -229,7 +230,7 @@ number of NR pGTOs = 22
 number of NR cGTOs = 18
 basis = {'H': [[0, [33.87, 0.006068], [5.095, 0.045308], [1.159, 0.202822]], [0, [0.3258, 1.0]], [0, [0.1027, 1.0]], [1, [1.407, 1.0]], [1, [0.388, 1.0]]]}
 ecp = {}
-CPU time:         1.23
+CPU time:         2.57
 
 
 
@@ -248,8 +249,8 @@ SCF conv_tol_grad = None
 SCF max_cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp2ys0vn4g
-max_memory 140000 MB (current use 108 MB)
+chkfile to save SCF result = /tmp/tmp1qezvtt0
+max_memory 140000 MB (current use 227 MB)
 number electrons alpha = 1  beta = 1
 ******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
 SCF tol = 1e-09
@@ -257,7 +258,7 @@ conv_tol_grad = None
 max. SCF cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp2ys0vn4g
+chkfile to save SCF result = /tmp/tmp1qezvtt0
 max_cycle_inner = 12
 max_stepsize = 0.05
 ah_start_tol = 1e+09
@@ -270,18 +271,18 @@ ah_grad_trust_region = 2.5
 kf_interval = 4
 kf_trust_region = 5
 canonicalization = True
-max_memory 140000 MB (current use 108 MB)
+max_memory 140000 MB (current use 227 MB)
 Set conv_tol_grad to 3.16228e-05
   alpha nocc = 1  HOMO = -0.555798570825157  LUMO = 0.134430722266266
-  beta  nocc = 1  HOMO = -0.554330909500237  LUMO = 0.134906860061119
+  beta  nocc = 1  HOMO = -0.554330909500238  LUMO = 0.13490686006112
 Initial guess E= -1.13204061586408  |g|= 0.0309827
 macro= 0  E= -1.13294431474599  delta_E= -0.000903699  |g|= 0.0309827  2 KF 5 JK
 macro= 1  E= -1.13294504022422  delta_E= -7.25478e-07  |g|= 0.00116584  1 KF 4 JK
-macro= 2  E= -1.13294504022423  delta_E= -4.44089e-15  |g|= 5.82639e-06  1 KF 2 JK
+macro= 2  E= -1.13294504022423  delta_E= -3.9968e-15  |g|= 5.82639e-06  1 KF 2 JK
 Canonicalize SCF orbitals
 macro X = 3  E=-1.13294504022423  |g|= 5.82639e-06  total 5 KF 15 JK
 converged SCF energy = -1.13294504022423  <S^2> = 9.1660013e-12  2S+1 = 1
-uhf_internal: lowest eigs of H = [0.53388717 0.90815125 1.07953972]
+uhf_internal: lowest eigs of H = [0.53388719 0.90815126 1.07953954]
 <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the internal stability analysis
 
 
@@ -299,16 +300,16 @@ SCF conv_tol_grad = None
 SCF max_cycles = 200
 direct_scf = True
 direct_scf_tol = 1e-13
-chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp2ys0vn4g
-max_memory 140000 MB (current use 127 MB)
+chkfile to save SCF result = /tmp/tmp1qezvtt0
+max_memory 140000 MB (current use 245 MB)
 Set gradient conv threshold to 3.16228e-05
 init E= -1.13294504021741
-  HOMO = -0.594120610663754  LUMO = 0.167703757359605
-cycle= 1 E= -1.13294504023806  delta_E= -2.06e-11  |g|= 1.13e-06  |ddm|= 3.99e-06
-  HOMO = -0.594119941456591  LUMO = 0.167703978596069
-Extra cycle  E= -1.13294504023834  delta_E= -2.84e-13  |g|= 1.42e-07  |ddm|= 5.3e-07
+  HOMO = -0.594120610663754  LUMO = 0.1677037573596
+cycle= 1 E= -1.13294504023805  delta_E= -2.06e-11  |g|= 1.13e-06  |ddm|= 3.99e-06
+  HOMO = -0.594119941456592  LUMO = 0.167703978596072
+Extra cycle  E= -1.13294504023834  delta_E= -2.85e-13  |g|= 1.42e-07  |ddm|= 5.3e-07
 converged SCF energy = -1.13294504023834
-rhf_internal: lowest eigs of H = [2.15907853 2.80129709 4.06351976]
+rhf_internal: lowest eigs of H = [2.15907853 2.80129536 4.06351908]
 <class 'pyscf.scf.hf.RHF'> wavefunction is stable in the internal stability analysis
 
 ******** <class 'pyscf.cc.ccsd.CCSD'> ********
@@ -322,14 +323,14 @@ conv_tol_normt = 1e-05
 diis_space = 6
 diis_start_cycle = 0
 diis_start_energy_diff = 1e+09
-max_memory 140000 MB (current use 128 MB)
-Init t2, MP2 energy = -1.16275784165774  E_corr(MP2) -0.0298128014193956
+max_memory 140000 MB (current use 246 MB)
+Init t2, MP2 energy = -1.16275784165773  E_corr(MP2) -0.0298128014193956
 Init E_corr(CCSD) = -0.0298128014194005
 cycle = 1  E_corr(CCSD) = -0.03549761095084  dE = -0.00568480953  norm(t1,t2) = 0.0225885
 cycle = 2  E_corr(CCSD) = -0.0371009499943527  dE = -0.00160333904  norm(t1,t2) = 0.00756664
-cycle = 3  E_corr(CCSD) = -0.0379148073180978  dE = -0.000813857324  norm(t1,t2) = 0.0028778
-cycle = 4  E_corr(CCSD) = -0.0379087253978201  dE = 6.08192028e-06  norm(t1,t2) = 0.000315728
-cycle = 5  E_corr(CCSD) = -0.0379088474529541  dE = -1.22055134e-07  norm(t1,t2) = 2.19633e-05
-cycle = 6  E_corr(CCSD) = -0.0379088450179151  dE = 2.43503902e-09  norm(t1,t2) = 2.68437e-06
+cycle = 3  E_corr(CCSD) = -0.0379148073180977  dE = -0.000813857324  norm(t1,t2) = 0.0028778
+cycle = 4  E_corr(CCSD) = -0.03790872539782  dE = 6.08192028e-06  norm(t1,t2) = 0.000315728
+cycle = 5  E_corr(CCSD) = -0.037908847452954  dE = -1.22055134e-07  norm(t1,t2) = 2.19633e-05
+cycle = 6  E_corr(CCSD) = -0.037908845017915  dE = 2.43503901e-09  norm(t1,t2) = 2.68437e-06
 CCSD converged
-E(CCSD) = -1.170853885256255  E_corr = -0.03790884501791508
+E(CCSD) = -1.170853885256254  E_corr = -0.03790884501791501
