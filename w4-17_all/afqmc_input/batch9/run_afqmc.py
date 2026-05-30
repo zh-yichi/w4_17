@@ -19,13 +19,13 @@ import truncate_basis
 # ---------------------------------------------------------------------------
 shell            = "closed"  # "closed" or "open"
 symmetry         = False
-select_molecules = [
-     "h2", "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno",
-     "n2", "n2h4", "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v",
-     "sf6", "si2h6", "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3",
-     "t-butadiene", "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2",
-     "trans-c2f2cl2", "propyne", "pyrrole",
-     ]
+select_molecules = ["h2"]
+#     "h2", "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno",
+#     "n2", "n2h4", "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v",
+#     "sf6", "si2h6", "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3",
+#     "t-butadiene", "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2",
+#     "trans-c2f2cl2", "propyne", "pyrrole",
+#     ]
 index            = None          # e.g. "1-10", "5", "1,3,5-8", or None for all
 basis            = "vtzfp"
 
