@@ -19,22 +19,19 @@ import truncate_basis
 # ---------------------------------------------------------------------------
 shell            = "closed"  # "closed" or "open"
 symmetry         = False
-select_molecules = ["h2", "h2co", "h2o", "h2s" ]#[
-#     # Molecules with no AFQMC output file yet (33)
-#     "h2", "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno",
-#     "n2", "n2h4", "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v",
-#     "sf6", "si2h6", "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3",
-#     "t-butadiene", "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2",
-#     "trans-c2f2cl2",
-#     # AFQMC file exists but did not finish (2)
-#     "propyne", "pyrrole",
-# ]
+select_molecules = [
+     "h2", "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno",
+     "n2", "n2h4", "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v",
+     "sf6", "si2h6", "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3",
+     "t-butadiene", "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2",
+     "trans-c2f2cl2", "propyne", "pyrrole",
+     ]
 index            = None          # e.g. "1-10", "5", "1,3,5-8", or None for all
-basis            = "vdzds"
+basis            = "vtzfp"
 
 xyz_dir      = f"../../w4_17_xyz/{shell}_shell"
-results_file = f"./test_{shell}_afqmc_{basis}.dat"
-out_dir      = f"../../test/molout/{shell}_shell/tz"
+results_file = f"./rest_{shell}_afqmc_{basis}.dat"
+out_dir      = f"../../result/molout/{shell}_shell/tz"
 os.makedirs(out_dir, exist_ok=True)
 
 xyz_files = get_xyz_files(xyz_dir, select_molecules=select_molecules, index=index)
@@ -170,7 +167,7 @@ def run_molecule(xyz_path):
         'walker_type':   qmc_walker,
         'trial':         qmc_trial,
         'mix_precision': True,
-        'max_memory':    2000, #MB
+        'max_memory':    25000, #MB
     }
     launch_afqmc.ph_afqmc(options)
 
