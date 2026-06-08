@@ -1,3 +1,4 @@
+#INFO: **** input file is /work/hdd/bdka/yzhang65/w4_17/w4-17_all/afqmc_input/batch9/run_afqmc.py ****
 import os
 import sys
 import re
@@ -197,3 +198,90 @@ for xyz_path in xyz_files:
         free_memory()
 
 print(f"\nAll calculations complete. Results saved to {results_file}")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='gpua023.delta.ncsa.illinois.edu', release='5.14.0-427.91.1.el9_4.x86_64', version='#1 SMP PREEMPT_DYNAMIC Wed Sep 17 10:08:59 EDT 2025', machine='x86_64')  Threads 16
+Python 3.11.14 (main, Oct 21 2025, 18:31:21) [GCC 11.2.0]
+numpy 2.3.5  scipy 1.16.3  h5py 3.15.1
+Date: Sun Jun  7 00:55:13 2026
+PySCF version 2.11.0
+PySCF path  /u/yzhang65/myprojects/software/pyscf
+GIT HEAD (branch master) f520f5381c0b41f716d847009817cbc64e52c0d5
+
+[ENV] PYSCF_TMPDIR /projects/bdka/yzhang65/scratch/pyscf
+[ENV] PYSCF_EXT_PATH /u/yzhang65/myprojects/software/pyscf-forge
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 1
+[INPUT] num. electrons = 1
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 1
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 H      0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+
+nuclear repulsion = 0
+number of shells = 5
+number of NR pGTOs = 11
+number of NR cGTOs = 9
+basis = {'H': [[0, [33.87, 0.006068], [5.095, 0.045308], [1.159, 0.202822]], [0, [0.3258, 1.0]], [0, [0.1027, 1.0]], [1, [1.407, 1.0]], [1, [0.388, 1.0]]]}
+ecp = {}
+CPU time:       101.06
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderHF1e'> ********
+method = SecondOrderHF1e
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpl9bgssor
+max_memory 40000 MB (current use 770 MB)
+number electrons alpha = 1  beta = 0
+******** <class 'pyscf.scf.uhf.HF1e'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmpl9bgssor
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 770 MB)
+Set conv_tol_grad to 3.16228e-05
+  alpha nocc = 1  HOMO = -0.182832871993443  LUMO = 0.402557902539127
+
+WARN: beta  nocc = 0  HOMO 3.92552701981726 >= LUMO -0.182832871993443
+
+
+WARN: system HOMO -0.182832871993443 >= system LUMO -0.182832871993443
+
+Initial guess E= -0.490584765755097  |g|= 0.0722191
+macro= 0  E= -0.49930508247669  delta_E= -0.00872032  |g|= 0.0722191  2 KF 5 JK
+macro= 1  E= -0.499809810519595  delta_E= -0.000504728  |g|= 0.0176208  1 KF 3 JK
+macro= 2  E= -0.499809811301843  delta_E= -7.82247e-10  |g|= 2.05786e-05  1 KF 3 JK
+Canonicalize SCF orbitals
+macro X = 3  E=-0.499809811301843  |g|= 2.05786e-05  total 5 KF 15 JK
+converged SCF energy = -0.499809811301843  <S^2> = 0.75  2S+1 = 2

@@ -1,3 +1,4 @@
+#INFO: **** input file is /work/hdd/bdka/yzhang65/w4_17/w4-17_all/afqmc_input/batch9/run_afqmc.py ****
 import os
 import sys
 import re
@@ -197,3 +198,117 @@ for xyz_path in xyz_files:
         free_memory()
 
 print(f"\nAll calculations complete. Results saved to {results_file}")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='gpua023.delta.ncsa.illinois.edu', release='5.14.0-427.91.1.el9_4.x86_64', version='#1 SMP PREEMPT_DYNAMIC Wed Sep 17 10:08:59 EDT 2025', machine='x86_64')  Threads 16
+Python 3.11.14 (main, Oct 21 2025, 18:31:21) [GCC 11.2.0]
+numpy 2.3.5  scipy 1.16.3  h5py 3.15.1
+Date: Sun Jun  7 00:53:11 2026
+PySCF version 2.11.0
+PySCF path  /u/yzhang65/myprojects/software/pyscf
+GIT HEAD (branch master) f520f5381c0b41f716d847009817cbc64e52c0d5
+
+[ENV] PYSCF_TMPDIR /projects/bdka/yzhang65/scratch/pyscf
+[ENV] PYSCF_EXT_PATH /u/yzhang65/myprojects/software/pyscf-forge
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 1
+[INPUT] num. electrons = 9
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 1
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 F      0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+
+nuclear repulsion = 0
+number of shells = 9
+number of NR pGTOs = 42
+number of NR cGTOs = 30
+basis = {'F': [[0, [19500.0, 0.000507, -0.000117], [2923.0, 0.003923, -0.000912], [664.5, 0.0202, -0.004717], [187.5, 0.07901, -0.019086], [60.62, 0.230439, -0.059655], [21.42, 0.432872, -0.14001], [7.95, 0.349964, -0.176782], [0.8815, -0.007892, 0.605043]], [0, [2.257, 1.0]], [0, [0.3041, 1.0]], [1, [43.88, 0.016665], [9.926, 0.104472], [2.93, 0.31726]], [1, [0.9132, 1.0]], [1, [0.2672, 1.0]], [2, [3.107, 1.0]], [2, [0.855, 1.0]], [3, [1.917, 1.0]]]}
+ecp = {}
+CPU time:        86.16
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> ********
+method = SecondOrderUHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmplix0vx6y
+max_memory 40000 MB (current use 963 MB)
+number electrons alpha = 5  beta = 4
+******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmplix0vx6y
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 963 MB)
+Set conv_tol_grad to 3.16228e-05
+  alpha nocc = 5  HOMO = -0.611902993504137  LUMO = 0.90080386187417
+
+WARN: beta  nocc = 4  HOMO -0.611902993504138 >= LUMO -0.611902993504137
+
+
+WARN: system HOMO -0.611902993504137 >= system LUMO -0.611902993504137
+
+Initial guess E= -99.394670195266  |g|= 0.189165
+macro= 0  E= -99.4055248596746  delta_E= -0.0108547  |g|= 0.000149521  3 KF 11 JK
+macro= 1  E= -99.4055248596748  delta_E= -2.27374e-13  |g|= 7.5018e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-99.4055248596748  |g|= 7.5018e-06  total 5 KF 16 JK
+converged SCF energy = -99.4055248596748  <S^2> = 0.75341445  2S+1 = 2.0034115
+uhf_internal: lowest eigs of H = [6.03017966e-07 2.09371104e-06 1.55253701e+00]
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the internal stability analysis
+
+******** <class 'pyscf.cc.uccsd.UCCSD'> ********
+CC2 = 0
+CCSD nocc = (np.int64(4), np.int64(3)), nmo = (29, 29)
+frozen orbitals 1
+max_cycle = 50
+direct = 0
+conv_tol = 1e-07
+conv_tol_normt = 1e-06
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 40000 MB (current use 964 MB)
+Init t2, MP2 energy = -0.199835596476552
+Init E_corr(UCCSD) = -0.199835596482554
+cycle = 1  E_corr(UCCSD) = -0.20817857365116  dE = -0.00834297717  norm(t1,t2) = 0.0232385
+cycle = 2  E_corr(UCCSD) = -0.210480153972805  dE = -0.00230158032  norm(t1,t2) = 0.00674338
+cycle = 3  E_corr(UCCSD) = -0.211246593206937  dE = -0.000766439234  norm(t1,t2) = 0.00296578
+cycle = 4  E_corr(UCCSD) = -0.211256339013681  dE = -9.74580674e-06  norm(t1,t2) = 0.000832313
+cycle = 5  E_corr(UCCSD) = -0.211241944077701  dE = 1.4394936e-05  norm(t1,t2) = 0.000286415
+cycle = 6  E_corr(UCCSD) = -0.211245646948245  dE = -3.70287054e-06  norm(t1,t2) = 4.47157e-05
+cycle = 7  E_corr(UCCSD) = -0.211246051456249  dE = -4.04508004e-07  norm(t1,t2) = 8.34789e-06
+cycle = 8  E_corr(UCCSD) = -0.211245756390832  dE = 2.95065417e-07  norm(t1,t2) = 1.96818e-06
+cycle = 9  E_corr(UCCSD) = -0.211245812185911  dE = -5.5795079e-08  norm(t1,t2) = 4.40185e-07
+UCCSD converged
+E(UCCSD) = -99.61677067186075  E_corr = -0.2112458121859108

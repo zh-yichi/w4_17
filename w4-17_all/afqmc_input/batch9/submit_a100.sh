@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=w4close8_tz
-#SBATCH --exclude=gpua020
+#SBATCH --job-name=atom_tz
+##SBATCH --exclude=gpua020
 ##SBATCH --output=myjob.out
 #SBATCH --partition=gpuA100x4
 #SBATCH --mem=50G

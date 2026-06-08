@@ -1,26 +1,20 @@
-E0529 16:32:23.612458 4070553 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (129186201632) exceeds the base limit (120097026867). This indicates an error in the calculation!
-W0529 16:32:23.886432 4070471 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.21GiB (114043857509 bytes) by rematerialization; only reduced to 120.34GiB (129211547520 bytes), down from 120.36GiB (129235413920 bytes) originally
-W0529 16:32:41.853650 4070471 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.21GiB (114040540906 bytes) by rematerialization; only reduced to 120.34GiB (129214622104 bytes), down from 120.36GiB (129238411704 bytes) originally
-W0529 18:13:12.639478 4165479 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.85GiB (113657663547 bytes) by rematerialization; only reduced to 111.00GiB (119181311896 bytes), down from 111.00GiB (119181311896 bytes) originally
-W0529 18:14:07.778637 4165479 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.83GiB (113634349412 bytes) by rematerialization; only reduced to 111.00GiB (119184747904 bytes), down from 111.00GiB (119184790784 bytes) originally
-E0529 19:19:14.612442   16209 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (130593170432) exceeds the base limit (120097026867). This indicates an error in the calculation!
-W0529 19:19:15.138969   15553 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.49GiB (113266322280 bytes) by rematerialization; only reduced to 123.19GiB (132274311872 bytes), down from 123.19GiB (132274311872 bytes) originally
-W0529 19:20:52.699094   15553 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.45GiB (113222661350 bytes) by rematerialization; only reduced to 123.19GiB (132279229880 bytes), down from 123.19GiB (132279294680 bytes) originally
-E0529 21:22:51.903628  101294 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (120892384832) exceeds the base limit (120097026867). This indicates an error in the calculation!
-W0529 21:22:52.798294  101233 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.21GiB (114047940449 bytes) by rematerialization; only reduced to 112.62GiB (120920294240 bytes), down from 112.63GiB (120938163760 bytes) originally
-W0529 21:23:10.966867  101233 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.21GiB (114045159618 bytes) by rematerialization; only reduced to 112.62GiB (120922972824 bytes), down from 112.63GiB (120940775144 bytes) originally
-E0529 22:13:06.136165  133927 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (128553400832) exceeds the base limit (120097026867). This indicates an error in the calculation!
-W0529 22:13:06.845739  133241 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.17GiB (113999728223 bytes) by rematerialization; only reduced to 120.01GiB (128861421688 bytes), down from 120.01GiB (128861421688 bytes) originally
-W0529 22:13:32.137466  133241 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.17GiB (113994536472 bytes) by rematerialization; only reduced to 120.01GiB (128862355696 bytes), down from 120.01GiB (128862371472 bytes) originally
-W0529 22:46:51.481656  155046 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.93GiB (113738859545 bytes) by rematerialization; only reduced to 112.16GiB (120429629016 bytes), down from 112.16GiB (120429629016 bytes) originally
-W0529 22:47:37.817701  155046 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.91GiB (113718523391 bytes) by rematerialization; only reduced to 112.16GiB (120432988224 bytes), down from 112.16GiB (120433027776 bytes) originally
-E0530 00:24:32.142112  220445 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (122650929632) exceeds the base limit (120097026867). This indicates an error in the calculation!
-W0530 00:24:33.103068  219811 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.71GiB (113504976986 bytes) by rematerialization; only reduced to 115.22GiB (123715685224 bytes), down from 115.22GiB (123715685224 bytes) originally
-W0530 00:25:40.135962  219811 hlo_rematerialization.cc:3204] Can't reduce memory use below 105.66GiB (113455633164 bytes) by rematerialization; only reduced to 115.23GiB (123724980832 bytes), down from 115.23GiB (123725058816 bytes) originally
-W0530 02:13:59.197172  289435 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.08GiB (113899959063 bytes) by rematerialization; only reduced to 109.80GiB (117893603032 bytes), down from 109.80GiB (117893603032 bytes) originally
-W0530 02:14:33.668861  289435 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.06GiB (113883883774 bytes) by rematerialization; only reduced to 109.80GiB (117898002640 bytes), down from 109.80GiB (117898039792 bytes) originally
-E0530 05:17:03.117405  408043 gpu_hlo_schedule.cc:815] The byte size of input/output arguments (121440307232) exceeds the base limit (120097026867). This indicates an error in the calculation!
-W0530 05:17:04.602825  407421 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.17GiB (113996975358 bytes) by rematerialization; only reduced to 113.36GiB (121721083912 bytes), down from 113.36GiB (121721083912 bytes) originally
-W0530 05:17:29.275384  407421 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.16GiB (113989232723 bytes) by rematerialization; only reduced to 113.36GiB (121723174720 bytes), down from 113.36GiB (121723197024 bytes) originally
-W0530 07:01:53.209817  476024 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.10GiB (113922237566 bytes) by rematerialization; only reduced to 108.92GiB (116955318696 bytes), down from 108.92GiB (116955318696 bytes) originally
-W0530 07:02:22.469819  476024 hlo_rematerialization.cc:3204] Can't reduce memory use below 106.09GiB (113912702867 bytes) by rematerialization; only reduced to 108.92GiB (116957498304 bytes), down from 108.92GiB (116957522656 bytes) originally
+WARN: alpha nocc = 7  HOMO 0.0100138442410618 >= LUMO 0.0100138442410621
+WARN: system HOMO 0.0100138442410618 >= system LUMO 0.0100138442410618
+WARN: alpha nocc = 3  HOMO 0.0270243514169704 >= LUMO 0.0270243514169711
+WARN: system HOMO 0.0270243514169704 >= system LUMO 0.0270243514169704
+WARN: alpha nocc = 4  HOMO -0.0425979827563347 >= LUMO -0.042597982756334
+WARN: system HOMO -0.0425979827563347 >= system LUMO -0.0425979827563362
+WARN: beta  nocc = 8  HOMO -0.433830974697164 >= LUMO -0.433830974697163
+WARN: system HOMO -0.433830974697163 >= system LUMO -0.433830974697163
+WARN: beta  nocc = 4  HOMO -0.611902993504138 >= LUMO -0.611902993504137
+WARN: system HOMO -0.611902993504137 >= system LUMO -0.611902993504137
+WARN: beta  nocc = 0  HOMO 3.92552701981726 >= LUMO -0.182832871993443
+WARN: system HOMO -0.182832871993443 >= system LUMO -0.182832871993443
+WARN: system HOMO -0.164566657573891 >= system LUMO -0.164566657573892
+WARN: beta  nocc = 3  HOMO -0.38950400593135 >= LUMO -0.389504005931349
+WARN: system HOMO -0.389504005931349 >= system LUMO -0.389504005931349
+WARN: system HOMO -0.157334759209721 >= system LUMO -0.157334759209723
+WARN: beta  nocc = 7  HOMO -0.283905806127631 >= LUMO -0.283905806127631
+WARN: system HOMO -0.28390580612763 >= system LUMO -0.283905806127631
+WARN: alpha nocc = 8  HOMO -0.0538856720758582 >= LUMO -0.0538856720758575
+WARN: system HOMO -0.0538856720758582 >= system LUMO -0.0538856720758583
