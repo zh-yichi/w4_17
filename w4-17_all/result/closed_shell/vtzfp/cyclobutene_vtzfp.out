@@ -1,0 +1,321 @@
+#INFO: **** input file is /work/hdd/bdka/yzhang65/w4_17/w4-17_all/afqmc_input/batch9/run_afqmc.py ****
+import os
+import sys
+import re
+#sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'script'))
+sys.path.insert(0, '/u/yzhang65/mywork/yzhang65/w4_17/w4-17_all/script')
+
+os.environ.setdefault("XLA_PYTHON_CLIENT_ALLOCATOR", "platform")
+import jax
+jax.config.update("jax_enable_x64", True)
+
+from pyscf import gto, scf, cc
+from afqmc import integral, launch_afqmc
+from mol_select import get_xyz_files
+import truncate_basis
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+shell            = "closed"  # "closed" or "open"
+symmetry         = False
+select_molecules = [
+    "benzene", "beta-lactim", "bf", "bf3", "bh", "bh3", "bhf2", "bn", "borole",
+    "c2cl6", "c2clh", "c2clh3", "c2clh5", "c2f4", "c2f6", "c2h2", "c2h3f",
+    "c2h4", "c2h5f", "c2h6", "ccl2", "ccl2h2", "ccl2o", "ccl3h", "c-hcoh",
+    "clf5", "clno", "cloocl", "co", "co2", "cs", "cs2", "cyclobutadiene",
+    "cyclobutane", "cyclobutene", "cyclopentadiene", "cyclopropane", "cyclopropene",
+    "dioxetan2one", "dioxetane", "dioxirane", "dithiotane", "ethanol", "h2",
+    "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno", "n2", "n2h4",
+    "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v", "sf6", "si2h6",
+    "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3", "t-butadiene",
+    "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2", "trans-c2f2cl2",
+    "formic-anhydride", "glyoxal", "propyne", "pyrrole",
+]
+index            = None          # e.g. "1-10", "5", "1,3,5-8", or None for all
+basis            = "vtzfp"
+
+xyz_dir      = f"../../w4_17_xyz/{shell}_shell"
+results_file = f"./{shell}_afqmc_{basis}.dat"
+out_dir      = f"../../result/molout/{shell}_shell/tz"
+os.makedirs(out_dir, exist_ok=True)
+
+xyz_files = get_xyz_files(xyz_dir, select_molecules=select_molecules, index=index)
+
+# ---------------------------------------------------------------------------
+# Write results header
+# ---------------------------------------------------------------------------
+with open(results_file, "w") as out:
+    out.write(f"{'Molecule':<16s} {'E_HF (Eh)':>20s} {'E_CCSD (Eh)':>20s} "
+              f"{'E_AFQMC (Eh)':>15s} {'E_AFQMC ERR (Eh)':>15s}\n")
+
+# ---------------------------------------------------------------------------
+# Helper
+# ---------------------------------------------------------------------------
+_afqmc_energy_re = re.compile(
+    r"Final AFQMC/pt2CCSD energy:\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+    r"\s*(?:±|\+/-)\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+)
+
+def extract_afqmc_energy(filename):
+    try:
+        with open(filename, encoding="utf-8") as f:
+            for line in f:
+                m = _afqmc_energy_re.search(line)
+                if m:
+                    return float(m.group(1)), float(m.group(2))
+    except (OSError, IOError):
+        pass
+    return 0, 0
+
+# ---------------------------------------------------------------------------
+# Main loop
+# ---------------------------------------------------------------------------
+for xyz_path in xyz_files:
+    
+    qmc_walker       = "uhf" # Default. Fall to rhf if the mf is RHF
+    qmc_trial        = "upt2ccsd"
+
+    with open(xyz_path) as f:
+        lines = f.readlines()
+
+    second_line = lines[1]
+    charge   = int(second_line.split("charge=")[1].split()[0])
+    spin     = int(second_line.split("mult=")[1].split()[0]) - 1
+    mol_name = second_line.split()[0]
+    atoms    = "".join(lines[2:])
+
+    print(f"\n{'='*60}\nRunning: {mol_name}  charge={charge}  spin={spin}\n{'='*60}")
+
+    mol = gto.M(
+        atom=atoms,
+        basis=truncate_basis.get_basis(atoms, basis),
+        verbose=4,
+        output=os.path.join(out_dir, f"{mol_name}_{basis}.out"),
+        unit="angstrom",
+        symmetry=symmetry,
+        charge=charge,
+        spin=spin,
+        max_memory=140000,
+    )
+
+    mf = scf.UHF(mol)
+    mf.max_cycle = 200
+    mf = mf.newton()
+    mf.kernel()
+
+    if mol_name == "h":
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {mf.e_tot:>20.10f} {mf.e_tot:>20.10f} "
+                      f"{mf.e_tot:>15.5f} {0.0:>15.5f}\n")
+        continue
+
+    stable = False
+    for _ in range(10):
+        mo_i, _, stable, _ = mf.stability(return_status=True)
+        if stable:
+            break
+        dm = mf.make_rdm1(mo_i, mf.mo_occ)
+        mf.kernel(dm0=dm)
+
+    ss, s = mf.spin_square()
+    tol = 1e-6
+    if abs(ss) < tol and abs(s - 1.0) < tol:
+        print("Not a UHF solution. Convert to RHF")
+        
+        qmc_walker = "rhf"
+        qmc_trial = "pt2ccsd"
+
+        mf = mf.to_rhf()
+        mf.kernel()
+        stable = False
+        for _ in range(10):
+            mo_i, _, stable, _ = mf.stability(return_status=True)
+            if stable:
+                break
+            dm = mf.make_rdm1(mo_i, mf.mo_occ)
+            mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        continue
+
+    mycc = cc.CCSD(mf)
+    mycc.set_frozen()
+    mycc.kernel()
+
+    integral.prep_integral(mycc, chol_cut=1e-5)
+    options = {
+        'eql_time':      50,
+        'n_blocks':      1000,
+        'n_walkers':     300,
+        'max_error':     0.0,
+        'seed':          17,
+        'walker_type':   qmc_walker,
+        'trial':         qmc_trial,
+        'mix_precision': True,
+        'max_memory':    25000, #MB
+    }
+    launch_afqmc.ph_afqmc(options)
+
+    afqmc_out = os.path.join(out_dir, f"{mol_name}_afqmc_{basis}.out")
+    os.system(f"mv afqmc.out {afqmc_out}")
+    eqmc, eqmc_err = extract_afqmc_energy(afqmc_out)
+
+    with open(results_file, "a") as out:
+        out.write(f"{mol_name:<16s} {mf.e_tot:>20.10f} {mycc.e_tot:>20.10f} "
+                  f"{eqmc:>15.5f} {eqmc_err:>15.5f}\n")
+
+    print(f"  => E_HF({mol_name})      = {mf.e_tot:.10f} Eh")
+    print(f"  => E_CCSD({mol_name})    = {mycc.e_tot:.10f} Eh")
+    print(f"  => E_AFQMC({mol_name})   = {eqmc:.5f} +/- {eqmc_err:.5f} Eh")
+
+print(f"\nAll calculations complete. Results saved to {results_file}")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='gpue02.delta.ncsa.illinois.edu', release='5.14.0-427.91.1.el9_4.x86_64', version='#1 SMP PREEMPT_DYNAMIC Wed Sep 17 10:08:59 EDT 2025', machine='x86_64')  Threads 12
+Python 3.11.14 (main, Oct 21 2025, 18:31:21) [GCC 11.2.0]
+numpy 2.3.5  scipy 1.16.3  h5py 3.15.1
+Date: Thu May 28 19:28:05 2026
+PySCF version 2.11.0
+PySCF path  /u/yzhang65/myprojects/software/pyscf
+GIT HEAD (branch master) f520f5381c0b41f716d847009817cbc64e52c0d5
+
+[ENV] PYSCF_TMPDIR /projects/bdka/yzhang65/scratch/pyscf
+[ENV] PYSCF_EXT_PATH /u/yzhang65/myprojects/software/pyscf-forge
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 10
+[INPUT] num. electrons = 30
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 C      0.000000000000   0.672045930000   0.814428370000 AA    0.000000000000   1.269982750829   1.539046567376 Bohr   0.0
+[INPUT]  2 C      0.000000000000  -0.672045930000   0.814428370000 AA    0.000000000000  -1.269982750829   1.539046567376 Bohr   0.0
+[INPUT]  3 C      0.000000000000  -0.784136830000  -0.700255860000 AA    0.000000000000  -1.481803852885  -1.323291792522 Bohr   0.0
+[INPUT]  4 C      0.000000000000   0.784136830000  -0.700255860000 AA    0.000000000000   1.481803852885  -1.323291792522 Bohr   0.0
+[INPUT]  5 H      0.000000000000   1.416326090000   1.600127000000 AA    0.000000000000   2.676468413176   3.023801794522 Bohr   0.0
+[INPUT]  6 H      0.000000000000  -1.416326090000   1.600127000000 AA    0.000000000000  -2.676468413176   3.023801794522 Bohr   0.0
+[INPUT]  7 H     -0.888831290000  -1.238732030000  -1.140562250000 AA   -1.679647709044  -2.340864278427  -2.155350280518 Bohr   0.0
+[INPUT]  8 H     -0.888831290000   1.238732030000  -1.140562250000 AA   -1.679647709044   2.340864278427  -2.155350280518 Bohr   0.0
+[INPUT]  9 H      0.888831290000  -1.238732030000  -1.140562250000 AA    1.679647709044  -2.340864278427  -2.155350280518 Bohr   0.0
+[INPUT] 10 H      0.888831290000   1.238732030000  -1.140562250000 AA    1.679647709044   2.340864278427  -2.155350280518 Bohr   0.0
+
+nuclear repulsion = 113.152889783868
+number of shells = 66
+number of NR pGTOs = 234
+number of NR cGTOs = 174
+basis = {'H': [[0, [33.87, 0.006068], [5.095, 0.045308], [1.159, 0.202822]], [0, [0.3258, 1.0]], [0, [0.1027, 1.0]], [1, [1.407, 1.0]], [1, [0.388, 1.0]]], 'C': [[0, [8236.0, 0.000531, -0.000113], [1235.0, 0.004108, -0.000878], [280.8, 0.021087, -0.00454], [79.27, 0.081853, -0.018133], [25.59, 0.234817, -0.05576], [8.997, 0.434401, -0.126895], [3.319, 0.346129, -0.170352], [0.3643, -0.008983, 0.598684]], [0, [0.9059, 1.0]], [0, [0.1285, 1.0]], [1, [18.71, 0.014031], [4.133, 0.086866], [1.2, 0.290216]], [1, [0.3827, 1.0]], [1, [0.1209, 1.0]], [2, [1.097, 1.0]], [2, [0.318, 1.0]], [3, [0.761, 1.0]]]}
+ecp = {}
+CPU time:     15889.37
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> ********
+method = SecondOrderUHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp_35m6fqo
+max_memory 140000 MB (current use 7249 MB)
+number electrons alpha = 15  beta = 15
+******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp_35m6fqo
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 140000 MB (current use 7249 MB)
+Set conv_tol_grad to 3.16228e-05
+  alpha nocc = 15  HOMO = -0.21500110370199  LUMO = 0.0886190869778361
+  beta  nocc = 15  HOMO = -0.219142202529815  LUMO = 0.0863295218273395
+Initial guess E= -154.907235762152  |g|= 0.239548
+macro= 0  E= -154.952276311869  delta_E= -0.0450405  |g|= 4.3946e-05  4 KF 15 JK
+macro= 1  E= -154.95227631187  delta_E= -6.82121e-13  |g|= 7.33849e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-154.95227631187  |g|= 7.33849e-06  total 6 KF 20 JK
+converged SCF energy = -154.95227631187  <S^2> = 9.8911102e-11  2S+1 = 1
+uhf_internal: lowest eigs of H = [0.00279044 0.50887975 0.51781791]
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the internal stability analysis
+
+
+******** <class 'pyscf.scf.hf.RHF'> ********
+method = RHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp_35m6fqo
+max_memory 140000 MB (current use 8189 MB)
+Set gradient conv threshold to 3.16228e-05
+init E= -154.952276311858
+  HOMO = -0.348745175183077  LUMO = 0.15323061261658
+cycle= 1 E= -154.952276311908  delta_E= -5.01e-11  |g|= 5.25e-06  |ddm|= 2.11e-05
+  HOMO = -0.348742516755829  LUMO = 0.153230965604878
+Extra cycle  E= -154.952276311914  delta_E= -5.46e-12  |g|= 2.44e-06  |ddm|= 5.19e-06
+converged SCF energy = -154.952276311914
+rhf_internal: lowest eigs of H = [1.06335088 1.24418151 1.2793192 ]
+<class 'pyscf.scf.hf.RHF'> wavefunction is stable in the internal stability analysis
+
+******** <class 'pyscf.cc.ccsd.CCSD'> ********
+CC2 = 0
+CCSD nocc = 11, nmo = 170
+frozen orbitals 4
+max_cycle = 50
+direct = 0
+conv_tol = 1e-07
+conv_tol_normt = 1e-05
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 140000 MB (current use 6783 MB)
+Init t2, MP2 energy = -155.603192310685  E_corr(MP2) -0.650915998771677
+Init E_corr(CCSD) = -0.650915998773415
+cycle = 1  E_corr(CCSD) = -0.664886358399552  dE = -0.0139703596  norm(t1,t2) = 0.0569163
+cycle = 2  E_corr(CCSD) = -0.681327668058134  dE = -0.0164413097  norm(t1,t2) = 0.0196712
+cycle = 3  E_corr(CCSD) = -0.683379957311435  dE = -0.00205228925  norm(t1,t2) = 0.00812137
+cycle = 4  E_corr(CCSD) = -0.685185841339328  dE = -0.00180588403  norm(t1,t2) = 0.00338185
+cycle = 5  E_corr(CCSD) = -0.685155484056281  dE = 3.0357283e-05  norm(t1,t2) = 0.000833684
+cycle = 6  E_corr(CCSD) = -0.685047516523853  dE = 0.000107967532  norm(t1,t2) = 0.000224016
+cycle = 7  E_corr(CCSD) = -0.685053256194432  dE = -5.73967058e-06  norm(t1,t2) = 5.13809e-05
+cycle = 8  E_corr(CCSD) = -0.685056144350851  dE = -2.88815642e-06  norm(t1,t2) = 1.1352e-05
+cycle = 9  E_corr(CCSD) = -0.685055337024507  dE = 8.07326344e-07  norm(t1,t2) = 3.97099e-06
+cycle = 10  E_corr(CCSD) = -0.685055296189036  dE = 4.08354707e-08  norm(t1,t2) = 1.20749e-06
+CCSD converged
+E(CCSD) = -155.6373316081028  E_corr = -0.6850552961890363

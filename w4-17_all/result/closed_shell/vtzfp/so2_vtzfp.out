@@ -1,0 +1,374 @@
+#INFO: **** input file is /work/hdd/bdka/yzhang65/w4_17/w4-17_all/afqmc_input/batch9/run_afqmc.py ****
+import os
+import sys
+import re
+import gc
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'script'))
+# sys.path.insert(0, '/u/yzhang65/mywork/yzhang65/w4_17/w4-17_all/script')
+
+os.environ.setdefault("XLA_PYTHON_CLIENT_ALLOCATOR", "platform")
+import jax
+jax.config.update("jax_enable_x64", True)
+
+from pyscf import gto, scf, cc
+from afqmc import integral, launch_afqmc
+from mol_select import get_xyz_files
+import truncate_basis
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+shell            = "closed"  # "closed" or "open"
+symmetry         = False
+select_molecules = [
+     "h2", "h2co", "h2o", "h2s", "hccf", "hcl", "hclo4", "hcn", "hcno",
+     "n2", "n2h4", "n2o", "n-butane", "n-pentane", "s2o", "s3", "s4-c2v",
+     "sf6", "si2h6", "sif4", "sih3f", "sih4", "silole", "sio", "so2", "so3",
+     "t-butadiene", "tetrahedrane", "t-hcoh", "thiophene", "t-hono", "t-n2h2",
+     "trans-c2f2cl2", "propyne", "pyrrole",
+     ]
+index            = None          # e.g. "1-10", "5", "1,3,5-8", or None for all
+basis            = "vtzfp"
+
+xyz_dir      = f"../../w4_17_xyz/{shell}_shell"
+results_file = f"./rest_{shell}_afqmc_{basis}.dat"
+out_dir      = f"../../result/molout/{shell}_shell/tz"
+os.makedirs(out_dir, exist_ok=True)
+
+xyz_files = get_xyz_files(xyz_dir, select_molecules=select_molecules, index=index)
+
+# ---------------------------------------------------------------------------
+# Write results header
+# ---------------------------------------------------------------------------
+with open(results_file, "w") as out:
+    out.write(f"{'Molecule':<16s} {'E_HF (Eh)':>20s} {'E_CCSD (Eh)':>20s} "
+              f"{'E_AFQMC (Eh)':>15s} {'E_AFQMC ERR (Eh)':>15s}\n")
+
+# ---------------------------------------------------------------------------
+# Helper
+# ---------------------------------------------------------------------------
+_afqmc_energy_re = re.compile(
+    r"Final AFQMC/pt2CCSD energy:\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+    r"\s*(?:±|\+/-)\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)"
+)
+
+def extract_afqmc_energy(filename):
+    try:
+        with open(filename, encoding="utf-8") as f:
+            for line in f:
+                m = _afqmc_energy_re.search(line)
+                if m:
+                    return float(m.group(1)), float(m.group(2))
+    except (OSError, IOError):
+        pass
+    return 0, 0
+
+def free_memory():
+    """Release GPU + CPU memory held over from the previous molecule.
+
+    JAX keeps every live device array and the JIT compilation cache around
+    between iterations, so without this the GPU usage grows molecule to
+    molecule. We drop the compilation cache, force-delete every live device
+    buffer (the next molecule rebuilds everything from scratch), and run the
+    Python garbage collector to release the large pyscf CPU arrays.
+    """
+    jax.clear_caches()
+    for arr in jax.live_arrays():
+        try:
+            arr.delete()
+        except Exception:
+            pass
+    gc.collect()
+
+# ---------------------------------------------------------------------------
+# Main loop
+# ---------------------------------------------------------------------------
+def run_molecule(xyz_path):
+
+    qmc_walker       = "uhf" # Default. Fall to rhf if the mf is RHF
+    qmc_trial        = "upt2ccsd"
+
+    with open(xyz_path) as f:
+        lines = f.readlines()
+
+    second_line = lines[1]
+    charge   = int(second_line.split("charge=")[1].split()[0])
+    spin     = int(second_line.split("mult=")[1].split()[0]) - 1
+    mol_name = second_line.split()[0]
+    atoms    = "".join(lines[2:])
+
+    print(f"\n{'='*60}\nRunning: {mol_name}  charge={charge}  spin={spin}\n{'='*60}")
+
+    mol = gto.M(
+        atom=atoms,
+        basis=truncate_basis.get_basis(atoms, basis),
+        verbose=4,
+        output=os.path.join(out_dir, f"{mol_name}_{basis}.out"),
+        unit="angstrom",
+        symmetry=symmetry,
+        charge=charge,
+        spin=spin,
+        max_memory=140000,
+    )
+
+    mf = scf.UHF(mol)
+    mf.max_cycle = 200
+    mf = mf.newton()
+    mf.kernel()
+
+    if mol_name == "h":
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {mf.e_tot:>20.10f} {mf.e_tot:>20.10f} "
+                      f"{mf.e_tot:>15.5f} {0.0:>15.5f}\n")
+        return
+
+    stable = False
+    for _ in range(10):
+        mo_i, _, stable, _ = mf.stability(return_status=True)
+        if stable:
+            break
+        dm = mf.make_rdm1(mo_i, mf.mo_occ)
+        mf.kernel(dm0=dm)
+
+    ss, s = mf.spin_square()
+    tol = 1e-6
+    if abs(ss) < tol and abs(s - 1.0) < tol:
+        print("Not a UHF solution. Convert to RHF")
+        
+        qmc_walker = "rhf"
+        qmc_trial = "pt2ccsd"
+
+        mf = mf.to_rhf()
+        mf.kernel()
+        stable = False
+        for _ in range(10):
+            mo_i, _, stable, _ = mf.stability(return_status=True)
+            if stable:
+                break
+            dm = mf.make_rdm1(mo_i, mf.mo_occ)
+            mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        return
+
+    mycc = cc.CCSD(mf)
+    mycc.set_frozen()
+    mycc.kernel()
+
+    integral.prep_integral(mycc, chol_cut=1e-5)
+    options = {
+        'eql_time':      50,
+        'n_blocks':      1000,
+        'n_walkers':     300,
+        'max_error':     0.0,
+        'seed':          17,
+        'walker_type':   qmc_walker,
+        'trial':         qmc_trial,
+        'mix_precision': True,
+        'max_memory':    25000, #MB
+    }
+    launch_afqmc.ph_afqmc(options)
+
+    afqmc_out = os.path.join(out_dir, f"{mol_name}_afqmc_{basis}.out")
+    os.system(f"mv afqmc.out {afqmc_out}")
+    eqmc, eqmc_err = extract_afqmc_energy(afqmc_out)
+
+    with open(results_file, "a") as out:
+        out.write(f"{mol_name:<16s} {mf.e_tot:>20.10f} {mycc.e_tot:>20.10f} "
+                  f"{eqmc:>15.5f} {eqmc_err:>15.5f}\n")
+
+    print(f"  => E_HF({mol_name})      = {mf.e_tot:.10f} Eh")
+    print(f"  => E_CCSD({mol_name})    = {mycc.e_tot:.10f} Eh")
+    print(f"  => E_AFQMC({mol_name})   = {eqmc:.5f} +/- {eqmc_err:.5f} Eh")
+
+
+for xyz_path in xyz_files:
+    try:
+        run_molecule(xyz_path)
+    except Exception as exc:
+        # Don't let one molecule kill the whole batch job.
+        print(f"  !! {xyz_path} failed: {exc}")
+    finally:
+        # Free GPU + CPU memory before starting the next molecule. The pyscf
+        # objects created inside run_molecule() are already out of scope here,
+        # so gc.collect() can reclaim them.
+        free_memory()
+
+print(f"\nAll calculations complete. Results saved to {results_file}")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='gpue04.delta.ncsa.illinois.edu', release='5.14.0-427.91.1.el9_4.x86_64', version='#1 SMP PREEMPT_DYNAMIC Wed Sep 17 10:08:59 EDT 2025', machine='x86_64')  Threads 12
+Python 3.11.14 (main, Oct 21 2025, 18:31:21) [GCC 11.2.0]
+numpy 2.3.5  scipy 1.16.3  h5py 3.15.1
+Date: Sat May 30 05:04:17 2026
+PySCF version 2.11.0
+PySCF path  /u/yzhang65/myprojects/software/pyscf
+GIT HEAD (branch master) f520f5381c0b41f716d847009817cbc64e52c0d5
+
+[ENV] PYSCF_TMPDIR /projects/bdka/yzhang65/scratch/pyscf
+[ENV] PYSCF_EXT_PATH /u/yzhang65/myprojects/software/pyscf-forge
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 3
+[INPUT] num. electrons = 32
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 S      0.000000000000   0.000000000000   0.362207000000 AA    0.000000000000   0.000000000000   0.684472030400 Bohr   0.0
+[INPUT]  2 O      0.000000000000   1.239318000000  -0.362207000000 AA    0.000000000000   2.341971601244  -0.684472030400 Bohr   0.0
+[INPUT]  3 O      0.000000000000  -1.239318000000  -0.362207000000 AA    0.000000000000  -2.341971601244  -0.684472030400 Bohr   0.0
+
+nuclear repulsion = 108.033997694456
+number of shells = 27
+number of NR pGTOs = 143
+number of NR cGTOs = 94
+basis = {'O': [[0, [15330.0, 0.000508, -0.000115], [2299.0, 0.003929, -0.000895], [522.4, 0.020243, -0.004636], [147.3, 0.079181, -0.018724], [47.55, 0.230687, -0.058463], [16.76, 0.433118, -0.136463], [6.207, 0.35026, -0.17574], [0.6882, -0.008154, 0.603418]], [0, [1.752, 1.0]], [0, [0.2384, 1.0]], [1, [34.46, 0.015928], [7.749, 0.09974], [2.28, 0.310492]], [1, [0.7156, 1.0]], [1, [0.214, 1.0]], [2, [2.314, 1.0]], [2, [0.645, 1.0]], [3, [1.428, 1.0]]], 'S': [[0, [374100.0, 5.4214e-05, -1.49837e-05, 4.35066e-06], [56050.0, 0.000420855, -0.000116198, 3.3714e-05], [12760.0, 0.00220698, -0.000611583, 0.000177674], [3615.0, 0.00919258, -0.0025537, 0.000741116], [1183.0, 0.0321123, -0.00908708, 0.00264591], [428.8, 0.0946683, -0.0277045, 0.00807487], [167.8, 0.22363, -0.072002, 0.0212276], [69.47, 0.374393, -0.146439, 0.0438323], [29.84, 0.329108, -0.19515, 0.0612716], [12.72, 0.0847038, 0.00819193, -0.0036151], [5.244, 0.000440851, 0.516601, -0.20451], [2.219, 0.00164827, 0.542178, -0.381871], [0.349, 0.000301306, -0.00918072, 0.714147]], [0, [0.7767, 1.0]], [0, [0.1322, 1.0]], [1, [574.4, 0.00242264, -0.000620102], [135.8, 0.0192796, -0.00493882], [43.19, 0.0885401, -0.0232647], [15.87, 0.254654, -0.0685195], [6.208, 0.433984, -0.123896], [2.483, 0.354953, -0.0969499], [0.3229, -0.00502977, 0.569394]], [1, [0.8688, 1.0]], [1, [0.1098, 1.0]], [2, [0.269, 1.0]], [2, [0.819, 1.0]], [3, [0.557, 1.0]]]}
+ecp = {}
+CPU time:      9378.10
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> ********
+method = SecondOrderUHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp25gn6nmn
+max_memory 140000 MB (current use 4170 MB)
+number electrons alpha = 16  beta = 16
+******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp25gn6nmn
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 140000 MB (current use 4170 MB)
+Set conv_tol_grad to 3.16228e-05
+  alpha nocc = 16  HOMO = -0.279097094122514  LUMO = -0.0541100643172351
+  beta  nocc = 16  HOMO = -0.282385827404795  LUMO = -0.0561600974533337
+Initial guess E= -547.141216291525  |g|= 0.592004
+macro= 0  E= -547.284942118113  delta_E= -0.143726  |g|= 0.592004  2 KF 5 JK
+macro= 1  E= -547.287030337182  delta_E= -0.00208822  |g|= 1.51361e-05  4 KF 15 JK
+macro= 2  E= -547.287030337184  delta_E= -1.81899e-12  |g|= 3.72578e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 3  E=-547.287030337184  |g|= 3.72578e-06  total 8 KF 26 JK
+converged SCF energy = -547.287030337184  <S^2> = 9.1464614e-12  2S+1 = 1
+uhf_internal: lowest eigs of H = [-0.00575741  0.08366594  0.25701086]
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction has an internal instability
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> ********
+method = SecondOrderUHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp25gn6nmn
+max_memory 140000 MB (current use 4175 MB)
+number electrons alpha = 16  beta = 16
+******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /projects/bdka/yzhang65/scratch/pyscf/tmp25gn6nmn
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 140000 MB (current use 4175 MB)
+Set conv_tol_grad to 3.16228e-05
+  alpha nocc = 16  HOMO = -0.485322322889289  LUMO = 0.064067403726305
+  beta  nocc = 16  HOMO = -0.485259853262701  LUMO = 0.0642726283625857
+Initial guess E= -547.259846257732  |g|= 0.127297
+macro= 0  E= -547.285007277042  delta_E= -0.025161  |g|= 0.0234774  3 KF 10 JK
+macro= 1  E= -547.286678026488  delta_E= -0.00167075  |g|= 0.0133989  2 KF 8 JK
+macro= 2  E= -547.287032145299  delta_E= -0.000354119  |g|= 0.00182026  3 KF 12 JK
+macro= 3  E= -547.287059706318  delta_E= -2.7561e-05  |g|= 0.000399434  2 KF 12 JK
+macro= 4  E= -547.287060428052  delta_E= -7.21734e-07  |g|= 3.48907e-05  2 KF 13 JK
+macro= 5  E= -547.287060428051  delta_E= 2.27374e-13  |g|= 7.8535e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 6  E=-547.287060428051  |g|= 7.8535e-06  total 14 KF 64 JK
+converged SCF energy = -547.287060428051  <S^2> = 0.041401251  2S+1 = 1.0796319
+uhf_internal: lowest eigs of H = [0.01143111 0.08820755 0.23623333]
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the internal stability analysis
+
+******** <class 'pyscf.cc.uccsd.UCCSD'> ********
+CC2 = 0
+CCSD nocc = (np.int64(9), np.int64(9)), nmo = (87, 87)
+frozen orbitals 7
+max_cycle = 50
+direct = 0
+conv_tol = 1e-07
+conv_tol_normt = 1e-06
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 140000 MB (current use 4175 MB)
+Init t2, MP2 energy = -0.653503470044467
+Init E_corr(UCCSD) = -0.653503470073067
+cycle = 1  E_corr(UCCSD) = -0.620456545389619  dE = 0.0330469247  norm(t1,t2) = 0.138914
+cycle = 2  E_corr(UCCSD) = -0.650297617837685  dE = -0.0298410724  norm(t1,t2) = 0.0539916
+cycle = 3  E_corr(UCCSD) = -0.646457527249396  dE = 0.00384009059  norm(t1,t2) = 0.0378419
+cycle = 4  E_corr(UCCSD) = -0.648929487098375  dE = -0.00247195985  norm(t1,t2) = 0.0155747
+cycle = 5  E_corr(UCCSD) = -0.650031582774735  dE = -0.00110209568  norm(t1,t2) = 0.00737392
+cycle = 6  E_corr(UCCSD) = -0.649458129751755  dE = 0.000573453023  norm(t1,t2) = 0.00374669
+cycle = 7  E_corr(UCCSD) = -0.649551877107211  dE = -9.37473555e-05  norm(t1,t2) = 0.00131314
+cycle = 8  E_corr(UCCSD) = -0.64963623729848  dE = -8.43601913e-05  norm(t1,t2) = 0.000438032
+cycle = 9  E_corr(UCCSD) = -0.649625747504763  dE = 1.04897937e-05  norm(t1,t2) = 0.000226928
+cycle = 10  E_corr(UCCSD) = -0.649624242378871  dE = 1.50512589e-06  norm(t1,t2) = 6.28856e-05
+cycle = 11  E_corr(UCCSD) = -0.649623152868292  dE = 1.08951058e-06  norm(t1,t2) = 1.68307e-05
+cycle = 12  E_corr(UCCSD) = -0.64962274741529  dE = 4.05453002e-07  norm(t1,t2) = 7.79006e-06
+cycle = 13  E_corr(UCCSD) = -0.649622565192294  dE = 1.82222996e-07  norm(t1,t2) = 3.58605e-06
+cycle = 14  E_corr(UCCSD) = -0.649622400491363  dE = 1.6470093e-07  norm(t1,t2) = 1.83904e-06
+cycle = 15  E_corr(UCCSD) = -0.649622383166041  dE = 1.73253228e-08  norm(t1,t2) = 5.38825e-07
+UCCSD converged
+E(UCCSD) = -547.9366828112175  E_corr = -0.6496223831660406

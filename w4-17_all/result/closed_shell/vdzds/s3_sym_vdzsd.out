@@ -1,0 +1,242 @@
+#INFO: **** input file is /projects/yizh8382/projects/w4_17/w4-17_all/pyscf_input/run_pyscf_vdzsd.py ****
+import os
+import glob
+import numpy as np
+from pyscf import gto, scf, cc
+
+# basis = "ccpvdz"
+xyz_dir = "../w4_17_xyz/closed_shell"
+results_file = f"../result/closed_shell_rhf_sym_vdzsd.dat"
+out_dir = "../result/molout/closed_shell"
+os.makedirs(out_dir, exist_ok=True)
+
+# Set to a list of molecule names to run only those, e.g. ["acetaldehyde", "benzene"]
+# Set to None to run all molecules in xyz_dir
+select_molecules = None
+symmetry = True
+
+def vdzsd(elem):
+    if elem in ('H', 'He'):
+        raw_basis = gto.basis.load('ccpvdz', elem)
+        return [b for b in raw_basis if b[0] != 1]
+    else:
+        return gto.basis.load('ccpvdz', elem)
+
+def get_vdzsd_basis(atoms):
+    elems = {line.split()[0] for line in atoms.strip().splitlines() if line.strip()}
+    basis_dict = {el: vdzsd(el) for el in elems}
+    return basis_dict
+
+all_xyz = sorted(glob.glob(os.path.join(xyz_dir, "*.xyz")))
+if select_molecules is not None:
+    select_set = set(select_molecules)
+    xyz_files = [p for p in all_xyz if os.path.splitext(os.path.basename(p))[0] in select_set]
+    missing = select_set - {os.path.splitext(os.path.basename(p))[0] for p in xyz_files}
+    if missing:
+        print(f"Warning: no .xyz file found for: {', '.join(sorted(missing))} in {xyz_dir}")
+else:
+    xyz_files = all_xyz
+
+with open(results_file, "w") as out:
+    out.write(f"{'Molecule':<16s} {'Charge':>6s} {'2S':>6s} {'frozen':>6s} "
+              f"{'E_RHF (Eh)':>20s} {'E_CCSD (Eh)':>20s} {'E_CCSD(T) (Eh)':>20s}\n")
+    out.write("-" * 100 + "\n")
+
+for xyz_path in xyz_files:
+    with open(xyz_path, "r") as f:
+        lines = f.readlines()
+
+    # Parse charge and multiplicity from second line: "name charge=X mult=Y"
+    second_line = lines[1]
+    charge = int(second_line.split("charge=")[1].split()[0])
+    mult   = int(second_line.split("mult=")[1].split()[0])
+    spin   = mult - 1   # PySCF spin input is 2S = mult - 1
+    mol_name = second_line.split()[0]
+
+    # Coordinates only (skip the atom count and comment lines)
+    atoms = "".join(lines[2:])
+    basis_dict = get_vdzsd_basis(atoms)
+
+    print(f"\n{'='*60}")
+    print(f"Running: {mol_name}  charge={charge}  spin={spin}")
+    print(f"{'='*60}")
+    
+    mol = gto.M(
+        atom=atoms,
+        basis=basis_dict,
+        verbose=4,
+        output=os.path.join(out_dir, f"{mol_name}_sym_vdzsd.out"),
+        unit="angstrom",
+        symmetry=symmetry,
+        charge=charge,
+        spin=spin,
+        max_memory=40000,
+    )
+
+    mf = scf.RHF(mol)
+    mf.max_cycle = 200
+    mf = mf.newton()
+    mf.kernel()
+
+    # Stability check loop — at most 10 attempts
+    max_stability_cycles = 10
+    stable = False
+    for stability_iter in range(max_stability_cycles):
+        mo_i, _, stable, _ = mf.stability(return_status=True)
+        if stable:
+            break
+        dm = mf.make_rdm1(mo_i, mf.mo_occ)
+        mf.kernel(dm0=dm)
+
+    if not stable or not mf.converged:
+        print(f"  !! SCF did not converge for {mol_name} — skipping.")
+        with open(results_file, "a") as out:
+            out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {'N/A':>6s} "
+                      f"{'UNCONVERGED':>20s} {'UNCONVERGED':>20s} {'UNCONVERGED':>20s}\n")
+        continue
+
+    energy = mf.e_tot
+
+    mycc = cc.CCSD(mf)
+    mycc.set_frozen()
+    mycc.kernel()
+    e_ccsd = mycc.e_tot
+    et = mycc.ccsd_t()
+    e_ccsdt = e_ccsd + et
+    frozen = mycc.frozen
+
+    with open(results_file, "a") as out:
+        out.write(f"{mol_name:<16s} {charge:>6d} {spin:>6d} {frozen:>6d} "
+                  f"{energy:>20.10f} {e_ccsd:>20.10f} {e_ccsdt:>20.10f}\n")
+
+    print(f"  => E_RHF({mol_name})     = {energy:.10f} Eh")
+    print(f"  => E_CCSD({mol_name})    = {e_ccsd:.10f} Eh")
+    print(f"  => E_CCSD(T)({mol_name}) = {e_ccsdt:.10f} Eh")
+
+print(f"\nAll calculations complete. Results saved to {results_file}")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='bnode0309.rc.int.colorado.edu', release='4.18.0-477.27.1.el8_8.x86_64', version='#1 SMP Thu Aug 31 10:29:22 EDT 2023', machine='x86_64')  Threads 28
+Python 3.10.2 | packaged by conda-forge | (main, Mar  8 2022, 15:52:01) [GCC 9.4.0]
+numpy 2.0.2  scipy 1.14.1  h5py 3.12.1
+Date: Thu May 14 10:00:35 2026
+PySCF version 2.9.0
+PySCF path  /projects/yizh8382/tools/lno_pyscf_gcc
+GIT HEAD (branch master) 142756584ed3963728cc1f6823286f4605811a6c
+
+[ENV] PYSCF_TMPDIR /scratch/alpine/yizh8382/pyscf
+[ENV] PYSCF_EXT_PATH /home/yizh8382/tools/pyscf-forge
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 3
+[INPUT] num. electrons = 48
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry True subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 S      0.000000000000   0.000000000000   0.665312000000 AA    0.000000000000   0.000000000000   1.257257467387 Bohr   0.0
+[INPUT]  2 S      0.000000000000   1.640064000000  -0.332656000000 AA    0.000000000000   3.099271786759  -0.628628733693 Bohr   0.0
+[INPUT]  3 S      0.000000000000  -1.640064000000  -0.332656000000 AA    0.000000000000  -3.099271786759  -0.628628733693 Bohr   0.0
+
+nuclear repulsion = 182.426388676945
+point group symmetry = C2v
+symmetry origin: [0. 0. 0.]
+symmetry axis x: [-1. -0. -0.]
+symmetry axis y: [0. 1. 0.]
+symmetry axis z: [0. 0. 1.]
+num. orbitals of irrep A1 = 22
+num. orbitals of irrep A2 = 6
+num. orbitals of irrep B1 = 9
+num. orbitals of irrep B2 = 17
+number of shells = 15
+number of NR pGTOs = 123
+number of NR cGTOs = 54
+basis = {'S': [[0, [110800.0, 0.000247635, -6.87039e-05, 1.99077e-05], [16610.0, 0.00192026, -0.000527681, 0.000153483], [3781.0, 0.00996192, -0.00279671, 0.000809503], [1071.0, 0.0402975, -0.0112651, 0.00328974], [349.8, 0.128604, -0.0388834, 0.0112967], [126.3, 0.30348, -0.0995025, 0.0296385], [49.26, 0.421432, -0.19974, 0.0599851], [20.16, 0.230781, -0.12336, 0.0413248], [5.72, 0.0178971, 0.513194, -0.207474], [2.182, -0.00297516, 0.60712, -0.392889], [0.4327, 0.000849522, 0.0396753, 0.63284]], [0, [0.157, 1.0]], [1, [399.7, 0.00447541, -0.00116251], [94.19, 0.0341708, -0.00865664], [29.75, 0.14425, -0.0390886], [10.77, 0.353928, -0.0934625], [4.119, 0.459085, -0.147994], [1.625, 0.206383, 0.0301904], [0.4726, 0.0102141, 0.561573]], [1, [0.1407, 1.0]], [2, [0.479, 1.0]]]}
+ecp = {}
+CPU time:     14749.25
+Freeze 0 electrons in irreps []
+    48 free electrons in irreps A1 A2 B1 B2
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderSymAdaptedRHF'> ********
+method = SecondOrderSymAdaptedRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmppprrvxke
+max_memory 40000 MB (current use 1817 MB)
+******** <class 'pyscf.scf.hf_symm.SymAdaptedRHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /scratch/alpine/yizh8382/pyscf/tmppprrvxke
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 40000 MB (current use 1817 MB)
+Set conv_tol_grad to 3.16228e-05
+Initial guess from minao.
+HOMO (A1) = -0.260323419985006  LUMO (B1) = -0.150720621497293
+Initial guess E= -1192.47509077759  |g|= 0.431455
+macro= 0  E= -1192.53934291194  delta_E= -0.0642521  |g|= 0.031744  3 KF 9 JK
+macro= 1  E= -1192.53935855193  delta_E= -1.564e-05  |g|= 0.000380387  2 KF 8 JK
+macro= 2  E= -1192.53935855193  delta_E= 1.36424e-12  |g|= 9.54038e-06  1 KF 2 JK
+Canonicalize SCF orbitals
+macro X = 3  E=-1192.53935855193  |g|= 9.54038e-06  total 7 KF 23 JK
+converged SCF energy = -1192.53935855193
+rhf_internal: lowest eigs of H = [0.8688206  1.03911775 1.19961815]
+<class 'pyscf.soscf.newton_ah.SecondOrderSymAdaptedRHF'> wavefunction is stable in the internal stability analysis
+
+******** <class 'pyscf.cc.ccsd.CCSD'> ********
+CC2 = 0
+CCSD nocc = 9, nmo = 39
+frozen orbitals 15
+max_cycle = 50
+direct = 0
+conv_tol = 1e-07
+conv_tol_normt = 1e-05
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 40000 MB (current use 1817 MB)
+Init t2, MP2 energy = -1192.94986255555  E_corr(MP2) -0.410504003619142
+Init E_corr(CCSD) = -0.410504003640257
+cycle = 1  E_corr(CCSD) = -0.41183082213625  dE = -0.0013268185  norm(t1,t2) = 0.0816239
+cycle = 2  E_corr(CCSD) = -0.428659556493565  dE = -0.0168287344  norm(t1,t2) = 0.0358945
+cycle = 3  E_corr(CCSD) = -0.427893011553033  dE = 0.000766544941  norm(t1,t2) = 0.0191519
+cycle = 4  E_corr(CCSD) = -0.430759340174181  dE = -0.00286632862  norm(t1,t2) = 0.00943181
+cycle = 5  E_corr(CCSD) = -0.43092395975406  dE = -0.00016461958  norm(t1,t2) = 0.00305924
+cycle = 6  E_corr(CCSD) = -0.430590387218677  dE = 0.000333572535  norm(t1,t2) = 0.000942171
+cycle = 7  E_corr(CCSD) = -0.430593073492182  dE = -2.6862735e-06  norm(t1,t2) = 0.000279314
+cycle = 8  E_corr(CCSD) = -0.430611448241515  dE = -1.83747493e-05  norm(t1,t2) = 0.000106574
+cycle = 9  E_corr(CCSD) = -0.430607976718952  dE = 3.47152256e-06  norm(t1,t2) = 5.51734e-05
+cycle = 10  E_corr(CCSD) = -0.430608739049627  dE = -7.62330675e-07  norm(t1,t2) = 2.01382e-05
+cycle = 11  E_corr(CCSD) = -0.430607953255834  dE = 7.85793793e-07  norm(t1,t2) = 5.65266e-06
+cycle = 12  E_corr(CCSD) = -0.430608045945577  dE = -9.26897427e-08  norm(t1,t2) = 2.39171e-06
+CCSD converged
+E(CCSD) = -1192.969966597879  E_corr = -0.4306080459455767
+CCSD(T) correction = -0.0232545374974481
